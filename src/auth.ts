@@ -1,13 +1,7 @@
 import NextAuth, { NextAuthConfig } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 
-import {
-    AccountVerificationError,
-    CommonAuthError,
-    InvalidCredentialsError,
-    OtpInvalidError,
-    OtpRequiredError
-} from '@/lib/errors';
+import { CommonAuthError, errorMap } from '@/lib/errors';
 import { setAuthCookie } from '@/lib/server-utils';
 import { SignInSchema } from '@/lib/zod';
 
@@ -42,27 +36,25 @@ export const authConfig: NextAuthConfig = {
 
                 const resBody = await res.json();
 
-                if (res.ok) {
-                    setAuthCookie(res.headers.get('set-cookie'));
+                if (!res.ok) {
+                    console.error(resBody);
 
-                    return resBody;
-                } else if (resBody.errors && Array.isArray(resBody.errors)) {
-                    if (resBody.errors.includes('identity.session.missing_otp')) {
-                        throw new OtpRequiredError(resBody.errors);
+                    if (resBody.errors?.length) {
+                        resBody.errors.forEach((error: string) => {
+                            if (errorMap[error]) {
+                                throw new errorMap[error](resBody.errors);
+                            }
+                        });
+
+                        throw new CommonAuthError(resBody.errors);
                     }
-                    if (resBody.errors.includes('identity.session.invalid_otp')) {
-                        throw new OtpInvalidError(resBody.errors);
-                    }
-                    if (resBody.errors.includes('identity.session.not_active')) {
-                        throw new AccountVerificationError(resBody.errors);
-                    }
-                    if (resBody.errors.includes('identity.session.invalid_params')) {
-                        throw new InvalidCredentialsError(resBody.errors);
-                    }
-                    throw new CommonAuthError(resBody.errors);
-                } else {
+
                     throw new CommonAuthError();
                 }
+
+                setAuthCookie(res.headers.get('set-cookie'));
+
+                return resBody;
             },
         }),
     ],

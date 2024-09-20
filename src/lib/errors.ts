@@ -45,3 +45,11 @@ export const ERROR_CODE_COMMON_AUTH_ERROR: string = '1000' as const;
 export const ERROR_CODE_INVALID_CREDENTIALS: string = '1003' as const;
 export const ERROR_CODE_OTP_REQUIRED: string = '1005' as const;
 export const ERROR_CODE_ACCOUNT_VERIFICATION_PENDING: string = '1010' as const;
+
+export const errorMap = {
+    'identity.session.invalid_otp': OtpInvalidError,
+    'identity.session.invalid_params': InvalidCredentialsError,
+    'identity.session.missing_otp': OtpRequiredError,
+    'identity.session.not_active': AccountVerificationError,
+    'totp.error': OtpInvalidError,
+};
