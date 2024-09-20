@@ -1,0 +1,4 @@
+tone_instructions: 'chill'
+early_access: true
+reviews:
+  path_filters: [ "!src/lib/otpInput/**" ]

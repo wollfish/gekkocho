@@ -1,0 +1,45 @@
+# Node modules directory (these will be installed in the image)
+node_modules
+**/node_modules
+
+# Log files
+*.log
+
+# Build output
+build
+dist
+.next
+
+# Development files
+*.md
+*.git
+*.gitignore
+.github
+.dockerignore
+Dockerfile
+
+# Environment files (you might have sensitive data here)
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# OS and editor-specific files
+.DS_Store
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+*.vscode
+
+# IDE files
+.vscode
+.idea
+
+# Other file
+helm-chart
+mocks
+LICENSE
+.eslintrc.js
+codefresh.yml
