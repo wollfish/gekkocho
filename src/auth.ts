@@ -1,7 +1,13 @@
 import NextAuth, { NextAuthConfig } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 
-import { AccountVerificationError, InvalidCredentialsError, OtpInvalidError, OtpRequiredError } from '@/lib/errors';
+import {
+    AccountVerificationError,
+    CommonAuthError,
+    InvalidCredentialsError,
+    OtpInvalidError,
+    OtpRequiredError
+} from '@/lib/errors';
 import { setAuthCookie } from '@/lib/server-utils';
 import { SignInSchema } from '@/lib/zod';
 
@@ -50,9 +56,12 @@ export const authConfig: NextAuthConfig = {
                     if (resBody.errors.includes('identity.session.not_active')) {
                         throw new AccountVerificationError(resBody.errors);
                     }
-                    throw new InvalidCredentialsError(resBody.errors);
+                    if (resBody.errors.includes('identity.session.invalid_params')) {
+                        throw new InvalidCredentialsError(resBody.errors);
+                    }
+                    throw new CommonAuthError(resBody.errors);
                 } else {
-                    throw new InvalidCredentialsError();
+                    throw new CommonAuthError();
                 }
             },
         }),
