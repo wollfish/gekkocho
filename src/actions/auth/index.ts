@@ -2,7 +2,6 @@
 
 import { isRedirectError } from 'next/dist/client/components/redirect';
 
-import { cookies } from 'next/headers';
 import { AuthError } from 'next-auth';
 
 import { signIn, signOut } from '@/auth';
@@ -122,7 +121,6 @@ export async function doRegister(formData: SignUpSchema, callbackUrl = DEFAULT_L
 export async function doLogout() {
     try {
         await signOut({ redirectTo: '/', redirect: true });
-        cookies().delete('_barong_session');
     } catch (e: unknown) {
         if (isRedirectError(e)) throw e;
         console.error(e);
