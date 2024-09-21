@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 
 import { SettingsTabs } from '@/components/dashboard/SettingsTabs';
 import { Breadcrumbs } from '@/components/ui/Breadcrumb';
 
 export default function SettingsLayout({ children }: { children: React.ReactNode }) {
     return (
-        <section className="flex size-full flex-col pr-16" aria-label="Settings Layout">
+        <section aria-label="Settings Layout" className="flex size-full flex-col pr-16">
             <Breadcrumbs/>
             <SettingsTabs/>
-            {children}
+            <Suspense>
+                {children}
+            </Suspense>
         </section>
     );
 }

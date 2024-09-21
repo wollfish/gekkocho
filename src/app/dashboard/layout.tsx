@@ -12,7 +12,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <main className="z-10 size-full p-4">
                     {children}
                 </main>
-
                 <BackgroundGradient/>
             </div>
         </section>
