@@ -20,7 +20,7 @@ export const getProfile = createServerAction<UserInterface>(async () => {
         const barongSession = session.user.access_token;
 
         if (!barongSession) {
-            await doLogout('/login');
+            await doLogout();
             throw new ServerActionError('Access token not found.');
         }
 

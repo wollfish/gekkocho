@@ -118,9 +118,9 @@ export async function doRegister(formData: SignUpSchema, callbackUrl = DEFAULT_L
     }
 }
 
-export async function doLogout(callbackUrl = '/') {
+export async function doLogout() {
     try {
-        await signOut({ redirectTo: callbackUrl, redirect: true });
+        await signOut({ redirectTo: '/', redirect: true });
     } catch (e: unknown) {
         if (isRedirectError(e)) throw e;
         console.error(e);
