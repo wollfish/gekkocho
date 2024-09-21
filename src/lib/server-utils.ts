@@ -1,23 +1,4 @@
 import { parse } from 'cookie';
-import { cookies } from 'next/headers';
-
-export const setAuthCookie = (cookieHeader: string) => {
-    if (!cookieHeader) return;
-
-    const parsedCookie = parse(cookieHeader);
-    const [cookieName, cookieValue] = Object.entries(parsedCookie)[0];
-
-    cookies().set({
-        name: cookieName,
-        value: cookieValue,
-        httpOnly: true,
-        maxAge: parseInt(parsedCookie['Max-Age']),
-        path: parsedCookie.path,
-        sameSite: parsedCookie.samesite as any,
-        expires: new Date(parsedCookie.expires),
-        secure: true,
-    });
-};
 
 export type ServerActionResult<T> =
     | { success: true; value: T }
@@ -45,3 +26,21 @@ export function createServerAction<Return, Args extends unknown[] = []>(
         }
     };
 }
+
+export const getCookiesFromHeader = (cookieHeader: string) => {
+    const parsedCookie = parse(cookieHeader);
+
+    if (!parsedCookie) return [];
+
+    const [cookieName, cookieValue] = Object.entries(parsedCookie)[0];
+
+    return [{
+        name: cookieName,
+        value: cookieValue,
+        expires_at: new Date(parsedCookie.expires),
+    }];
+};
+
+export const getAccessTokenFromHeader = (header: string, tokenName: string) => {
+    return getCookiesFromHeader(header).find((cookie) => cookie.name === tokenName) || {};
+};

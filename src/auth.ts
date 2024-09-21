@@ -2,8 +2,8 @@ import NextAuth, { NextAuthConfig } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 
 import { CommonAuthError, errorMap } from '@/lib/errors';
-import { setAuthCookie } from '@/lib/server-utils';
-import { SignInSchema } from '@/lib/zod';
+import { getAccessTokenFromHeader } from '@/lib/server-utils';
+import { SignInSchema, UserInterface } from '@/lib/zod';
 
 export const authConfig: NextAuthConfig = {
     providers: [
@@ -15,13 +15,6 @@ export const authConfig: NextAuthConfig = {
                 remember: { label: 'Remember', type: 'boolean' },
             },
             async authorize(credentials: SignInSchema) {
-                // return {
-                //     id: '23232',
-                //     email: credentials.email,
-                //     name: 'John Doe',
-                //     image: '',
-                // } as User;
-
                 const payload = {
                     email: credentials.email,
                     password: credentials.password,
@@ -37,7 +30,7 @@ export const authConfig: NextAuthConfig = {
                 const resBody = await res.json();
 
                 if (!res.ok) {
-                    console.error(resBody);
+                    console.warn(resBody);
 
                     if (resBody.errors?.length) {
                         resBody.errors.forEach((error: string) => {
@@ -52,16 +45,24 @@ export const authConfig: NextAuthConfig = {
                     throw new CommonAuthError();
                 }
 
-                setAuthCookie(res.headers.get('set-cookie'));
+                const tokenObj = getAccessTokenFromHeader(res.headers.get('set-cookie'), '_barong_session');
 
-                return resBody;
+                return { ...resBody, access_token: tokenObj };
             },
         }),
     ],
     callbacks: {
-        async jwt({ token, user }) {
+        async jwt({ token, user }: { token: any; user: UserInterface | undefined }) {
             if (user) {
-                token.user = user;
+                return {
+                    ...token,
+                    id: user.uid,
+                    email: user.email,
+                    access_token: user.access_token.value,
+                    access_token_expiry: String(user.access_token.expires_at),
+                    csrf_token: user.csrf_token,
+                    name: user.profiles?.length && user.profiles[0]?.full_name || user.username || 'N/A',
+                };
             }
 
             // console.log('===============Callback JWT|auth.ts==================');
@@ -70,8 +71,13 @@ export const authConfig: NextAuthConfig = {
 
             return token;
         },
-        async session({ session, token }) {
-            // session.user = token.user;
+        async session({ session, token }: { session: any; token: any }) {
+            session.user.id = token.id;
+            session.user.email = token.email;
+            session.user.csrf_token = token.csrf_token;
+            session.user.access_token = token.access_token;
+            session.user.access_token_expiry = token.access_token_expiry;
+            session.user.name = token.name;
 
             // console.log('===============Callback session|auth.ts==================');
             // console.log('session', session);
@@ -80,6 +86,10 @@ export const authConfig: NextAuthConfig = {
 
             return session;
         },
+    },
+    session: {
+        strategy: 'jwt',
+        maxAge: 5 * 24 * 60 * 60,
     },
     secret: process.env.AUTH_SECRET,
     pages: {

@@ -58,7 +58,7 @@ export default async function GeneralPage() {
                         <p>Referral Link</p>
                         <Snippet hideSymbol classNames={{ pre: 'font-sans' }} radius="lg"
                             size="md">
-                            {`${process.env.AUTH_TRUST_HOST}/signup?referral_code=${user.value.uid}`}
+                            {`${process.env.NEXT_PUBLIC_BASE_URL}/signup?referral_code=${user.value.uid}`}
                         </Snippet>
                     </div>
                 </div>
