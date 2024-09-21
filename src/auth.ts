@@ -47,6 +47,10 @@ export const authConfig: NextAuthConfig = {
 
                 const tokenObj = getAccessTokenFromHeader(res.headers.get('set-cookie'), '_barong_session');
 
+                if (!tokenObj) {
+                    throw new CommonAuthError(['Access token not found.']);
+                }
+
                 return { ...resBody, access_token: tokenObj };
             },
         }),
