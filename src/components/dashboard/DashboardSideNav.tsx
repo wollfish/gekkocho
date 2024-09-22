@@ -14,7 +14,7 @@ export const DashboardSideNav: React.FC = async () => {
     return (
         <aside className="sticky top-0 z-10 flex h-screen w-64 flex-col overflow-y-hidden border-r border-divider">
             <div className="flex h-16 items-center border-b border-dashed border-divider">
-                <NextLink className="flex items-center gap-1" href="/">
+                <NextLink className="flex items-center gap-1 p-3" href="/">
                     <Logo size={32}/>
                     <p className="font-bold">CoinDhan Admin</p>
                 </NextLink>

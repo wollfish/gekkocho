@@ -3,7 +3,7 @@ import { apiAuthPrefix, authRoutes, DEFAULT_LOGIN_REDIRECT, privateRoutes, publi
 
 export default auth((req) => {
     const { nextUrl } = req;
-    
+
     const isLoggedIn = !!req.auth;
 
     const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
@@ -15,15 +15,15 @@ export default auth((req) => {
         return null;
     }
 
-    if (!isLoggedIn && isAuthRoute) {
-        return null;
-    }
-
     if (isLoggedIn && isAuthRoute) {
         return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
     }
 
     if (isLoggedIn && isPrivateRoute) {
+        return null;
+    }
+
+    if (!isLoggedIn && isAuthRoute) {
         return null;
     }
 

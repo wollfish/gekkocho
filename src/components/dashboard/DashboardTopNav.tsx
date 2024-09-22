@@ -8,11 +8,15 @@ import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@nextui-o
 import { Input } from '@nextui-org/input';
 import { Kbd } from '@nextui-org/kbd';
 
+import { useSession } from 'next-auth/react';
+
 import { doLogout } from '@/actions/auth';
 import { Icons, SearchIcon } from '@/components/icons';
 import { ThemeSwitch } from '@/components/theme-switch';
 
 export const DashboardTopNav: React.FC = () => {
+    const session = useSession();
+    
     const handleLogout = async () => {
         await doLogout();
     };
@@ -69,17 +73,17 @@ export const DashboardTopNav: React.FC = () => {
                         <DropdownMenu aria-label="Profile Actions" variant="flat">
                             <DropdownItem key="profile" className="h-14 gap-2" textValue="profile">
                                 <p className="font-semibold">Signed in as</p>
-                                <p className="font-semibold">zoey@example.com</p>
+                                <p className="font-semibold">{session.data?.user?.email}</p>
                             </DropdownItem>
                             <DropdownItem key="settings" textValue="settings">My Settings</DropdownItem>
                             <DropdownItem key="team_settings" textValue="team_settings">Team Settings</DropdownItem>
-                            <DropdownItem key="analytics" textValue="team_settings">Analytics</DropdownItem>
-                            <DropdownItem key="system" textValue="team_settings">System</DropdownItem>
-                            <DropdownItem key="configurations" textValue="team_settings">Configurations</DropdownItem>
-                            <DropdownItem key="help_and_feedback" textValue="team_settings">Help &
-                                Feedback</DropdownItem>
-                            <DropdownItem key="logout" className="text-danger" color="danger" textValue="team_settings"
-                                onClick={handleLogout}>
+                            <DropdownItem key="analytics" textValue="analytics">Analytics</DropdownItem>
+                            <DropdownItem key="system" textValue="system">System</DropdownItem>
+                            <DropdownItem key="configurations" textValue="configurations">Configurations</DropdownItem>
+                            <DropdownItem key="help_and_feedback" textValue="help_and_feedback">
+                                Help & Feedback
+                            </DropdownItem>
+                            <DropdownItem key="logout" className="text-danger" color="danger" textValue="team_settings" onClick={handleLogout}>
                                 Log Out
                             </DropdownItem>
                         </DropdownMenu>
