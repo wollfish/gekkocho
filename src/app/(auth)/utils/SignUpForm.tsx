@@ -12,7 +12,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
 import { doRegister } from '@/actions/auth';
-import { EmailVerificationModal } from '@/components/AuthPages/EmailVerificationModal';
+import { EmailVerificationModal } from '@/app/(auth)/utils/EmailVerificationModal';
 import { ERROR_CODE_ACCOUNT_VERIFICATION_PENDING } from '@/lib/errors';
 import { InputPassword } from '@/lib/passwordInput';
 import { SignUpSchema, signUpSchema } from '@/lib/zod';

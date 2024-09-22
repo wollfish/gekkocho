@@ -1,4 +1,4 @@
-early_access: true
+early_access: false
 reviews:
   path_filters: [ "!src/lib/otpInput/**" ]
   auto_review:

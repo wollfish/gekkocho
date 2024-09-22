@@ -1,6 +1,7 @@
 import NextAuth, { NextAuthConfig } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 
+import { encryptToken } from '@/lib/encryption';
 import { CommonAuthError, errorMap } from '@/lib/errors';
 import { getAccessTokenFromHeader } from '@/lib/server-utils';
 import { SignInSchema, UserInterface } from '@/lib/zod';
@@ -62,9 +63,8 @@ export const authConfig: NextAuthConfig = {
                     ...token,
                     id: user.uid,
                     email: user.email,
-                    access_token: user.access_token.value,
-                    access_token_expiry: String(user.access_token.expires_at),
-                    csrf_token: user.csrf_token,
+                    access_token: await encryptToken(user.access_token.value),
+                    csrf_token: await encryptToken(user.csrf_token),
                     name: user.profiles?.length && user.profiles[0]?.full_name || user.username || 'N/A',
                 };
             }
@@ -80,7 +80,6 @@ export const authConfig: NextAuthConfig = {
             session.user.email = token.email;
             session.user.csrf_token = token.csrf_token;
             session.user.access_token = token.access_token;
-            session.user.access_token_expiry = token.access_token_expiry;
             session.user.name = token.name;
 
             // console.log('===============Callback session|auth.ts==================');
@@ -93,12 +92,12 @@ export const authConfig: NextAuthConfig = {
     },
     session: {
         strategy: 'jwt',
-        maxAge: 5 * 24 * 60 * 60,
+        maxAge: 7 * 24 * 60 * 60,
     },
     secret: process.env.AUTH_SECRET,
     pages: {
         signIn: '/login',
-        signOut: '/auth/signout',
+        signOut: '/logout',
     },
 };
 

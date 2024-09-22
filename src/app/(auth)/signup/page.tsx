@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import NextLink from 'next/link';
 
-import { SignUpForm } from '@/components/AuthPages/SignUpForm';
+import { SignUpForm } from '@/app/(auth)/utils';
 import { Logo } from '@/components/icons';
 import { description, link, subtitle } from '@/components/primitives';
 
