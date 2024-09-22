@@ -2,7 +2,7 @@ import React from 'react';
 
 import { SessionProvider } from 'next-auth/react';
 
-import { DashboardSideNav, DashboardTopNav } from '@/components/dashboard';
+import { DashboardSideNav, DashboardTopNav } from '@/app/dashboard/utils';
 import { BackgroundGradient } from '@/components/ui/BackgroundGradient';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {

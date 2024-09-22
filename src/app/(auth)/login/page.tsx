@@ -1,8 +1,8 @@
 import { Suspense } from 'react';
 import NextLink from 'next/link';
 
+import { LoginForm } from '@/app/(auth)/utils/loginForm';
 import { Logo } from '@/components/icons';
-import { LoginForm } from '@/components/loginPage/loginForm';
 import { description, link, subtitle } from '@/components/primitives';
 
 export default function LoginPage() {

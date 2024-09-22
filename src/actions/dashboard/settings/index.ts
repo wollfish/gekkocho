@@ -4,13 +4,14 @@ import { isRedirectError } from 'next/dist/client/components/redirect';
 
 import { doLogout } from '@/actions/auth';
 import { auth } from '@/auth';
+import { decryptToken } from '@/lib/encryption';
 import { createServerAction, ServerActionError } from '@/lib/server-utils';
 import { UserInterface } from '@/lib/zod';
 
 export const getProfile = createServerAction<UserInterface>(async () => {
     try {
         const session = await auth();
-        const barongSession = session.user.access_token;
+        const barongSession = await decryptToken(session.user.access_token);
 
         if (!session || !session.user) {
             await doLogout();

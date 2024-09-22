@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react';
 
-import { SettingsTabs } from '@/components/dashboard/SettingsTabs';
+import { SettingsTabs } from '@/app/dashboard/utils';
 import { Breadcrumbs } from '@/components/ui/Breadcrumb';
 
 export default function SettingsLayout({ children }: { children: React.ReactNode }) {

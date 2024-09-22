@@ -14,7 +14,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
 import { doLogin } from '@/actions/auth';
-import { EmailVerificationModal } from '@/components/AuthPages/EmailVerificationModal';
+import { EmailVerificationModal } from '@/app/(auth)/utils/EmailVerificationModal';
 import { link } from '@/components/primitives';
 import { ERROR_CODE_ACCOUNT_VERIFICATION_PENDING, ERROR_CODE_OTP_REQUIRED } from '@/lib/errors';
 import { InputOtp } from '@/lib/otpInput';

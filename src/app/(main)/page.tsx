@@ -273,7 +273,7 @@ export default function Home() {
                             <span>Get Started</span>
                             <Icons.arrowRight className={link().icon()}/>
                         </NextLink>
-                        <NextLink className={link().base({ type: 'outline', size: 'xs' })} href="/public">
+                        <NextLink className={link().base({ type: 'outline', size: 'xs' })} href="/">
                             <Icons.video/>
                             <span>Watch Video</span>
                         </NextLink>
