@@ -7,7 +7,7 @@ import { description, link, subtitle } from '@/components/primitives';
 
 export default function LoginPage() {
     return (
-        <section className="m-6 rounded-lg border border-default shadow-lg md:w-[420px]">
+        <section className="m-4 w-full rounded-lg border border-default shadow-lg sm:w-[420px]">
             <div className="border-b border-dashed border-default p-6">
                 <NextLink className="-ml-1 mb-4 flex items-center gap-1" href="/">
                     <Logo size={32}/>

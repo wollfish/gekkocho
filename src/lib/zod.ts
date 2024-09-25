@@ -109,3 +109,17 @@ export const UserSchema = z.object({
     updated_at: z.coerce.date(),
 });
 export type UserInterface = z.infer<typeof UserSchema>;
+
+export const paymentFormSchema = z.object({
+    order_id: z.string().optional(),
+    order_amount: z.coerce
+        .number({ required_error: 'Order amount is required' })
+        .gt(0, 'Order amount must be greater than 0'),
+    order_currency: z.string({ required_error: 'Order currency is required' })
+        .min(1, 'Order currency is required'),
+    order_currency_type: z.enum(['fiat', 'crypto']),
+    order_description: z.string().optional(),
+    redirect_url: z.string().optional(),
+});
+
+export type PaymentFormInterface = z.infer<typeof paymentFormSchema>;

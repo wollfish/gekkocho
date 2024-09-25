@@ -1,8 +1,7 @@
 import React from 'react';
-import NextLink from 'next/link';
 
-import { Icons } from '@/components/icons';
-import { link, title } from '@/components/primitives';
+import { PaymentFormWrapper } from '@/app/dashboard/payments/utils';
+import { title } from '@/components/primitives';
 
 export default function PaymentsPage() {
     //generate random uuid
@@ -23,10 +22,7 @@ export default function PaymentsPage() {
     return (
         <section className="flex size-full flex-col">
             <h2 className={title({ fullWidth: true })}>Payments</h2>
-            <NextLink className={link().base({ type: 'solid', className: 'm-auto' })} href={randomLink}>
-                <span>Create New Payment</span>
-                <Icons.arrowRight className={link().icon()}/>
-            </NextLink>
+            <PaymentFormWrapper/>
         </section>
     );
 }

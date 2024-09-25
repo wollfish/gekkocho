@@ -11,9 +11,9 @@ import { UserInterface } from '@/lib/zod';
 export const getProfile = createServerAction<UserInterface>(async () => {
     try {
         const session = await auth();
-        const barongSession = await decryptToken(session.user.access_token);
+        const barongSession = await decryptToken(session.user?.access_token);
 
-        if (!session || !session.user) {
+        if (!session?.user || !barongSession) {
             await doLogout();
             throw new ServerActionError('User is not authenticated.');
         }
@@ -27,6 +27,8 @@ export const getProfile = createServerAction<UserInterface>(async () => {
 
         const data = await response.json();
 
+        console.warn('profile - data', data);
+
         if (!response.ok) {
             throw new ServerActionError('Unable to fetch profile.');
         }
@@ -35,8 +37,8 @@ export const getProfile = createServerAction<UserInterface>(async () => {
     } catch (e) {
         if (isRedirectError(e)) throw e;
         if (e instanceof ServerActionError) throw e;
-
-        console.warn('An error occurred in getProfile:', e.message);
+        
+        console.warn('An error occurred in getProfile:', e);
         throw new ServerActionError('Unknown error occurred.');
     }
 });

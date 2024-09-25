@@ -1,16 +1,14 @@
 'use client';
 
-import React, { Suspense, useState } from 'react';
+import React, { Suspense } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@nextui-org/button';
 import { Checkbox } from '@nextui-org/checkbox';
 import { Input } from '@nextui-org/input';
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@nextui-org/modal';
-import { EyeFilledIcon, EyeSlashFilledIcon } from '@nextui-org/shared-icons';
 import NextLink from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Controller, useForm } from 'react-hook-form';
-
 import { toast } from 'sonner';
 
 import { doLogin } from '@/actions/auth';
@@ -18,16 +16,17 @@ import { EmailVerificationModal } from '@/app/(auth)/utils/EmailVerificationModa
 import { link } from '@/components/primitives';
 import { ERROR_CODE_ACCOUNT_VERIFICATION_PENDING, ERROR_CODE_OTP_REQUIRED } from '@/lib/errors';
 import { InputOtp } from '@/lib/otpInput';
+import { InputPassword } from '@/lib/passwordInput';
 import { SignInSchema, signInSchema } from '@/lib/zod';
 import { DEFAULT_LOGIN_REDIRECT } from '@/routes';
 
-export const LoginForm = () => {
-    const [isVisible, setIsVisible] = useState(false);
+export const LoginForm: React.FC = () => {
     const {
         isOpen: isOtpModalOpen,
         onOpen: onOtpModalOpen,
         onClose: onOtpModalClose,
     } = useDisclosure();
+
     const {
         isOpen: isVerificationModalOpen,
         onOpen: onVerificationModalOpen,
@@ -36,8 +35,6 @@ export const LoginForm = () => {
 
     const searchParams = useSearchParams();
     const callbackUrl = searchParams.get('callbackUrl') || DEFAULT_LOGIN_REDIRECT;
-
-    const toggleVisibility = () => setIsVisible(!isVisible);
 
     const { handleSubmit, formState, control, watch, getValues, resetField } = useForm<SignInSchema>({
         resolver: zodResolver(signInSchema),
@@ -69,7 +66,7 @@ export const LoginForm = () => {
     };
 
     return (
-        <>
+        <React.Fragment>
             <form autoComplete="off" className="flex flex-col gap-6" method="POST" onSubmit={handleSubmit(onSubmit)}>
                 <Controller
                     control={control}
@@ -91,23 +88,13 @@ export const LoginForm = () => {
                     control={control}
                     name="password"
                     render={({ field, formState }) => (
-                        <Input
-                            autoComplete="off"
-                            endContent={
-                                <button className="focus:outline-none" type="button" onClick={toggleVisibility}>
-                                    {isVisible ? (
-                                        <EyeSlashFilledIcon className="pointer-events-none text-2xl text-default-400"/>
-                                    ) : (
-                                        <EyeFilledIcon className="pointer-events-none text-2xl text-default-400"/>
-                                    )}
-                                </button>
-                            }
+                        <InputPassword
+                            autoComplete="current-password"
                             errorMessage={formState.errors?.['password']?.message?.toString()}
                             isInvalid={!!formState.errors?.['password']?.message}
                             label="Password"
                             labelPlacement="outside"
                             placeholder=" "
-                            type={isVisible ? 'text' : 'password'}
                             value={field.value}
                             onChange={field.onChange}
                         />
@@ -179,6 +166,6 @@ export const LoginForm = () => {
                 isOpen={isVerificationModalOpen}
                 onClose={onVerificationModalClose}
             />
-        </>
+        </React.Fragment>
     );
 };

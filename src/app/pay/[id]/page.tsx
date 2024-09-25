@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 
 import NextLink from 'next/link';
 
+import { WidgetContainer } from '@/app/pay/utils';
 import { Logo } from '@/components/icons';
-import { PayWidget } from '@/components/paymentPage/payWidget';
 import { ThemeSwitch } from '@/components/theme-switch';
 
 export default function Page({ params }: { params: { id: string } }) {
@@ -13,7 +13,9 @@ export default function Page({ params }: { params: { id: string } }) {
                 <ThemeSwitch/>
             </header>
             <div className="m-auto">
-                <PayWidget qrCode={params.id}/>
+                <Suspense>
+                    <WidgetContainer id={params.id}/>
+                </Suspense>
             </div>
             <footer className="flex justify-center">
                 <NextLink className="flex items-center justify-start gap-1" href="/">

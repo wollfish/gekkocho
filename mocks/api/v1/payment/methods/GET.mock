@@ -1,0 +1,41 @@
+{
+  "status": 200,
+  "headers": {
+    "Access-Control-Allow-Credentials": "true",
+    "Access-Control-Allow-Methods": "GET, POST, DELETE, PUT, PATCH, OPTIONS, HEAD",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Max-Age": "3600",
+    "Content-Type": "application/json; charset=utf-8",
+    "Total": "11"
+  },
+  "data": [
+    {
+      "amount": "20.02",
+      "real_amount": "20.02016864",
+      "exchange_rate": "0.99899258",
+      "discount": 0,
+      "discount_percent": 0,
+      "currency": "USDT",
+      "currency_icon": "https://storage.cryptomus.com/currencies/USDT.svg",
+      "network": "bsc",
+      "token_standard": "BEP-20",
+      "is_popular_choise": true,
+      "min_amount": "0.50000000",
+      "status": true
+    },
+    {
+      "amount": "20.02",
+      "real_amount": "20.02016864",
+      "exchange_rate": "0.99899258",
+      "discount": 0,
+      "discount_percent": 0,
+      "currency": "USDT",
+      "currency_icon": "https://storage.cryptomus.com/currencies/USDT.svg",
+      "network": "eth",
+      "token_standard": "ERC-20",
+      "is_popular_choise": false,
+      "min_amount": "0.50000000",
+      "status": true
+    }
+  ]
+}

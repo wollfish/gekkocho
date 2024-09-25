@@ -5,6 +5,10 @@ let cachedKey: CryptoKey | null = null;
 
 // Function to decode a base64 string to a Uint8Array
 const base64ToUint8Array = (base64: string): Uint8Array => {
+    if (!base64) {
+        throw new Error('AUTH_ENCRYPTION_KEY is not defined');
+    }
+
     const binaryString = atob(base64);
     const len = binaryString.length;
     const bytes = new Uint8Array(len);
@@ -18,9 +22,7 @@ const base64ToUint8Array = (base64: string): Uint8Array => {
 
 // Function to get the AES key
 const getKey = async (): Promise<CryptoKey> => {
-    if (cachedKey) return cachedKey;
-
-    const rawKey = base64ToUint8Array(process.env.AUTH_ENCRYPTION_KEY!); // Non-null assertion
+    const rawKey = base64ToUint8Array(process.env.AUTH_ENCRYPTION_KEY);
 
     if (![16, 24, 32].includes(rawKey.length)) {
         throw new Error('Invalid key length. Key must be 16, 24, or 32 bytes.');
@@ -39,6 +41,10 @@ const getKey = async (): Promise<CryptoKey> => {
 
 // Function to encrypt a token
 export const encryptToken = async (token: string): Promise<string> => {
+    if (!token) {
+        throw new Error('Token is required');
+    }
+
     const key = await getKey();
     const iv = crypto.getRandomValues(new Uint8Array(12));
     const encodedToken = textEncoder.encode(token);
@@ -58,6 +64,10 @@ export const encryptToken = async (token: string): Promise<string> => {
 
 // Function to decrypt an encrypted token
 export const decryptToken = async (encryptedToken: string): Promise<string> => {
+    if (!encryptedToken) {
+        throw new Error('Encrypted token is required');
+    }
+
     const encryptedData = Uint8Array.from(atob(encryptedToken), (c) => c.charCodeAt(0));
     const iv = encryptedData.slice(0, 12);
     const encrypted = encryptedData.slice(12);
