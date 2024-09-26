@@ -33,8 +33,7 @@ export const PaymentForm: React.FC = () => {
         const { error, success, data } = await initializePayment(values) || {};
 
         if (success) {
-            reset();
-            router.push(`/pay/${data.payment_id}?${data.query_string}`);
+            router.push(data.payment_link);
         } else {
             toast.error(error?.message);
         }
@@ -67,7 +66,6 @@ export const PaymentForm: React.FC = () => {
                     render={({ field, formState }) => (
                         <Select
                             className="col-span-2"
-                            disallowEmptySelection={false}
                             errorMessage={formState.errors?.['order_currency']?.message?.toString()}
                             isInvalid={!!formState.errors?.['order_currency']?.message}
                             label="Currency"

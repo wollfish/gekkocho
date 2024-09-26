@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { getPaymentInfo } from '@/actions/pay';
+import { getPaymentInfo, getPaymentMethods } from '@/actions/pay';
+import { DynamicPayWidget } from '@/app/pay/utils/DynamicPayWidget';
 
 interface OwnProps {
     id: string
@@ -8,12 +9,29 @@ interface OwnProps {
 
 export async function WidgetContainer(props: OwnProps) {
     const { id } = props;
-    const { data } = await getPaymentInfo({ payment_id: id });
 
-    // TODO: Work in progress
+    const paymentInfo = await getPaymentInfo({ payment_id: id });
+    let paymentMethods = null;
+
+    //TODO: add error handling and Error Component
+
+    if (!paymentInfo.success) {
+        return <div className="text-center">{paymentInfo.error}</div>;
+    }
+
+    if (!paymentInfo.data?.network) {
+        console.log('payment data', paymentInfo.data);
+
+        paymentMethods = await getPaymentMethods({ payment_id: paymentInfo.data.uuid });
+
+        if (!paymentMethods?.success) {
+            return <div>{paymentMethods?.error}</div>;
+        }
+    }
+
     return (
         <div className="m-auto">
-            {JSON.stringify(data)}
+            <DynamicPayWidget paymentData={paymentInfo.data} paymentMethods={paymentMethods?.data}/>
         </div>
     );
-};
+}

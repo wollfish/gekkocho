@@ -10,7 +10,7 @@ export const PaymentFormWrapper: React.FC = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     return (
-        <section>
+        <section className="grid size-full place-content-center">
             <Button color="primary" onClick={onOpen}>Create New Payment</Button>
             <PaymentFormModal isOpen={isOpen} onClose={onClose}/>
         </section>

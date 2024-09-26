@@ -21,45 +21,39 @@ export const signInSchema = z.object({
     }),
 });
 
-export type SignInSchema = z.infer<typeof signInSchema>;
+export const signUpSchema = z.object({
+    email: z.string({ required_error: 'Email is required' })
+        .min(1, 'Email is required')
+        .email('Invalid email'),
+    password: z.string({ required_error: 'Password is required' })
+        .min(1, 'Password is required')
+        .min(8, 'Password must be more than 8 characters')
+        .max(32, 'Password must be less than 32 characters'),
+    confirm_password: z.string({ required_error: 'Confirm password is required' })
+        .min(1, 'Confirm password is required')
+        .min(8, 'Confirm password must be more than 8 characters')
+        .max(32, 'Confirm password must be less than 32 characters'),
+    terms: z.union([z.boolean(), z.string()]).transform((val) => {
+        if (typeof val === 'string') {
+            return val === 'true';
+        }
 
-export const signUpSchema = z
-    .object({
-        email: z.string({ required_error: 'Email is required' })
-            .min(1, 'Email is required')
-            .email('Invalid email'),
-        password: z.string({ required_error: 'Password is required' })
-            .min(1, 'Password is required')
-            .min(8, 'Password must be more than 8 characters')
-            .max(32, 'Password must be less than 32 characters'),
-        confirm_password: z.string({ required_error: 'Confirm password is required' })
-            .min(1, 'Confirm password is required')
-            .min(8, 'Confirm password must be more than 8 characters')
-            .max(32, 'Confirm password must be less than 32 characters'),
-        terms: z.union([z.boolean(), z.string()]).transform((val) => {
-            if (typeof val === 'string') {
-                return val === 'true';
-            }
-
-            return val;
-        }),
-        referral_code: z.string().optional(),
-    }).refine((data) => data.password === data.confirm_password, {
-        path: ['confirm_password'],
-        message: 'Passwords do not match',
-    }).refine((data) => data.terms === true, {
-        path: ['terms'],
-        message: 'You must accept the terms and conditions',
-    });
-
-export type SignUpSchema = z.infer<typeof signUpSchema>;
+        return val;
+    }),
+    referral_code: z.string().optional(),
+}).refine((data) => data.password === data.confirm_password, {
+    path: ['confirm_password'],
+    message: 'Passwords do not match',
+}).refine((data) => data.terms === true, {
+    path: ['terms'],
+    message: 'You must accept the terms and conditions',
+});
 
 export const LabelSchema = z.object({
     key: z.string(),
     value: z.string(),
     scope: z.string(),
 });
-export type LabelInterface = z.infer<typeof LabelSchema>;
 
 export const PhoneSchema = z.object({
     id: z.number(),
@@ -69,7 +63,7 @@ export const PhoneSchema = z.object({
     created_at: z.coerce.date(),
     updated_at: z.coerce.date(),
 });
-export type Phone = z.infer<typeof PhoneSchema>;
+
 export const ProfileSchema = z.object({
     id: z.number(),
     first_name: z.string(),
@@ -84,7 +78,7 @@ export const ProfileSchema = z.object({
     created_at: z.coerce.date(),
     updated_at: z.coerce.date(),
 });
-export type ProfileInterface = z.infer<typeof ProfileSchema>;
+
 export const UserSchema = z.object({
     email: z.string().email(),
     uid: z.string(),
@@ -108,7 +102,6 @@ export const UserSchema = z.object({
     created_at: z.coerce.date(),
     updated_at: z.coerce.date(),
 });
-export type UserInterface = z.infer<typeof UserSchema>;
 
 export const paymentFormSchema = z.object({
     order_id: z.string().optional(),
@@ -122,4 +115,62 @@ export const paymentFormSchema = z.object({
     redirect_url: z.string().optional(),
 });
 
+export const paymentMethodFormSchema = z.object({
+    uuid: z.string({ required_error: 'Payment method is required' }).min(1, 'Payment method is required'),
+    currency: z.string({ required_error: 'Currency is required' }).min(1, 'Currency is required'),
+    network: z.string({ required_error: 'Network is required' }).min(1, 'Network is required'),
+});
+
+export const paymentResponseSchema = z.object({
+    uuid: z.string(),
+    order_id: z.string(),
+    amount: z.string(),
+    currency: z.string(),
+    currency_type: z.string(),
+    payer_amount: z.string(),
+    payer_amount_fiat: z.string(),
+    payer_currency: z.string(),
+    network: z.string(),
+    payment_amount: z.null(),
+    remains_amount: z.string(),
+    remains_amount_fiat: z.string(),
+    fee_amount: z.string(),
+    desc: z.null(),
+    address: z.string(),
+    from: z.null(),
+    txid: z.null(),
+    payment_status: z.string(),
+    expired_at: z.string(),
+    created_at: z.string(),
+    status: z.string(),
+    return_url: z.null(),
+    confirms: z.number(),
+    need_confirms: z.number(),
+    block: z.number(),
+});
+
+export const paymentMethodSchema = z.object({
+    amount: z.string(),
+    real_amount: z.string(),
+    exchange_rate: z.string(),
+    discount: z.number(),
+    discount_percent: z.number(),
+    currency: z.string(),
+    currency_icon: z.string(),
+    network: z.string(),
+    token_standard: z.string(),
+    is_popular_choise: z.boolean(),
+    min_amount: z.string(),
+    status: z.boolean(),
+});
+
+export type LabelInterface = z.infer<typeof LabelSchema>;
 export type PaymentFormInterface = z.infer<typeof paymentFormSchema>;
+export type PaymentMethodFormInterface = z.infer<typeof paymentMethodFormSchema>;
+export type PaymentResponseInterface = z.infer<typeof paymentResponseSchema>;
+export type PaymentMethodInterface = z.infer<typeof paymentMethodSchema>;
+export type PhoneInterface = z.infer<typeof PhoneSchema>;
+export type ProfileInterface = z.infer<typeof ProfileSchema>;
+export type SignInSchema = z.infer<typeof signInSchema>;
+export type SignUpSchema = z.infer<typeof signUpSchema>;
+export type UserInterface = z.infer<typeof UserSchema>;

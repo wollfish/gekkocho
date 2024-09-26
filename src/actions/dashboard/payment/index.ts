@@ -1,3 +1,5 @@
+'use server';
+
 import { isRedirectError } from 'next/dist/client/components/redirect';
 
 import { PaymentFormInterface, paymentFormSchema } from '@/lib/zod';
@@ -22,18 +24,11 @@ export async function initializePayment(formData: PaymentFormInterface) {
             };
         }
 
-        //generate query string filter out empty values
-        const queryString = Object.keys(parsedFormData.data)
-            .filter((key) => parsedFormData.data[key] !== null && parsedFormData.data[key] !== '')
-            .map((key) => `${key}=${parsedFormData.data[key]}`)
-            .join('&');
-
         const paymentId = generateRandomUUID();
 
         const data = {
             ...parsedFormData.data,
-            payment_id: paymentId,
-            query_string: queryString,
+            payment_link: `/pay/${paymentId}`,
         };
 
         return { success: true, error: null, data };

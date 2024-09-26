@@ -41,6 +41,10 @@ export const QRCodeGenerator: React.FC<OwnProps> = (props) => {
     return (
         <div className="relative mx-auto flex items-center justify-center" style={sizes[size]}>
             {loading && <Spinner className="absolute inset-0" color="default"/>}
+            {!value &&
+                <div className="absolute inset-0 z-10 grid place-content-center text-sm font-bold backdrop-blur-sm">
+                    QR Error
+                </div>}
             {/*@ts-ignore*/}
             <qr-code
                 ref={qrRef}
