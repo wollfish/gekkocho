@@ -15,7 +15,7 @@
     "otp": true,
     "state": "active",
     "referral_uid": null,
-    "data": "{\"language\":\"en\",\"fcmTokens\":[\"edt6AWtFQpOA1UKS-YBIJM:APA91bFauV4_EHnRbNDrRrUtB8jkbjI8ilRnOS7lpt7N0c06k_hJbN4AKIbN3nz60rgkC4pzvpnqBDDanxSpuEC_yymU3AsFpht-x5DHnURwz7WMqCRqJfOLnpVZFzxiNgFRQYSwKOB4\",\"fJlHmilORWGHc3WUj_8-vD:APA91bGbpV6abgyTVcxLWfScTNJXguLZ7ZtRikBoekstfkTysk4P0OCiNezLSTruKvxdHUDG60SYwsS0aX5ONYpc0-CBDR2ip5m13fQkYrg0SgxDLWTpo-BGAInubq11M54q8YlbGidJ\"],\"firebaseInstallationIds\":[\"edt6AWtFQpOA1UKS-YBIJM\",\"fJlHmilORWGHc3WUj_8-vD\"]}",
+    "data": {},
     "username": null,
     "labels": [
       {
