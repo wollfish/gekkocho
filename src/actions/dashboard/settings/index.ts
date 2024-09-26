@@ -8,8 +8,9 @@ import { createServerAction, ServerActionError } from '@/lib/server-utils';
 import { UserInterface } from '@/lib/zod';
 
 export const getProfile = createServerAction<UserInterface>(async () => {
+    const session = await auth();
+
     try {
-        const session = await auth();
 
         //Todo: Remove temporary token
         const barongSession = 'temp_token';
