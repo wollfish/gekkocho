@@ -1,0 +1,142 @@
+{
+  "status": 200,
+  "headers": {
+    "Access-Control-Allow-Credentials": "true",
+    "Access-Control-Allow-Methods": "GET, POST, DELETE, PUT, PATCH, OPTIONS, HEAD",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Max-Age": "3600",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "data": {
+    "email": "pranjalk@wollfish.com",
+    "uid": "IDB896A88092",
+    "role": "superadmin",
+    "level": 6,
+    "otp": true,
+    "state": "active",
+    "referral_uid": null,
+    "data": {},
+    "username": null,
+    "labels": [
+      {
+        "key": "audit_required",
+        "value": "true",
+        "scope": "private"
+      },
+      {
+        "key": "auto_approve.identity",
+        "value": "verified",
+        "scope": "private"
+      },
+      {
+        "key": "auto_approve.tax",
+        "value": "verified",
+        "scope": "private"
+      },
+      {
+        "key": "document.advance",
+        "value": "verified",
+        "scope": "private"
+      },
+      {
+        "key": "document.identity",
+        "value": "verified",
+        "scope": "private"
+      },
+      {
+        "key": "document.tax",
+        "value": "verified",
+        "scope": "private"
+      },
+      {
+        "key": "email",
+        "value": "verified",
+        "scope": "private"
+      },
+      {
+        "key": "otp",
+        "value": "enabled",
+        "scope": "private"
+      },
+      {
+        "key": "phone",
+        "value": "verified",
+        "scope": "private"
+      },
+      {
+        "key": "profile",
+        "value": "verified",
+        "scope": "private"
+      },
+      {
+        "key": "profile.p2p",
+        "value": "verified",
+        "scope": "private"
+      }
+    ],
+    "phones": [
+      {
+        "id": 16,
+        "country": "IN",
+        "number": "91******1411",
+        "validated_at": "2022-04-26T07:22:17Z",
+        "created_at": "2022-04-26T07:22:01Z",
+        "updated_at": "2022-04-26T07:22:17Z"
+      }
+    ],
+    "profiles": [
+      {
+        "id": 10,
+        "first_name": "Pranjal",
+        "last_name": "Kushwaha",
+        "full_name": "Pranjal Kushwaha",
+        "dob": "1998******",
+        "address": "Bhimapar",
+        "postcode": "233307",
+        "city": "Ghazipur",
+        "country": "IND",
+        "state": "verified",
+        "created_at": "2021-08-30T19:54:19Z",
+        "updated_at": "2021-08-30T19:54:19Z"
+      },
+      {
+        "id": 11,
+        "first_name": "Pranjal",
+        "last_name": "Kushawaha",
+        "full_name": "Pranjal Kushawaha",
+        "dob": "1998******",
+        "address": "Bhimapar",
+        "postcode": "233307",
+        "city": "Ghazipur",
+        "country": "IND",
+        "state": "verified",
+        "created_at": "2021-08-30T20:03:17Z",
+        "updated_at": "2021-08-30T20:03:17Z"
+      },
+      {
+        "id": 167,
+        "first_name": "Pranjal",
+        "last_name": "Kushwaha",
+        "full_name": "Pranjal Kushwaha",
+        "dob": "1998******",
+        "address": " Kailash Nath Kushawaha, bhimapar, Bhimapar, Bhimapar, Saidpur, Ghazipur, Uttar Pradesh -233307",
+        "postcode": "233307",
+        "city": "GHAZIPUR",
+        "country": "IND",
+        "state": "verified",
+        "created_at": "2023-04-27T07:42:29Z",
+        "updated_at": "2023-04-27T07:55:15Z"
+      }
+    ],
+    "data_storages": [
+      {
+        "title": "p2p_tds",
+        "data": "{\"tds_status\":\"enable\"}",
+        "created_at": "2023-06-06T05:25:51Z",
+        "updated_at": "2023-06-06T05:25:51Z"
+      }
+    ],
+    "created_at": "2021-08-10T04:38:11Z",
+    "updated_at": "2024-04-14T16:31:27Z"
+  }
+}

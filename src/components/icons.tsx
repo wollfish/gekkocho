@@ -14,6 +14,7 @@ import {
     LuGamepad,
     LuGitMerge,
     LuGlobe,
+    LuHeadphones,
     LuHome,
     LuInfinity,
     LuInfo,
@@ -22,7 +23,9 @@ import {
     LuPlane,
     LuPlay,
     LuQrCode,
+    LuRefreshCw,
     LuScale,
+    LuSend,
     LuSettings,
     LuShoppingCart,
     LuStore,
@@ -272,7 +275,6 @@ export const Svgs = {
     logo: Logo,
 };
 
-
 const cryptoIcons = {
     ada: SiCardano,
     bnb: SiBinance,
@@ -290,7 +292,7 @@ const cryptoIcons = {
     usdt: SiTether,
     xlm: SiStellar,
     xrp: SiRipple,
-}
+};
 
 export const Icons = {
     arrowRight: LuArrowRight,
@@ -310,15 +312,18 @@ export const Icons = {
     gamepad: LuGamepad,
     gitMerge: LuGitMerge,
     globe: LuGlobe,
+    headphone: LuHeadphones,
     home: LuHome,
     infinity: LuInfinity,
     info: LuInfo,
     law: LuScale,
+    send: LuSend,
     plane: LuPlane,
     qrCode: LuQrCode,
     settings: LuSettings,
     shop: LuStore,
     undo: LuUndo2,
+    refresh: LuRefreshCw,
     userCog: LuUserCircle,
     video: LuPlay,
     zap: LuZap,

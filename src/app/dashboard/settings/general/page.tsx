@@ -5,7 +5,7 @@ import { getProfile } from '@/actions/dashboard/settings';
 import { description, subtitle } from '@/components/primitives';
 
 export default async function GeneralPage() {
-    const user = await getProfile();
+    const user = await getProfile() as any;
 
     if (user.success === false) {
         return (
@@ -22,7 +22,7 @@ export default async function GeneralPage() {
         { label: 'User Id', value: user.value.uid },
         { label: 'User Name', value: user.value.username || 'N/A' },
         { label: 'Email', value: user.value.email },
-        { label: 'Full Name', value: user.value.profiles[0]?.full_name || 'N/A' },
+        { label: 'Full Name', value: user.value.profiles?.[0]?.full_name || 'N/A' },
     ];
 
     return (

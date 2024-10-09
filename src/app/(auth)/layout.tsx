@@ -17,7 +17,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
                     </NextLink>
                     <ThemeSwitch/>
                 </div>
-                <main className="z-10 flex size-full p-4">
+                <main className="z-10 flex size-full">
                     {children}
                 </main>
                 <BackgroundGradient/>

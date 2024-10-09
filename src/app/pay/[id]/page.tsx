@@ -1,26 +1,26 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 
-import NextLink from 'next/link';
+import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
 
-import { Logo } from '@/components/icons';
-import { PayWidget } from '@/components/paymentPage/payWidget';
-import { ThemeSwitch } from '@/components/theme-switch';
+import { getPaymentInfo } from '@/actions/pay';
+import Loading from '@/app/pay/[id]/loading';
+import { DynamicPayWidget } from '@/app/pay/utils';
 
-export default function Page({ params }: { params: { id: string } }) {
+export default async function Page({ params }: { params: { id: string } }) {
+    const queryClient = new QueryClient();
+
+    await queryClient.prefetchQuery({
+        queryKey: ['payment_info', params.id],
+        queryFn: () => getPaymentInfo({ payment_id: params.id }),
+    });
+
     return (
-        <section className="flex size-full flex-col">
-            <header className="flex justify-end">
-                <ThemeSwitch/>
-            </header>
+        <Suspense fallback={<Loading/>}>
             <div className="m-auto">
-                <PayWidget qrCode={params.id}/>
+                <HydrationBoundary state={dehydrate(queryClient)}>
+                    <DynamicPayWidget id={params.id}/>
+                </HydrationBoundary>
             </div>
-            <footer className="flex justify-center">
-                <NextLink className="flex items-center justify-start gap-1" href="/">
-                    <Logo/>
-                    <span className="font-bold text-inherit">Powered by CoinDhan Pay</span>
-                </NextLink>
-            </footer>
-        </section>
+        </Suspense>
     );
 }

@@ -8,6 +8,7 @@ module.exports = {
         'plugin:react/recommended',
         'plugin:jsx-a11y/recommended',
         'plugin:tailwindcss/recommended',
+        'plugin:@tanstack/query/recommended',
         'next/core-web-vitals',
     ],
     parser: '@typescript-eslint/parser',

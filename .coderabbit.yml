@@ -1,5 +1,5 @@
 early_access: false
 reviews:
-  path_filters: [ "!src/lib/otpInput/**" ]
+  path_filters: [ "!src/lib/otpInput/**", "!mocks/**" ]
   auto_review:
     base_branches: ['alpha']
