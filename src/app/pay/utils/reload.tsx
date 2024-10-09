@@ -1,4 +1,5 @@
 'use client';
+
 import React from 'react';
 import { Button } from '@nextui-org/button';
 
@@ -10,7 +11,7 @@ export const ReloadBtn: React.FC = () => {
     const router = useRouter();
 
     return (
-        <Button isIconOnly={true} size="sm" onClick={router.refresh}>
+        <Button isIconOnly={true} radius="full" size="sm" onClick={router.refresh}>
             <Icons.refresh/>
         </Button>
     );

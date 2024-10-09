@@ -6,7 +6,7 @@ let cachedKey: CryptoKey | null = null;
 // Function to decode a base64 string to a Uint8Array
 const base64ToUint8Array = (base64: string): Uint8Array => {
     if (!base64) {
-        throw new Error('AUTH_ENCRYPTION_KEY is not defined');
+        throw new Error('Base64 string is required');
     }
 
     const binaryString = atob(base64);
@@ -25,7 +25,7 @@ const getKey = async (): Promise<CryptoKey> => {
     const rawKey = base64ToUint8Array(process.env.AUTH_ENCRYPTION_KEY);
 
     if (![16, 24, 32].includes(rawKey.length)) {
-        throw new Error('Invalid key length. Key must be 16, 24, or 32 bytes.');
+        throw new Error('Invalid AUTH key length. Key must be 16, 24, or 32 bytes.');
     }
 
     cachedKey = await crypto.subtle.importKey(

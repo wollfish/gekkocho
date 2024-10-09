@@ -27,6 +27,8 @@ export const getPaymentInfo = async (payload: { payment_id: string }): Promise<{
             return { success: false, error: res?.error || 'UUID not found', data: null };
         }
 
+        revalidatePath('/pay/[id]', 'page');
+
         return { success: true, error: null, data: res };
     } catch (e) {
         console.error('getPaymentInfo - error', e);

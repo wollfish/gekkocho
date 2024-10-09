@@ -11,7 +11,7 @@ export const PaymentFormWrapper: React.FC = () => {
 
     return (
         <section className="grid size-full place-content-center">
-            <Button color="primary" onClick={onOpen}>Create New Payment</Button>
+            <Button aria-label="Create New Payment" color="primary" onClick={onOpen}>Create New Payment</Button>
             <PaymentFormModal isOpen={isOpen} onClose={onClose}/>
         </section>
     );

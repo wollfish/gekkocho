@@ -5,8 +5,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
 
 interface OwnProps {
-    startTime?: string;
-    endTime: string;
+    startTime?: string | Date;
+    endTime: string | Date;
 }
 
 export const CountdownTimer: React.FC<OwnProps> = (props) => {
@@ -50,9 +50,9 @@ export const CountdownTimer: React.FC<OwnProps> = (props) => {
 
     return (
         <div className={cn('flex items-center', { 'text-danger': remainingTime <= 100000 })}>
-            <span>{hours}:</span>
-            <span>{minutes}:</span>
-            <span>{seconds}</span>
+            <span>{hours ?? '_'}:</span>
+            <span>{minutes ?? '_'}:</span>
+            <span>{seconds ?? '_'}</span>
         </div>
     );
 };

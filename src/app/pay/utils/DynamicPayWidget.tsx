@@ -1,40 +1,54 @@
+'use client';
+
 import React from 'react';
 import { Divider } from '@nextui-org/divider';
-
 import { Snippet } from '@nextui-org/snippet';
+import { useQuery } from '@tanstack/react-query';
 
+import { getPaymentInfo, getPaymentMethods } from '@/actions/pay';
 import { PaymentMethodForm } from '@/app/pay/utils/PaymentMethodForm';
 import { ReloadBtn } from '@/app/pay/utils/reload';
 import { Icons, Logo } from '@/components/icons';
 import { QRCodeGenerator } from '@/components/qrCodeGenerator';
 import { CountdownTimer } from '@/components/ui/CountdownTimer';
-import { PaymentMethodInterface, PaymentResponseInterface } from '@/lib/zod';
 
-interface OwnProps {
-    paymentData: PaymentResponseInterface;
-    paymentMethods: PaymentMethodInterface[];
-}
+const WRAPPER_CLASS = 'w-full rounded-lg border border-dashed bg-white shadow-lg contain-content dark:border-default dark:bg-default-50 md:w-[380px]';
+const NETWORK_CLASS = 'mx-auto mb-2 flex w-fit items-center gap-2 rounded border border-dashed px-2 py-1 text-sm dark:border-default';
 
-const networkClass = 'mx-auto mb-2 flex w-fit items-center gap-2 rounded border border-dashed px-2 py-1 text-sm dark:border-default';
-const wrapperClass = 'w-full rounded-lg border border-dashed bg-white shadow-lg contain-content dark:border-default dark:bg-default-50 md:w-[380px]';
+export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
+    const { data: payment, isLoading } = useQuery({
+        queryKey: ['payment_info', props.id],
+        queryFn: () => getPaymentInfo({ payment_id: props.id }),
+    });
 
-export const DynamicPayWidget: React.FC<OwnProps> = async (props) => {
+    const { data: paymentMethods, isLoading: paymentMethodsLoading } = useQuery({
+        queryKey: ['payment_methods', props.id],
+        queryFn: () => getPaymentMethods({ payment_id: props.id }),
+        enabled: payment.success && !payment?.data?.network,
+    });
+
+    if (isLoading || paymentMethodsLoading) {
+        return (
+            <section className={WRAPPER_CLASS}>
+                <p className="text-center">Loading...</p>
+            </section>
+        );
+    }
+
     const {
         order_id,
-        network,
-        payer_amount,
-        address,
-        payer_currency,
         amount,
         currency,
-        currency_type,
+        network,
+        address,
+        payer_amount,
+        payer_currency,
         expired_at,
         uuid,
-        status,
-    } = props.paymentData;
+    } = payment?.data || {};
 
     return (
-        <section className={wrapperClass}>
+        <section className={WRAPPER_CLASS}>
             <div className="bg-default-100 p-4" slot="header">
                 <div className="flex items-center justify-between">
                     <div className="-ml-1 flex items-center gap-1">
@@ -43,21 +57,22 @@ export const DynamicPayWidget: React.FC<OwnProps> = async (props) => {
                     </div>
                     <div>Order Id: <span className="text-sm font-semibold">#{order_id}</span></div>
                 </div>
-                <div className="font-semibold capitalize">
-                    {`Amount: ${amount} ${currency.toUpperCase()}`}
+                <div className="capitalize">
+                    <span>Amount: </span>
+                    <span className="font-semibold uppercase">{amount} {currency}</span>
                 </div>
                 <div className="absolute right-4"><ReloadBtn/></div>
             </div>
             <div className="p-4" slot="body">
-                {!network && props.paymentMethods
-                    ? <PaymentMethodForm methods={props.paymentMethods} uuid={uuid}/>
+                {!network && !paymentMethodsLoading
+                    ? <PaymentMethodForm methods={paymentMethods?.data || []} uuid={uuid}/>
                     : <div>
-                        <div className={networkClass}>
+                        <div className={NETWORK_CLASS}>
                             <span>Network :</span>
                             <span className="flex items-center justify-center font-semibold">
                                 <Icons.eth/>
-                                <span className="ml-1 mr-2">{network}</span>
-                                <Icons.info className="text-primary"/>
+                                <span className="ml-1 mr-2 uppercase">{network}</span>
+                                <Icons.info aria-label="More information about Network" className="text-primary"/>
                             </span>
                         </div>
                         <QRCodeGenerator value={address}/>

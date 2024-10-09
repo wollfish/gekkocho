@@ -140,7 +140,7 @@ export const PaymentForm: React.FC = () => {
                         className="col-span-2"
                         errorMessage={formState.errors?.['redirect_url']?.message?.toString()}
                         isInvalid={!!formState.errors?.['redirect_url']?.message}
-                        label="Reditect URL (Optional)"
+                        label="Redirect URL (Optional)"
                         labelPlacement="outside"
                         placeholder=" "
                         value={field.value}

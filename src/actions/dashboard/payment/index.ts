@@ -15,19 +15,22 @@ function generateRandomUUID(): string {
 
 export async function initializePayment(formData: PaymentFormInterface) {
     try {
-        const parsedFormData = paymentFormSchema.safeParse(formData);
+        const validatedFormData = paymentFormSchema.safeParse(formData);
 
-        if (!parsedFormData.success) {
+        if (!validatedFormData.success) {
             return {
                 success: false,
-                error: { message: parsedFormData.error.message, details: JSON.stringify(parsedFormData.error.errors) },
+                error: {
+                    message: validatedFormData.error.message,
+                    details: JSON.stringify(validatedFormData.error.errors),
+                },
             };
         }
 
         const paymentId = generateRandomUUID();
 
         const data = {
-            ...parsedFormData.data,
+            ...validatedFormData.data,
             payment_link: `/pay/${paymentId}`,
         };
 
