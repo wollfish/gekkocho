@@ -8,7 +8,7 @@ export const BackgroundGradient = () => {
         <React.Fragment>
             <div
                 aria-hidden="true"
-                className="fixed bottom-0  left-0 z-0 hidden dark:opacity-70 dark:md:block"
+                className="fixed bottom-0 left-0 z-0 hidden select-none dark:opacity-70 dark:md:block"
             >
                 <Image
                     alt="docs left background"
@@ -22,7 +22,7 @@ export const BackgroundGradient = () => {
             </div>
             <div
                 aria-hidden="true"
-                className="fixed right-[-60%] top-[-80%] z-0 hidden rotate-12 dark:opacity-70 dark:md:block 2xl:right-[-45%] 2xl:top-[-60%]"
+                className="fixed right-[-60%] top-[-80%] z-0 hidden rotate-12 select-none dark:opacity-70 dark:md:block 2xl:right-[-45%] 2xl:top-[-60%]"
             >
                 <img
                     alt="docs right background"

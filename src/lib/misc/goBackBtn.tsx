@@ -1,9 +1,11 @@
 'use client';
 
-import React from "react";
-import { Icons } from "@/components/icons";
-import { Button } from "@nextui-org/button";
-import { useRouter } from "next/navigation";
+import React from 'react';
+
+import { Button } from '@nextui-org/button';
+import { useRouter } from 'next/navigation';
+
+import { Icons } from '@/components/icons';
 
 export const GoBackBtn: React.FC = () => {
     const router = useRouter();
@@ -20,5 +22,5 @@ export const GoBackBtn: React.FC = () => {
             <span>Go Back</span>
             <Icons.undo/>
         </Button>
-    )
-}
+    );
+};

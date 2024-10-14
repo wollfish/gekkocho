@@ -42,13 +42,14 @@ export const title = tv({
 });
 
 export const subtitle = tv({
-    base: 'text-sm font-semibold text-default-900',
+    base: 'relative text-sm font-semibold text-default-900',
     variants: {
         size: {
             xs: 'text-sm',
             sm: 'text-sm lg:text-base',
             md: 'text-base lg:text-lg',
             lg: 'text-lg lg:text-xl',
+            xl: 'text-xl lg:text-2xl',
             base: 'text-base',
         },
     },
