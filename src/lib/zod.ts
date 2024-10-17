@@ -164,11 +164,79 @@ export const paymentMethodSchema = z.object({
     status: z.string(),
 });
 
+export const walletResponseInterface = z.object({
+    currency: z.string(),
+    balance: z.string(),
+    locked: z.string(),
+    escrow: z.string(),
+});
+
+export const beneficiaryFormSchema = z.object({
+    nickname: z.string({ required_error: 'Nickname is required' })
+        .min(1, 'Nickname is required')
+        .max(30, 'Nickname must be less than 30 characters'),
+    currency: z.string({ required_error: 'Currency is required' })
+        .min(1, 'Currency is required'),
+    address: z.string({ required_error: 'Address is required' })
+        .min(1, 'Address is required'),
+    network: z.string({ required_error: 'Network is required' })
+        .min(1, 'Network is required'),
+    description: z.string().optional(),
+});
+
+export const beneficiarySchema = z.object({
+    id: z.string(),
+    nickname: z.string(),
+    currency: z.string(),
+    address: z.string(),
+    network: z.string(),
+    description: z.string(),
+});
+
+export const withdrawalFormSchema = z.object({
+    currency: z.string({ required_error: 'Currency is required' })
+        .min(1, 'Currency is required'),
+    address: z.string({ required_error: 'Address is required' })
+        .min(1, 'Address is required'),
+    amount: z.coerce
+        .number({ required_error: 'Amount is required' })
+        .gt(0, 'Amount must be greater than 0'),
+    network: z.string({ required_error: 'Network is required' })
+        .min(1, 'Network is required'),
+    remarks: z.string().optional(),
+});
+
+export const withdrawalSchema = z.object({
+    id: z.number(),
+    currency: z.string(),
+    blockchain_key: z.string(),
+    explorer_address: z.string(),
+    explorer_transaction: z.string(),
+    protocol: z.string(),
+    amount: z.string(),
+    fee: z.string(),
+    note: z.string(),
+    rid: z.string(),
+    confirmations: z.number(),
+    state: z.string(),
+    type: z.string(),
+    tid: z.string(),
+    txid: z.string().nullable(),
+    completed_at: z.coerce.date().nullable(),
+    created_at: z.coerce.date(),
+    updated_at: z.coerce.date().nullable(),
+});
+
 export type LabelInterface = z.infer<typeof LabelSchema>;
 export type PaymentFormInterface = z.infer<typeof paymentFormSchema>;
 export type PaymentMethodFormInterface = z.infer<typeof paymentMethodFormSchema>;
+export type BeneficiaryFormInterface = z.infer<typeof beneficiaryFormSchema>;
+export type BeneficiaryInterface = z.infer<typeof beneficiarySchema>;
+export type WithdrawalInterface = z.infer<typeof withdrawalSchema>;
+export type WithdrawalFormInterface = z.infer<typeof withdrawalFormSchema>;
 export type PaymentResponseInterface = z.infer<typeof paymentResponseSchema>;
 export type PaymentMethodInterface = z.infer<typeof paymentMethodSchema>;
+export type WalletResponseInterface = z.infer<typeof walletResponseInterface>;
 export type PhoneInterface = z.infer<typeof PhoneSchema>;
 export type ProfileInterface = z.infer<typeof ProfileSchema>;
 export type SignInSchema = z.infer<typeof signInSchema>;

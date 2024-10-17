@@ -1,0 +1,442 @@
+{
+  "status": 200,
+  "headers": {
+    "Access-Control-Allow-Credentials": "true",
+    "Access-Control-Allow-Methods": "GET, POST, DELETE, PUT, PATCH, OPTIONS, HEAD",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Max-Age": "3600",
+    "Content-Type": "application/json; charset=utf-8",
+    "Total": "10"
+  },
+  "data": [
+    {
+      "currency": "ada",
+      "balance": "0.0",
+      "locked": "0.0",
+      "escrow": "0.0",
+      "wallet_type": "spot",
+      "deposit_address": null,
+      "deposit_addresses": []
+    },
+    {
+      "currency": "algo",
+      "balance": "0.0",
+      "locked": "0.0",
+      "escrow": "0.0",
+      "wallet_type": "spot",
+      "deposit_address": null,
+      "deposit_addresses": []
+    },
+    {
+      "currency": "atom",
+      "balance": "0.0",
+      "locked": "0.0",
+      "escrow": "0.0",
+      "wallet_type": "spot",
+      "deposit_address": null,
+      "deposit_addresses": []
+    },
+    {
+      "currency": "avax",
+      "balance": "0.0",
+      "locked": "0.0",
+      "escrow": "0.0",
+      "wallet_type": "spot",
+      "deposit_address": null,
+      "deposit_addresses": []
+    },
+    {
+      "currency": "bch",
+      "balance": "0.0",
+      "locked": "0.0",
+      "escrow": "0.0",
+      "wallet_type": "spot",
+      "deposit_address": null,
+      "deposit_addresses": []
+    },
+    {
+      "currency": "bnb",
+      "balance": "0.0",
+      "locked": "0.0",
+      "escrow": "0.0",
+      "wallet_type": "spot",
+      "deposit_address": null,
+      "deposit_addresses": []
+    },
+    {
+      "currency": "btc",
+      "balance": "0.0",
+      "locked": "0.0",
+      "escrow": "0.0",
+      "wallet_type": "spot",
+      "deposit_address": {
+        "currencies": [
+          "btc"
+        ],
+        "blockchain_key": "btc-mainnet-electrum",
+        "explorer_address": "https://www.blockchain.com/btc/address/#{address}",
+        "protocol": "BTC",
+        "address": "1Bcy89XNnrhKaKtanJ8M8mmas8PdvTZSxb",
+        "state": "active"
+      },
+      "deposit_addresses": [
+        {
+          "currencies": [
+            "btc"
+          ],
+          "blockchain_key": "btc-mainnet-electrum",
+          "explorer_address": "https://www.blockchain.com/btc/address/#{address}",
+          "protocol": "BTC",
+          "address": "1Bcy89XNnrhKaKtanJ8M8mmas8PdvTZSxb",
+          "state": "active"
+        }
+      ]
+    },
+    {
+      "currency": "busd",
+      "balance": "0.0",
+      "locked": "0.0",
+      "escrow": "0.0",
+      "wallet_type": "spot",
+      "deposit_address": null,
+      "deposit_addresses": []
+    },
+    {
+      "currency": "doge",
+      "balance": "0.0",
+      "locked": "0.0",
+      "escrow": "0.0",
+      "wallet_type": "spot",
+      "deposit_address": null,
+      "deposit_addresses": []
+    },
+    {
+      "currency": "dot",
+      "balance": "0.0",
+      "locked": "0.0",
+      "escrow": "0.0",
+      "wallet_type": "spot",
+      "deposit_address": null,
+      "deposit_addresses": []
+    },
+    {
+      "currency": "eth",
+      "balance": "0.0",
+      "locked": "0.0",
+      "escrow": "0.0",
+      "wallet_type": "spot",
+      "deposit_address": {
+        "currencies": [
+          "eth",
+          "usdt",
+          "shib"
+        ],
+        "blockchain_key": "eth-infura-mainnet",
+        "explorer_address": "https://etherscan.io/address/#{address}",
+        "protocol": "ERC20",
+        "address": "0xd9101a1c298349c09f812bfe0c7c185710f36f3a",
+        "state": "active"
+      },
+      "deposit_addresses": [
+        {
+          "currencies": [
+            "eth",
+            "usdt",
+            "shib"
+          ],
+          "blockchain_key": "eth-infura-mainnet",
+          "explorer_address": "https://etherscan.io/address/#{address}",
+          "protocol": "ERC20",
+          "address": "0xd9101a1c298349c09f812bfe0c7c185710f36f3a",
+          "state": "active"
+        }
+      ]
+    },
+    {
+      "currency": "ftm",
+      "balance": "0.0",
+      "locked": "0.0",
+      "escrow": "0.0",
+      "wallet_type": "spot",
+      "deposit_address": null,
+      "deposit_addresses": []
+    },
+    {
+      "currency": "ftt",
+      "balance": "0.0",
+      "locked": "0.0",
+      "escrow": "0.0",
+      "wallet_type": "spot",
+      "deposit_address": null,
+      "deposit_addresses": []
+    },
+    {
+      "currency": "gala",
+      "balance": "0.0",
+      "locked": "0.0",
+      "escrow": "0.0",
+      "wallet_type": "spot",
+      "deposit_address": null,
+      "deposit_addresses": []
+    },
+    {
+      "currency": "gari",
+      "balance": "0.0",
+      "locked": "0.0",
+      "escrow": "0.0",
+      "wallet_type": "spot",
+      "deposit_address": null,
+      "deposit_addresses": []
+    },
+    {
+      "currency": "inr",
+      "balance": "11767.6855935",
+      "locked": "0.0",
+      "escrow": "0.0",
+      "wallet_type": "spot"
+    },
+    {
+      "currency": "link",
+      "balance": "0.0",
+      "locked": "0.0",
+      "escrow": "0.0",
+      "wallet_type": "spot",
+      "deposit_address": null,
+      "deposit_addresses": []
+    },
+    {
+      "currency": "ltc",
+      "balance": "0.086",
+      "locked": "0.0",
+      "escrow": "0.0",
+      "wallet_type": "spot",
+      "deposit_address": {
+        "currencies": [
+          "ltc"
+        ],
+        "blockchain_key": "ltc-mainnnet-electrum",
+        "explorer_address": "https://blockchair.com/litecoin/address/#{address}",
+        "protocol": "LTC",
+        "address": "LNBKi53YqEr1cQfd7eD8SMTREzavZGsdrh",
+        "state": "active"
+      },
+      "deposit_addresses": [
+        {
+          "currencies": [
+            "ltc"
+          ],
+          "blockchain_key": "ltc-mainnnet-electrum",
+          "explorer_address": "https://blockchair.com/litecoin/address/#{address}",
+          "protocol": "LTC",
+          "address": "LNBKi53YqEr1cQfd7eD8SMTREzavZGsdrh",
+          "state": "active"
+        }
+      ]
+    },
+    {
+      "currency": "luna",
+      "balance": "0.5",
+      "locked": "0.0",
+      "escrow": "0.0",
+      "wallet_type": "spot",
+      "deposit_address": null,
+      "deposit_addresses": []
+    },
+    {
+      "currency": "mana",
+      "balance": "0.0",
+      "locked": "0.0",
+      "escrow": "0.0",
+      "wallet_type": "spot",
+      "deposit_address": null,
+      "deposit_addresses": []
+    },
+    {
+      "currency": "matic",
+      "balance": "0.0",
+      "locked": "0.0",
+      "escrow": "0.0",
+      "wallet_type": "spot",
+      "deposit_address": null,
+      "deposit_addresses": []
+    },
+    {
+      "currency": "near",
+      "balance": "0.0",
+      "locked": "0.0",
+      "escrow": "0.0",
+      "wallet_type": "spot",
+      "deposit_address": null,
+      "deposit_addresses": []
+    },
+    {
+      "currency": "sand",
+      "balance": "0.0",
+      "locked": "0.0",
+      "escrow": "0.0",
+      "wallet_type": "spot",
+      "deposit_address": null,
+      "deposit_addresses": []
+    },
+    {
+      "currency": "shib",
+      "balance": "0.0",
+      "locked": "0.0",
+      "escrow": "0.0",
+      "wallet_type": "spot",
+      "deposit_address": {
+        "currencies": [
+          "eth",
+          "usdt",
+          "shib"
+        ],
+        "blockchain_key": "eth-infura-mainnet",
+        "explorer_address": "https://etherscan.io/address/#{address}",
+        "protocol": "ERC20",
+        "address": "0xd9101a1c298349c09f812bfe0c7c185710f36f3a",
+        "state": "active"
+      },
+      "deposit_addresses": [
+        {
+          "currencies": [
+            "eth",
+            "usdt",
+            "shib"
+          ],
+          "blockchain_key": "eth-infura-mainnet",
+          "explorer_address": "https://etherscan.io/address/#{address}",
+          "protocol": "ERC20",
+          "address": "0xd9101a1c298349c09f812bfe0c7c185710f36f3a",
+          "state": "active"
+        }
+      ]
+    },
+    {
+      "currency": "sol",
+      "balance": "0.0",
+      "locked": "0.0",
+      "escrow": "0.0",
+      "wallet_type": "spot",
+      "deposit_address": null,
+      "deposit_addresses": []
+    },
+    {
+      "currency": "sushi",
+      "balance": "0.0",
+      "locked": "0.0",
+      "escrow": "0.0",
+      "wallet_type": "spot",
+      "deposit_address": null,
+      "deposit_addresses": []
+    },
+    {
+      "currency": "trx",
+      "balance": "0.0",
+      "locked": "0.0",
+      "escrow": "0.0",
+      "wallet_type": "spot",
+      "deposit_address": {
+        "currencies": [
+          "trx",
+          "usdt"
+        ],
+        "blockchain_key": "tron-mainnet",
+        "explorer_address": "https://tronscan.org/#/address/#{address}",
+        "protocol": "TRC20",
+        "address": "TH4EZherWHRpe34YZUDdSu1khkCxNmqxvw",
+        "state": "active"
+      },
+      "deposit_addresses": [
+        {
+          "currencies": [
+            "trx",
+            "usdt"
+          ],
+          "blockchain_key": "tron-mainnet",
+          "explorer_address": "https://tronscan.org/#/address/#{address}",
+          "protocol": "TRC20",
+          "address": "TH4EZherWHRpe34YZUDdSu1khkCxNmqxvw",
+          "state": "active"
+        }
+      ]
+    },
+    {
+      "currency": "uni",
+      "balance": "0.0",
+      "locked": "0.0",
+      "escrow": "0.0",
+      "wallet_type": "spot",
+      "deposit_address": null,
+      "deposit_addresses": []
+    },
+    {
+      "currency": "usd",
+      "balance": "0.0",
+      "locked": "0.0",
+      "escrow": "0.0",
+      "wallet_type": "spot"
+    },
+    {
+      "currency": "usdt",
+      "balance": "2700008.742158",
+      "locked": "0.0",
+      "escrow": "0.0",
+      "wallet_type": "spot",
+      "deposit_address": {
+        "currencies": [
+          "eth",
+          "usdt",
+          "shib"
+        ],
+        "blockchain_key": "eth-infura-mainnet",
+        "explorer_address": "https://etherscan.io/address/#{address}",
+        "protocol": "ERC20",
+        "address": "0xd9101a1c298349c09f812bfe0c7c185710f36f3a",
+        "state": "active"
+      },
+      "deposit_addresses": [
+        {
+          "currencies": [
+            "eth",
+            "usdt",
+            "shib"
+          ],
+          "blockchain_key": "eth-infura-mainnet",
+          "explorer_address": "https://etherscan.io/address/#{address}",
+          "protocol": "ERC20",
+          "address": "0xd9101a1c298349c09f812bfe0c7c185710f36f3a",
+          "state": "active"
+        },
+        {
+          "currencies": [
+            "trx",
+            "usdt"
+          ],
+          "blockchain_key": "tron-mainnet",
+          "explorer_address": "https://tronscan.org/#/address/#{address}",
+          "protocol": "TRC20",
+          "address": "TH4EZherWHRpe34YZUDdSu1khkCxNmqxvw",
+          "state": "active"
+        }
+      ]
+    },
+    {
+      "currency": "xlm",
+      "balance": "0.0",
+      "locked": "0.0",
+      "escrow": "0.0",
+      "wallet_type": "spot",
+      "deposit_address": null,
+      "deposit_addresses": []
+    },
+    {
+      "currency": "xrp",
+      "balance": "0.0",
+      "locked": "0.0",
+      "escrow": "0.0",
+      "wallet_type": "spot",
+      "deposit_address": null,
+      "deposit_addresses": []
+    }
+  ]
+}

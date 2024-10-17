@@ -5,7 +5,8 @@
     "Access-Control-Allow-Methods": "GET, POST, DELETE, PUT, PATCH, OPTIONS, HEAD",
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Max-Age": "3600",
-    "Content-Type": "application/json; charset=utf-8"
+    "Content-Type": "application/json; charset=utf-8",
+    "Total": "11"
   },
   "data": {
     "uuid": "fa7e6ee1-d753-4dbb-b681-d47461096cd3",
@@ -13,24 +14,24 @@
     "amount": "20",
     "currency": "USD",
     "currency_type": "fiat",
-    "payer_amount": "21.0",
+    "payer_amount": null,
     "payer_amount_fiat": "20",
-    "payer_currency": "USDT",
-    "network": "bsc",
+    "payer_currency": null,
+    "network": null,
     "payment_amount": null,
     "remains_amount": null,
     "remains_amount_fiat": null,
     "fee_amount": null,
     "desc": null,
-    "address": "Address <u.u>",
+    "address": null,
     "from": null,
     "txid": null,
-    "expired_at": "2024-10-16T22:35:20+03:00",
-    "created_at": "2024-09-29T22:35:20+03:00",
-    "status": "pending",
+    "expired_at": "2024-08-01T23:35:20+03:00",
+    "created_at": "2024-08-01T22:35:20+03:00",
+    "status": "check",
     "return_url": null,
     "confirms": 0,
-    "need_confirms": 2,
+    "need_confirms": 1,
     "block": 0
   }
 }

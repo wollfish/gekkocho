@@ -12,11 +12,8 @@ import { Selection, Table, TableBody, TableCell, TableColumn, TableHeader, Table
 
 import { SlotsToClasses, TableSlots } from '@nextui-org/theme';
 
-import NextLink from 'next/link';
-
-import { PaymentFormModal } from '@/app/dashboard/payments/utils/PaymentFormModal';
+import { BeneficiaryFormModal } from '@/app/dashboard/wallet/utils/BeneficiaryFormModal';
 import { Icons, SearchIcon } from '@/components/icons';
-import { link, subtitle } from '@/components/primitives';
 import { cryptoIcons } from '@/constant';
 import { capitalize, cn } from '@/lib/utils';
 import { PaymentResponseInterface } from '@/lib/zod';
@@ -38,21 +35,18 @@ const statusOptions = [
 
 const columns = [
     { key: 'order_id', label: 'ID' },
-    { key: 'amount', label: 'Amount' },
-    { key: 'currency', label: 'Currency' },
-    { key: 'payer_amount', label: 'Payer Amount' },
-    { key: 'payer_currency', label: 'Payer Currency' },
+    { key: 'payer_currency', label: 'Currency' },
     { key: 'network', label: 'Network', options: { capitalize: true } },
-    { key: 'confirms', label: 'Confirmations' },
+    { key: 'address', label: 'Address' },
     { key: 'status', label: 'Status' },
     { key: 'created_at', label: 'Created At' },
     { key: 'actions', label: 'Actions' },
 ];
 
 const pages = 10;
-const INITIAL_VISIBLE_COLUMNS = ['order_id', 'amount', 'currency', 'payer_amount', 'payer_currency', 'network', 'confirms', 'status', 'created_at', 'actions'];
+const INITIAL_VISIBLE_COLUMNS = ['order_id', 'payer_currency', 'network', 'address',  'status', 'created_at', 'actions'];
 
-export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (props) => {
+export const BeneficiaryList: React.FC<{ data: PaymentResponseInterface[] }> = (props) => {
     const { data } = props;
 
     const {
@@ -62,15 +56,14 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
     } = useDisclosure();
 
     const {
-        isOpen: isPaymentFormModalOpen,
-        onOpen: onPaymentFormModalOpen,
-        onClose: onPaymentFormModalClose,
+        isOpen: isFormModalOpen,
+        onOpen: onFormModalOpen,
+        onClose: onFormModalClose,
     } = useDisclosure();
 
     const [page, setPage] = useState(1);
     const [filterValue, setFilterValue] = React.useState('');
     const [statusFilter, setStatusFilter] = React.useState<Selection>('all');
-    const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
     const [visibleColumns, setVisibleColumns] = React.useState<Selection>(new Set(INITIAL_VISIBLE_COLUMNS));
     const [selectedRowKey, setSelectedRowKey] = useState<PaymentResponseInterface['uuid']>(null);
 
@@ -208,14 +201,14 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
                         className="bg-foreground text-background"
                         endContent={<Icons.plus/>}
                         size="sm"
-                        onClick={onPaymentFormModalOpen}
+                        onClick={onFormModalOpen}
                     >
                         Add New
                     </Button>
                 </div>
             </div>
         );
-    }, [filterValue, onPaymentFormModalOpen, statusFilter, visibleColumns]);
+    }, [filterValue, onFormModalOpen, statusFilter, visibleColumns]);
 
     const bottomContent = React.useMemo(() => {
         return (
@@ -255,10 +248,8 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
                 removeWrapper
                 aria-label="Example static collection table"
                 classNames={classNames}
-                selectedKeys={selectedKeys}
-                selectionMode="multiple"
+                selectionMode="none"
                 onRowAction={onTableRowClick}
-                onSelectionChange={setSelectedKeys}
             >
                 <TableHeader columns={visibleHeaders}>
                     {(column) => (
@@ -293,7 +284,7 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
                 hideCloseButton={true}
                 isDismissable={true}
                 isOpen={isDetailModalOpen}
-                size="2xl"
+                size="lg"
                 onClose={onDetailModalClose}
             >
                 {selectedPayment && <ModalContent>
@@ -302,7 +293,7 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
                         'bg-danger-300/40': statusColorMap[selectedPayment.status] === 'danger',
                         'bg-warning-300/40': statusColorMap[selectedPayment.status] === 'warning',
                     })}>
-                        <h2>Transaction Details <sup>#{selectedPayment.order_id}</sup></h2>
+                        <h2>Beneficiary Details <sup>#{selectedPayment.order_id}</sup></h2>
                         <Chip
                             className="capitalize"
                             color={statusColorMap[selectedPayment.status]}
@@ -313,132 +304,36 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
                         </Chip>
                     </ModalHeader>
                     <ModalBody>
-                        <section className="flex flex-col gap-4 md:grid md:grid-cols-2">
-                            <div
-                                className="divide-y divide-default rounded-xl bg-default-50 shadow-sm backdrop-blur-xl">
-                                <div className="px-4 py-2">
-                                    <h3 className={subtitle({ size: 'sm' })}>Overview</h3>
-                                </div>
-                                <div className="p-4">
-                                    <p className="flex justify-between">
-                                        <span className="text-xs text-default-400">Order ID :</span>
-                                        <span>{selectedPayment.order_id}</span>
-                                    </p>
-                                    <p className="flex justify-between">
-                                        <span className="text-xs  text-default-400">Amount :</span>
-                                        <span>{selectedPayment.amount} {selectedPayment.currency}</span>
-                                    </p>
-                                    <p className="flex justify-between">
-                                        <span className="text-xs text-default-400">Payer Amount :</span>
-                                        <span>{selectedPayment.payment_amount} {selectedPayment.payer_currency}</span>
-                                    </p>
-                                    <p className="flex justify-between">
-                                        <span className="text-xs text-default-400">Status :</span>
-                                        <span className={cn(
-                                            'capitalize',
-                                            {
-                                                'text-success-500': statusColorMap[selectedPayment.status] === 'success',
-                                                'text-danger-500': statusColorMap[selectedPayment.status] === 'danger',
-                                                'text-warning-500': statusColorMap[selectedPayment.status] === 'warning',
-                                            }
-                                        )}>{selectedPayment.status}</span>
-                                    </p>
-                                </div>
-                            </div>
-                            <div
-                                className="divide-y divide-default rounded-xl bg-default-50 shadow-sm backdrop-blur-xl">
-                                <div className="px-4 py-2">
-                                    <h3 className={subtitle({ size: 'sm' })}>Payment Information</h3>
-                                </div>
-                                <div className="p-4">
-                                    <p className="flex justify-between">
-                                        <span className="text-xs text-default-400">Currency & Network :</span>
-                                        <span className="uppercase">
-                                            {selectedPayment.payer_currency} | {selectedPayment.network}
-                                        </span>
-                                    </p>
-                                    <p className="flex justify-between">
-                                        <span className="text-xs text-default-400">Payment Amount :</span>
-                                        <span>{selectedPayment.payment_amount}</span>
-                                    </p>
-                                    <p className="flex justify-between">
-                                        <span className="text-xs text-default-400">Remains Amount :</span>
-                                        <span>{selectedPayment.remains_amount}</span>
-                                    </p>
-                                    <p className="flex justify-between">
-                                        <span className="text-xs text-default-400">Fee Amount :</span>
-                                        <span>{selectedPayment.fee_amount}</span>
-                                    </p>
-                                </div>
-                            </div>
-                            <div
-                                className="col-span-2 divide-y divide-default rounded-xl bg-default-50 shadow-sm backdrop-blur-xl">
-                                <div className="px-4 py-2">
-                                    <h3 className={subtitle({ size: 'sm' })}>Blockchain Data</h3>
-                                </div>
-                                <div className="p-4">
-                                    <div className="flex justify-between">
-                                        <span className="text-xs text-default-400">To Address :</span>
-                                        <span className="flex items-center gap-2">
-                                            {selectedPayment.address}
-                                            {/*<CopyButton text={selectedPayment.address} title="address"/>*/}
-                                            <Icons.clipboard/>
-                                        </span>
-                                    </div>
-                                    <p className="flex justify-between">
-                                        <span className="text-xs text-default-400">TxID :</span>
-                                        <span className="flex items-center gap-2">
-                                            {selectedPayment.txid}
-                                            <Icons.clipboard/>
-                                        </span>
-                                    </p>
-                                    <p className="flex justify-between">
-                                        <span className="text-xs  text-default-400">Block :</span>
-                                        <span>{selectedPayment.block}</span>
-                                    </p>
-                                    <p className="flex justify-between">
-                                        <span className="text-xs text-default-400">Confirmations :</span>
-                                        <span>{selectedPayment.need_confirms} / {selectedPayment.confirms}</span>
-                                    </p>
-                                </div>
-                            </div>
-                        </section>
                         <section className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             <div
-                                className="col-span-2 divide-y divide-default rounded-xl bg-default-50 shadow-sm backdrop-blur-xl">
-                                <div className="px-4 py-2">
-                                    <h3 className={subtitle({ size: 'sm' })}>Additional Information</h3>
-                                </div>
+                                className="col-span-2 rounded-xl bg-default-50 shadow-sm">
                                 <div className="p-4">
                                     <p className="flex justify-between">
-                                        <span className="text-xs text-default-400">Description :</span>
-                                        <span>{selectedPayment.desc}</span>
+                                        <span className="text-xs text-default-400">Nick Name :</span>
+                                        <span>Nick Name...</span>
                                     </p>
                                     <p className="flex justify-between">
-                                        <span className="text-xs  text-default-400">Return URL :</span>
-                                        <span>{selectedPayment.return_url}</span>
+                                        <span className="text-xs text-default-400">Currency :</span>
+                                        <span className="flex items-center gap-2">
+                                            {<Icons.btc fill={'#F7931A'} size={16}/>}
+                                            {selectedPayment.payer_currency}
+                                        </span>
+                                    </p>
+                                    <p className="flex justify-between">
+                                        <span className="text-xs  text-default-400">Network :</span>
+                                        <span>{selectedPayment.network}</span>
                                     </p>
                                     <p className="flex justify-between">
                                         <span className="text-xs text-default-400">Created At :</span>
                                         <span>{String(selectedPayment.created_at)}</span>
                                     </p>
                                     <p className="flex justify-between">
-                                        <span className="text-xs text-default-400">Expires At :</span>
-                                        <span>{String(selectedPayment.expired_at)}</span>
-                                    </p>
-                                    <p className="flex justify-between">
-                                        <span className="text-xs text-default-400">UUID :</span>
+                                        <span className="text-xs text-default-400">Address :</span>
                                         <span className="flex items-center gap-2">
-                                            {selectedPayment.uuid}
+                                            {selectedPayment.address}
                                             <Icons.clipboard/>
                                         </span>
                                     </p>
-                                    <div className="flex justify-between">
-                                        <span className="text-xs text-default-400">Page Link :</span>
-                                        <NextLink className={link().base()} href={`/pay/${selectedPayment.uuid}`}>
-                                            http://localhost:3000/pay/{selectedPayment.uuid}
-                                        </NextLink>
-                                    </div>
                                 </div>
                             </div>
                         </section>
@@ -447,16 +342,16 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
                         {selectedPayment.status === 'pending' &&
                             <div className="flex w-full items-center gap-2 text-sm">
                                 <Icons.info color="#F7931A" size={16}/>
-                                <p className="mr-auto">Transaction is pending confirmation</p>
+                                <p className="mr-auto">Confirmation pending</p>
                                 <Button size="sm" variant="bordered" onClick={onDetailModalClose}>
-                                    View on Explorer
+                                    Confirm
                                     <Icons.arrowRight/>
                                 </Button>
                             </div>}
                         {selectedPayment.status === 'failed' &&
                             <div className="flex w-full items-center gap-2 text-sm">
                                 <Icons.info color="red" size={16}/>
-                                <p className="mr-auto">Transaction Failed due to timeout</p>
+                                <p className="mr-auto">Confirmation failed</p>
                                 <Button size="sm" variant="bordered" onClick={onDetailModalClose}>
                                     Issue? Raise a ticket
                                     <Icons.bell/>
@@ -465,7 +360,7 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
                         {selectedPayment.status === 'confirmed' &&
                             <div className="flex w-full items-center gap-2 text-sm">
                                 <Icons.flower color="green" size={16}/>
-                                <p className="mr-auto">Transaction Completed</p>
+                                <p className="mr-auto">Verified</p>
                                 <Button size="sm" variant="bordered" onClick={onDetailModalClose}>
                                     Issue? Raise a ticket
                                     <Icons.bell/>
@@ -475,7 +370,7 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
                     </ModalFooter>
                 </ModalContent>}
             </Modal>
-            <PaymentFormModal isOpen={isPaymentFormModalOpen} onClose={onPaymentFormModalClose}/>
+            <BeneficiaryFormModal isOpen={isFormModalOpen} onClose={onFormModalClose}/>
         </section>
     );
 };

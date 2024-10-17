@@ -73,14 +73,19 @@ export const siteConfig = {
             icon: Icons.dashboard,
         },
         {
-            label: 'Profile',
-            href: '/dashboard/profile',
-            icon: Icons.userCog,
-        },
-        {
             label: 'Wallet',
             href: '/dashboard/wallet',
             icon: Icons.wallet,
+        },
+        {
+            label: 'Withdrawals',
+            href: '/dashboard/wallet/withdrawals',
+            icon: Icons.send,
+        },
+        {
+            label: 'Beneficiaries',
+            href: '/dashboard/wallet/beneficiaries',
+            icon: Icons.dice,
         },
         {
             label: 'Payments',
@@ -121,6 +126,10 @@ export const siteConfig = {
         {
             label: 'Overview',
             path: '/dashboard/wallet',
+        },
+        {
+            label: 'Withdrawals',
+            path: '/dashboard/wallet/withdrawals',
         },
         {
             label: 'Beneficiaries',
