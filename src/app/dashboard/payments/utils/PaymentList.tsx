@@ -53,8 +53,6 @@ const pages = 10;
 const INITIAL_VISIBLE_COLUMNS = ['order_id', 'amount', 'currency', 'payer_amount', 'payer_currency', 'network', 'confirms', 'status', 'created_at', 'actions'];
 
 export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (props) => {
-    const { data } = props;
-
     const {
         isOpen: isDetailModalOpen,
         onOpen: onDetailModalOpen,
@@ -80,6 +78,21 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
         th: ['bg-transparent', 'text-default-500', 'border-b', 'border-divider'],
     }), []);
 
+    const data = useMemo(() => {
+        const data: PaymentResponseInterface[] = props.data.map((row) => {
+            return {
+                ...row,
+                confirms: row.confirms + ' / ' + row.need_confirms as any,
+            };
+        });
+
+        if (filterValue) {
+            return data.filter((row) => row.order_id.includes(filterValue));
+        }
+
+        return data;
+    }, [filterValue, props.data]);
+
     const onTableRowClick = useCallback((key: PaymentResponseInterface['uuid']) => {
         setSelectedRowKey(key);
         onDetailModalOpen();
@@ -102,7 +115,9 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
                 const Icon = cryptoIcons[(cellValue as string).toLowerCase() as keyof typeof cryptoIcons];
 
                 return (
-                    <span className="uppercase">{Icon ? <Icon.icon fill={Icon.fill} size={24}/> : cellValue}</span>
+                    <span className="flex items-center gap-2 uppercase">
+                        {Icon && <Icon.icon fill={Icon.fill} size={24}/>}  {cellValue}
+                    </span>
                 );
             case 'status':
                 return (
@@ -145,7 +160,7 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
                         base: 'w-full sm:max-w-[44%]',
                         inputWrapper: 'border-1',
                     }}
-                    placeholder="Search by name..."
+                    placeholder="Search by id..."
                     size="sm"
                     startContent={<SearchIcon className="text-default-300"/>}
                     value={filterValue}
@@ -269,7 +284,7 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
                         </TableColumn>
                     )}
                 </TableHeader>
-                <TableBody items={data}>
+                <TableBody emptyContent="No rows to display." items={data}>
                     {(item) => (
                         <TableRow key={item.uuid}>
                             {visibleHeaders.map((columnKey) => (

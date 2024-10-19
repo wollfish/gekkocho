@@ -33,7 +33,7 @@ export default function Home() {
                         <span className="mb-8 flex w-full text-sm  text-gray-600 lg:text-base">
                             Enhance revenue by improving conversion rates with global payment acceptance, featuring instant settlement and payouts, all customized to meet the unique needs of each business.
                         </span>
-                        <NextLink className={link().base({ type: 'solid' })} href="/login">
+                        <NextLink className={link().base({ type: 'solid' })} href="/contact-us">
                             <span>Get Started</span>
                             <Icons.arrowRight className={link().icon()}/>
                         </NextLink>
@@ -269,7 +269,7 @@ export default function Home() {
                         <NextLink className={link().base({
                             type: 'solid',
                             className: 'text-sm shadow-xl shadow-blue-500/20',
-                        })} href="/about">
+                        })} href="/contact-us">
                             <span>Get Started</span>
                             <Icons.arrowRight className={link().icon()}/>
                         </NextLink>

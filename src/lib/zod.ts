@@ -49,6 +49,34 @@ export const signUpSchema = z.object({
     message: 'You must accept the terms and conditions',
 });
 
+export const contactUsSchema = z.object({
+    first_name: z.string({ required_error: 'First name is required' })
+        .min(1, 'First name is required')
+        .max(50, 'First name must be less than 50 characters'),
+    last_name: z.string({ required_error: 'Last name is required' })
+        .min(1, 'Last name is required')
+        .max(50, 'Last name must be less than 50 characters'),
+    email: z.string({ required_error: 'Email is required' })
+        .min(1, 'Email is required')
+        .email('Invalid email'),
+    phone_code: z.string({ required_error: 'Phone code is required' })
+        .min(1, 'Phone code is required')
+        .max(5, 'Invalid phone code'),
+    phone_number: z.string({ required_error: 'Phone number is required' })
+        .min(8, 'Phone number is required')
+        .max(15, 'Phone number must be less than 15 characters')
+        .regex(/^[0-9]+$/, 'Invalid phone number'),
+    company_name: z.string({ required_error: 'Company name is required' })
+        .min(1, 'Company name is required')
+        .max(50, 'Company name must be less than 50 characters'),
+    industry: z.array(z.string())
+        .min(1, 'Industry is required'),
+    message: z.string({ required_error: 'Message is required' })
+        .min(1, 'Message is required')
+        .max(500, 'Message must be less than 500 characters'),
+    website_url: z.string().optional(),
+});
+
 export const LabelSchema = z.object({
     key: z.string(),
     value: z.string(),
@@ -242,3 +270,4 @@ export type ProfileInterface = z.infer<typeof ProfileSchema>;
 export type SignInSchema = z.infer<typeof signInSchema>;
 export type SignUpSchema = z.infer<typeof signUpSchema>;
 export type UserInterface = z.infer<typeof UserSchema>;
+export type ContactUsSchema = z.infer<typeof contactUsSchema>;
