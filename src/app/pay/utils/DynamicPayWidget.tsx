@@ -1,9 +1,13 @@
 'use client';
 
 import React from 'react';
+import { Button } from '@nextui-org/button';
 import { Divider } from '@nextui-org/divider';
 import { Snippet } from '@nextui-org/snippet';
+import { Tooltip } from '@nextui-org/tooltip';
 import { useQuery } from '@tanstack/react-query';
+
+import NextLink from 'next/link';
 
 import { getPaymentInfo, getPaymentMethods } from '@/actions/pay';
 import { PaymentMethodForm } from '@/app/pay/utils/PaymentMethodForm';
@@ -11,12 +15,13 @@ import { ReloadBtn } from '@/app/pay/utils/reload';
 import { Icons, Logo } from '@/components/icons';
 import { QRCodeGenerator } from '@/components/qrCodeGenerator';
 import { CountdownTimer } from '@/components/ui/CountdownTimer';
+import { cn } from '@/lib/utils';
 
-const WRAPPER_CLASS = 'w-full rounded-lg border border-dashed bg-white shadow-lg contain-content dark:border-default dark:bg-default-50 md:w-[380px]';
+const WRAPPER_CLASS = 'w-full rounded-lg border border-dashed bg-white shadow-lg contain-content dark:border-default dark:bg-default-50 md:max-w-md';
 const NETWORK_CLASS = 'mx-auto mb-2 flex w-fit items-center gap-2 rounded border border-dashed px-2 py-1 text-sm dark:border-default';
 
 export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
-    const { data: payment, isLoading } = useQuery({
+    const { data: payment, isLoading: paymentLoading } = useQuery({
         queryKey: ['payment_info', props.id],
         queryFn: () => getPaymentInfo({ payment_id: props.id }),
     });
@@ -24,10 +29,10 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
     const { data: paymentMethods, isLoading: paymentMethodsLoading } = useQuery({
         queryKey: ['payment_methods', props.id],
         queryFn: () => getPaymentMethods({ payment_id: props.id }),
-        enabled: payment.success && !payment?.data?.network,
+        enabled: payment?.success && !payment?.data?.network,
     });
 
-    if (isLoading || paymentMethodsLoading) {
+    if (paymentLoading || paymentMethodsLoading) {
         return (
             <section className={WRAPPER_CLASS}>
                 <p className="text-center">Loading...</p>
@@ -46,6 +51,19 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
         expired_at,
         uuid,
     } = payment?.data || {};
+
+    if (!payment.data) {
+        return ( 
+            <section className={cn(WRAPPER_CLASS, 'shadow-none')}>
+                <div className="flex flex-col items-center justify-center p-4 text-sm">
+                    <p className="mb-4 text-center">No payment found by this ID: <span className="font-semibold">{props.id}</span></p>
+                    <Button as={NextLink} color="primary" href="/" radius="full" startContent={<Icons.home/>} variant="flat">
+                        Go home
+                    </Button>
+                </div>
+            </section>
+        );
+    }
 
     return (
         <section className={WRAPPER_CLASS}>
@@ -72,12 +90,16 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
                             <span className="flex items-center justify-center font-semibold">
                                 <Icons.eth/>
                                 <span className="ml-1 mr-2 uppercase">{network}</span>
-                                <Icons.info aria-label="More information about Network" className="text-primary"/>
+                                <Tooltip content="You pay network fee" radius="sm">
+                                    <Button className="!size-4 min-w-0" isIconOnly={true} radius="full" variant="light"> 
+                                        <Icons.info aria-label="More information about Network" className="text-primary"/>
+                                    </Button>
+                                </Tooltip>
                             </span>
                         </div>
                         <QRCodeGenerator value={address}/>
                         <div className="mb-4">
-                            <div className="mb-1 text-sm font-semibold">Amount:</div>
+                            <div className="mb-1 text-sm font-semibold">Pay amount:</div>
                             <Snippet
                                 hideSymbol
                                 className="w-full"
@@ -88,7 +110,7 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
                             </Snippet>
                         </div>
                         <div className="mb-4">
-                            <div className="mb-1 text-sm font-semibold">Address:</div>
+                            <div className="mb-1 text-sm font-semibold">To address:</div>
                             <Snippet
                                 hideSymbol
                                 className="w-full"

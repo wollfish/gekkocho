@@ -82,6 +82,7 @@ export const link = tv({
         type: {
             solid: 'rounded-full px-6 py-3',
             outline: 'rounded-full border px-6 py-3',
+            underline: 'border-b',
             tab: 'border-b-2 border-transparent p-4 opacity-100 transition-colors hover:border-default-800 hover:text-default-800',
         },
         color: {
@@ -111,6 +112,11 @@ export const link = tv({
             class: 'border-primary text-primary',
         },
         {
+            type: 'underline',
+            color: 'primary',
+            class: 'border-primary text-primary',
+        },
+        {
             type: 'tab',
             active: true,
             class: 'border-primary hover:border-primary-600 hover:text-primary-600 hover:opacity-100',
@@ -120,6 +126,8 @@ export const link = tv({
         color: 'primary',
     },
 });
+
+export const linkStyles = tv(link);
 
 const inputOtp = tv({
     slots: {

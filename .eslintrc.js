@@ -38,6 +38,7 @@ module.exports = {
         '@stylistic/member-delimiter-style': 'off',
         '@stylistic/object-curly-spacing': ['error', 'always'],
         '@stylistic/no-multiple-empty-lines': ['error', { max: 1, maxEOF: 0 }],
+        '@stylistic/no-multi-spaces': 'warn',
         '@stylistic/eol-last': ['error', 'always'],
         '@stylistic/quotes': ['error', 'single'],
         '@stylistic/semi': ['error', 'always'],
