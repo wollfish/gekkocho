@@ -1,3 +1,4 @@
+import { PaymentOverviewCharts } from '@/app/dashboard/payments/utils/PaymentOverviewCharts';
 import React from 'react';
 import { Divider } from '@nextui-org/divider';
 
@@ -98,6 +99,7 @@ export default function DashboardPage() {
                 <WalletOverviewCharts data={data3}/>
             </div>
             <Divider/>
+            <PaymentOverviewCharts/>
             <PaymentOverviewCharts/>
         </div>
     );
