@@ -1306,7 +1306,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nextui-org/tooltip@npm:2.0.41":
+"@nextui-org/tooltip@npm:2.0.41, @nextui-org/tooltip@npm:^2.0.41":
   version: 2.0.41
   resolution: "@nextui-org/tooltip@npm:2.0.41"
   dependencies:
@@ -6580,6 +6580,7 @@ __metadata:
     "@nextui-org/system": "npm:^2.2.6"
     "@nextui-org/table": "npm:^2.0.40"
     "@nextui-org/theme": "npm:^2.2.11"
+    "@nextui-org/tooltip": "npm:^2.0.41"
     "@react-aria/ssr": "npm:3.9.5"
     "@react-aria/visually-hidden": "npm:3.8.15"
     "@stylistic/eslint-plugin": "npm:^2.6.2"

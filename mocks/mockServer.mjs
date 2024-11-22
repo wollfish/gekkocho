@@ -48,7 +48,7 @@ const HEADER = {
 
 const MOCK_DIR = 'mocks';
 const MOCK_SERVER_HOST = 'http://localhost';
-const MOCK_SERVER_PORT = 9002;
+const MOCK_SERVER_PORT = 9000;
 
 process.on('SIGINT', () => {
     console.info(chalk.yellowBright.italic('\nDon\'t dare to touch the sacred configuration! Stay out of trouble, and may the tech-gods bless you with glitch-free days ahead!'));

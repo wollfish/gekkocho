@@ -1,13 +1,13 @@
-import React, { ReactNode, Suspense } from 'react';
+import React, { ReactNode } from 'react';
 import { Metadata } from 'next';
 import NextLink from 'next/link';
 
 import { Icons, Logo } from '@/components/icons';
-import { description } from '@/components/primitives';
+import { description, linkStyles } from '@/components/primitives';
 import { ThemeSwitch } from '@/components/theme-switch';
 
 export const metadata: Metadata = {
-    title: 'Pay',
+    title: 'Payment',
 };
 export default function Layout({ children }: { children: ReactNode }) {
     return (
@@ -16,12 +16,13 @@ export default function Layout({ children }: { children: ReactNode }) {
                 <ThemeSwitch/>
             </header>
             <div className="m-auto">
-                <Suspense fallback="loading...">
-                    {children}
-                </Suspense>
-                <div className="mt-4 flex flex-col items-center">
+                {children}
+                <div className="mt-4 flex flex-col items-center text-sm">
+                    <NextLink className={linkStyles().base({ type: 'underline', color: 'default', className: 'px-1' })} href="/aml-policy">
+                        AML Policy
+                    </NextLink>
                     <p className={description({ size: 'xs', className: 'text-center' })}>
-                        Please contact us if you have any questions
+                        Contact us if you have any questions
                     </p>
                     <div className="flex gap-2"><Icons.send/><Icons.headphone/></div>
                 </div>

@@ -11,8 +11,8 @@ export const siteConfig = {
             href: '/',
         },
         {
-            label: 'Docs',
-            href: '/docs',
+            label: 'Contact Us',
+            href: '/contact-us',
         },
         {
             label: 'Pricing',
@@ -73,14 +73,19 @@ export const siteConfig = {
             icon: Icons.dashboard,
         },
         {
-            label: 'Profile',
-            href: '/dashboard/profile',
-            icon: Icons.userCog,
-        },
-        {
             label: 'Wallet',
             href: '/dashboard/wallet',
             icon: Icons.wallet,
+        },
+        {
+            label: 'Withdrawals',
+            href: '/dashboard/wallet/withdrawals',
+            icon: Icons.send,
+        },
+        {
+            label: 'Beneficiaries',
+            href: '/dashboard/wallet/beneficiaries',
+            icon: Icons.dice,
         },
         {
             label: 'Payments',
@@ -123,6 +128,10 @@ export const siteConfig = {
             path: '/dashboard/wallet',
         },
         {
+            label: 'Withdrawals',
+            path: '/dashboard/wallet/withdrawals',
+        },
+        {
             label: 'Beneficiaries',
             path: '/dashboard/wallet/beneficiaries',
         },
@@ -133,4 +142,28 @@ export const siteConfig = {
         docs: 'https://nextui.org',
         discord: 'https://discord.gg/9b6yyZKmH4',
     },
+};
+
+export const contactUsOptions = {
+    industry: [
+        { label: 'Creator Economy Platform', value: 'creator_economy_platform' },
+        { label: 'Digital Goods', value: 'digital_goods' },
+        { label: 'E-Commerce / Marketplace', value: 'e_commerce_marketplace' },
+        { label: 'Gaming', value: 'gaming' },
+        { label: 'HR and Payroll Services', value: 'hr_payroll_services' },
+        { label: 'iGaming', value: 'igaming' },
+        { label: 'Import / Export', value: 'import_export' },
+        { label: 'IT Solutions', value: 'it_solutions' },
+        { label: 'Luxury (Fashion, Cars, Furniture...)', value: 'luxury' },
+        { label: 'Payment Orchestrator', value: 'payment_orchestrator' },
+        { label: 'Payment Service Provider', value: 'payment_service_provider' },
+        { label: 'Professional Services', value: 'professional_services' },
+        { label: 'Real Estate', value: 'real_estate' },
+        { label: 'Social Media / Streaming', value: 'social_media_streaming' },
+        { label: 'Trading / Exchanges', value: 'trading_exchanges' },
+        { label: 'Travel & Tourism', value: 'travel_tourism' },
+        { label: 'Wallet / Neobank / EMI', value: 'wallet_neobank_emi' },
+        { label: 'Web3', value: 'web3' },
+        { label: 'Other', value: 'other' },
+    ],
 };

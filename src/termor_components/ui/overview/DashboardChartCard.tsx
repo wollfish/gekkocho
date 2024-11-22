@@ -166,7 +166,7 @@ export function ChartCard(props: CardProps) {
                 data={chartData || []}
                 index="formattedDate"
                 showLegend={false}
-                showTooltip={isThumbnail ? false : true}
+                showTooltip={!isThumbnail}
                 showYAxis={false}
                 startEndOnly={true}
                 valueFormatter={(value) => formatter(value as number)}
