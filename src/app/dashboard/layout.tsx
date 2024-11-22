@@ -20,7 +20,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <DashboardSideNav/>
                 <div className="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
                     <DashboardTopNav/>
-                    <main className="z-10 size-full p-4">
+                    <main className="z-10 flex-1 overflow-hidden p-4">
                         {children}
                     </main>
                     <BackgroundGradient/>

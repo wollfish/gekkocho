@@ -41,3 +41,29 @@ export async function initializePayment(formData: PaymentFormInterface) {
         throw e;
     }
 }
+
+export async function getPaymentList() {
+    try {
+        const data = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/payment/list`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            cache: 'no-store',
+        });
+
+        const res = await data.json();
+
+        if (!data.ok) {
+            console.warn('getPaymentList - data', res);
+
+            return { success: false, error: res?.error, data: null };
+        }
+
+        return { success: true, error: null, data: res };
+
+    } catch (e) {
+        console.error('getPaymentList - error', e);
+        throw e;
+    }
+}

@@ -187,30 +187,30 @@ const landingPageCryptoSteps = {
     },
 };
 
-const landingPageCryptoIcons = [
-    { icon: Icons.ada, name: 'Cardano', fill: '#0133AD' },
-    { icon: Icons.bnb, name: 'BNB', fill: '#F0B90B' },
-    { icon: Icons.polygon, name: 'Polygon', fill: '#7B3FE4' },
-    { icon: Icons.doge, name: 'Dogecoin', fill: '#C2A633' },
-    { icon: Icons.eth, name: 'Ethereum', fill: '#3C3C3D' },
-    { icon: Icons.helium, name: 'Helium', fill: '#0ACF83' },
-    { icon: Icons.ltc, name: 'Litecoin', fill: '#A6A9AA' },
-    { icon: Icons.solana, name: 'Solana', fill: '#9945FF' },
-    { icon: Icons.monero, name: 'Monero', fill: '#FF6600' },
-    { icon: Icons.near, name: 'Near', fill: '#000000' },
-    { icon: Icons.polkadot, name: 'Polkadot', fill: '#E6007A' },
-    { icon: Icons.btc, name: 'Bitcoin', fill: '#F7931A' },
-    { icon: Icons.usdt, name: 'Tether', fill: '#50AF95' },
-    { icon: Icons.xlm, name: 'Stellar', fill: '#7D00FF' },
-    { icon: Icons.xrp, name: 'XRP', fill: '#25A768' },
-];
+export const cryptoIcons = {
+    ada: { icon: Icons.ada, name: 'Cardano', fill: '#0133AD', id: 'ada' },
+    bnb: { icon: Icons.bnb, name: 'BNB', fill: '#F0B90B', id: 'bnb' },
+    doge: { icon: Icons.doge, name: 'Dogecoin', fill: '#C2A633', id: 'doge' },
+    eth: { icon: Icons.eth, name: 'Ethereum', fill: '#3C3C3D', id: 'eth' },
+    helium: { icon: Icons.helium, name: 'Helium', fill: '#0ACF83', id: 'helium' },
+    ltc: { icon: Icons.ltc, name: 'Litecoin', fill: '#A6A9AA', id: 'ltc' },
+    monero: { icon: Icons.monero, name: 'Monero', fill: '#FF6600', id: 'monero' },
+    near: { icon: Icons.near, name: 'Near', fill: '#000000', id: 'near' },
+    polkadot: { icon: Icons.polkadot, name: 'Polkadot', fill: '#E6007A', id: 'polkadot' },
+    btc: { icon: Icons.btc, name: 'Bitcoin', fill: '#F7931A', id: 'btc' },
+    polygon: { icon: Icons.polygon, name: 'Polygon', fill: '#7B3FE4', id: 'polygon' },
+    solana: { icon: Icons.solana, name: 'Solana', fill: '#9945FF', id: 'sol' },
+    usdt: { icon: Icons.usdt, name: 'Tether', fill: '#50AF95', id: 'usdt' },
+    xlm: { icon: Icons.xlm, name: 'Stellar', fill: '#7D00FF', id: 'xlm' },
+    xrp: { icon: Icons.xrp, name: 'XRP', fill: '#25A768', id: 'xrp' },
+};
 
 export const pageConstants = {
     landing: {
         services: landingPageServices,
         useCases: landingPageUseCases,
         cryptoVsFiat: landingPageCryptoVsFiat,
-        cryptoIcons: landingPageCryptoIcons,
+        cryptoIcons: Object.values(cryptoIcons),
         cryptoSteps: landingPageCryptoSteps,
     },
 };

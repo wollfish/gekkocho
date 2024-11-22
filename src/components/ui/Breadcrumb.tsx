@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 
 import { link } from '@/components/primitives';
 
-export const Breadcrumbs: React.FC = () => {
+export const Breadcrumbs: React.FC = React.memo(() => {
     const paths = usePathname();
     const pathNames = paths.split('/').filter((item) => item.length > 0);
 
@@ -37,4 +37,4 @@ export const Breadcrumbs: React.FC = () => {
             </ul>
         </div>
     );
-};
+});

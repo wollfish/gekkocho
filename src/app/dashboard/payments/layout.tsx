@@ -11,9 +11,9 @@ export const metadata: Metadata = {
 };
 export default function SettingsLayout({ children }: { children: React.ReactNode }) {
     return (
-        <section aria-label="Settings Layout" className="flex size-full flex-col pr-16">
+        <section aria-label="Payment Layout" className="flex size-full flex-col pr-16">
             <Breadcrumbs/>
-            <DashboardTabs tabs={siteConfig.dashboardSettingsNavItems}/>
+            <DashboardTabs tabs={siteConfig.dashboardPaymentNavItems}/>
             <Suspense>
                 {children}
             </Suspense>

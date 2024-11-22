@@ -6,7 +6,6 @@
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Max-Age": "3600",
     "Content-Type": "application/json; charset=utf-8",
-    "Total": "11"
   },
   "data": {
     "uuid": "fa7e6ee1-d753-4dbb-b681-d47461096cd3",

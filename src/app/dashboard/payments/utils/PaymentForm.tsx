@@ -162,7 +162,7 @@ export const PaymentForm: React.FC = () => {
                         isLoading={formState.isSubmitting}
                         type="submit"
                     >
-                        Pay Now
+                        Create Payment
                     </Button>
                 </Suspense>
             </div>

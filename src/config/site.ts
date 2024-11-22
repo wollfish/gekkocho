@@ -76,7 +76,13 @@ export const siteConfig = {
             label: 'Profile',
             href: '/dashboard/profile',
             icon: Icons.userCog,
-        },{
+        },
+        {
+            label: 'Wallet',
+            href: '/dashboard/wallet',
+            icon: Icons.wallet,
+        },
+        {
             label: 'Payments',
             href: '/dashboard/payments',
             icon: Icons.calendar,
@@ -99,6 +105,26 @@ export const siteConfig = {
         {
             label: 'KYC',
             path: '/dashboard/settings/kyc',
+        },
+    ],
+    dashboardPaymentNavItems: [
+        {
+            label: 'Overview',
+            path: '/dashboard/payments',
+        },
+        {
+            label: 'Payments',
+            path: '/dashboard/payments/list',
+        },
+    ],
+    dashboardWalletNavItems: [
+        {
+            label: 'Overview',
+            path: '/dashboard/wallet',
+        },
+        {
+            label: 'Beneficiaries',
+            path: '/dashboard/wallet/beneficiaries',
         },
     ],
     links: {
