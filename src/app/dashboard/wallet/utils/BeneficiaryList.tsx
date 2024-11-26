@@ -44,7 +44,7 @@ const columns = [
 ];
 
 const pages = 10;
-const INITIAL_VISIBLE_COLUMNS = ['order_id', 'payer_currency', 'network', 'address',  'status', 'created_at', 'actions'];
+const INITIAL_VISIBLE_COLUMNS = ['order_id', 'payer_currency', 'network', 'address', 'status', 'created_at', 'actions'];
 
 export const BeneficiaryList: React.FC<{ data: PaymentResponseInterface[] }> = (props) => {
     const { data } = props;

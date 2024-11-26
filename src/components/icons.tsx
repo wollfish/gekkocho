@@ -22,6 +22,7 @@ import {
     LuLayoutDashboard,
     LuMail,
     LuMapPin,
+    LuMoreHorizontal,
     LuMousePointerClick,
     LuPhone,
     LuPlane,
@@ -242,8 +243,7 @@ export const NextUILogo: React.FC<IconSvgProps> = (props) => {
 
 const BgWaveSvg: React.FC<IconSvgProps> = () => {
     return (
-        <svg className="scale-x-[200%]" height="100%" id="svg" viewBox="0 0 1440 690" width="100%"
-            xmlns="http://www.w3.org/2000/svg">
+        <svg className="scale-x-[200%]" height="100%" id="svg" viewBox="0 0 1440 690" width="100%" xmlns="http://www.w3.org/2000/svg">
             <defs>
                 <linearGradient id="gradient" x1="60%" x2="40%" y1="1%" y2="99%">
                     <stop offset="5%" stopColor="#ff8e5a"/>
@@ -306,39 +306,40 @@ export const Icons = {
     calendar: LuCalendar,
     cancel: LuX,
     cart: LuShoppingCart,
-    wallet: LuWallet,
     chart: LuBarChart,
-    clipboard: LuClipboardCopy,
     check: LuCheck,
     circle: LuCheckCircle,
-    phone: LuPhone,
+    clipboard: LuClipboardCopy,
     coins: LuCoins,
     cursor: LuMousePointerClick,
     dashboard: LuLayoutDashboard,
     dice: LuDices,
-    mail: LuMail,
+    ellipseH: LuMoreHorizontal,
     flower: LuFlower,
     fund: LuBriefcase,
     gamepad: LuGamepad,
     gitMerge: LuGitMerge,
     globe: LuGlobe,
-    map: LuMapPin,
     headphone: LuHeadphones,
     home: LuHome,
     infinity: LuInfinity,
     info: LuInfo,
     law: LuScale,
-    send: LuSend,
+    mail: LuMail,
+    map: LuMapPin,
+    phone: LuPhone,
     plane: LuPlane,
+    plus: LuPlus,
     qrCode: LuQrCode,
+    refresh: LuRefreshCw,
+    send: LuSend,
     settings: LuSettings,
     shop: LuStore,
     undo: LuUndo2,
-    refresh: LuRefreshCw,
     userCog: LuUserCircle,
     video: LuPlay,
+    wallet: LuWallet,
     zap: LuZap,
-    plus: LuPlus,
 
     ...cryptoIcons,
 };
