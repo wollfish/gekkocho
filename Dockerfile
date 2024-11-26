@@ -33,12 +33,9 @@ FROM node:20-alpine
 WORKDIR /home/node
 
 # Set production environment for better performance
-ENV NODE_ENV=production
-ENV PORT=3000
+ENV NODE_ENV=development
+ENV PORT=6969
 ENV HOSTNAME="0.0.0.0"
-
-# Add an application-specific user for security
-RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 nextjs
 
 # Copy the built application and necessary files from the build stage
 COPY --from=web-builder /home/node/.next/standalone ./
@@ -46,10 +43,10 @@ COPY --from=web-builder /home/node/.next/static ./.next/static
 COPY --from=web-builder /home/node/public ./public
 
 # Switch to the new application-specific user
-USER nextjs
+USER node
 
 # Expose port 3000 to allow traffic to the application
-EXPOSE 3000
+EXPOSE 6969
 
 # Command to start the Next.js application
 CMD ["node", "server.js"]

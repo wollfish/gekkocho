@@ -12,6 +12,7 @@ import {
     InvalidCredentialsError,
     OtpInvalidError,
     OtpRequiredError,
+    ServerError,
 } from '@/lib/errors';
 import { SignInSchema, signInSchema, signUpSchema, SignUpSchema, UserInterface } from '@/lib/zod';
 import { DEFAULT_LOGIN_REDIRECT } from '@/routes';
@@ -45,7 +46,9 @@ export async function doLogin(formData: SignInSchema, callbackUrl = DEFAULT_LOGI
         if (error && (error instanceof InvalidCredentialsError
             || error instanceof OtpRequiredError
             || error instanceof AccountVerificationError
+            || error instanceof InvalidCredentialsError
             || error instanceof OtpInvalidError
+            || error instanceof ServerError
         )) {
             return { success: false, error: { message: error.message, code: error.code } };
         }
