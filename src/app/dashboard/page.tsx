@@ -1,8 +1,8 @@
 import React from 'react';
 import { Divider } from '@nextui-org/divider';
 
+import { AccountOverviewCharts } from '@/app/dashboard/account/utils';
 import { PaymentOverviewCharts } from '@/app/dashboard/payments/utils/PaymentOverviewCharts';
-import { WalletOverviewCharts } from '@/app/dashboard/wallet/utils';
 import { subtitle } from 'src/components/primitives';
 
 const data1 = [
@@ -88,18 +88,18 @@ const data3 = [
 
 export default function DashboardPage() {
     return (
-        <div>
+        <section className="flex size-full flex-col overflow-auto pr-16">
             <p className={subtitle({ size: 'lg', className: 'mr-auto text-default-600 font-bold' })}>
                 This Week’s Overview
             </p>
             <div className="relative my-4 flex flex-wrap justify-between gap-4">
-                <WalletOverviewCharts data={data1}/>
-                <WalletOverviewCharts data={data2}/>
-                <WalletOverviewCharts data={data3}/>
+                <AccountOverviewCharts data={data1}/>
+                <AccountOverviewCharts data={data2}/>
+                <AccountOverviewCharts data={data3}/>
             </div>
             <Divider/>
             <PaymentOverviewCharts/>
             <PaymentOverviewCharts/>
-        </div>
+        </section>
     );
 }

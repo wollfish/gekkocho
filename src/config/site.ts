@@ -73,18 +73,18 @@ export const siteConfig = {
             icon: Icons.dashboard,
         },
         {
-            label: 'Wallet',
-            href: '/dashboard/wallet',
+            label: 'Account',
+            href: '/dashboard/account',
             icon: Icons.wallet,
         },
         {
             label: 'Withdrawals',
-            href: '/dashboard/wallet/withdrawals',
+            href: '/dashboard/account/withdrawals',
             icon: Icons.send,
         },
         {
             label: 'Beneficiaries',
-            href: '/dashboard/wallet/beneficiaries',
+            href: '/dashboard/account/beneficiaries',
             icon: Icons.dice,
         },
         {
@@ -122,18 +122,18 @@ export const siteConfig = {
             path: '/dashboard/payments/list',
         },
     ],
-    dashboardWalletNavItems: [
+    dashboardAccountNavItems: [
         {
-            label: 'Overview',
-            path: '/dashboard/wallet',
+            label: 'Account',
+            path: '/dashboard/account',
         },
         {
             label: 'Withdrawals',
-            path: '/dashboard/wallet/withdrawals',
+            path: '/dashboard/account/withdrawals',
         },
         {
             label: 'Beneficiaries',
-            path: '/dashboard/wallet/beneficiaries',
+            path: '/dashboard/account/beneficiaries',
         },
     ],
     links: {
@@ -162,7 +162,7 @@ export const contactUsOptions = {
         { label: 'Social Media / Streaming', value: 'social_media_streaming' },
         { label: 'Trading / Exchanges', value: 'trading_exchanges' },
         { label: 'Travel & Tourism', value: 'travel_tourism' },
-        { label: 'Wallet / Neobank / EMI', value: 'wallet_neobank_emi' },
+        { label: 'Account / Neobank / EMI', value: 'account_neobank_emi' },
         { label: 'Web3', value: 'web3' },
         { label: 'Other', value: 'other' },
     ],

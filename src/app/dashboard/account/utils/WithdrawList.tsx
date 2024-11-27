@@ -12,7 +12,7 @@ import { Selection, Table, TableBody, TableCell, TableColumn, TableHeader, Table
 
 import { SlotsToClasses, TableSlots } from '@nextui-org/theme';
 
-import { WithdrawFormModal } from '@/app/dashboard/wallet/utils';
+import { WithdrawFormModal } from '@/app/dashboard/account/utils';
 import { Icons, SearchIcon } from '@/components/icons';
 import { cryptoIcons } from '@/constant';
 import { capitalize, cn } from '@/lib/utils';
@@ -269,7 +269,7 @@ export const WithdrawList: React.FC<{ data: WithdrawalInterface[] }> = (props) =
                         </TableColumn>
                     )}
                 </TableHeader>
-                <TableBody items={data}>
+                <TableBody emptyContent="No records found" items={data}>
                     {(item) => (
                         <TableRow key={item.tid}>
                             {visibleHeaders.map((columnKey) => (

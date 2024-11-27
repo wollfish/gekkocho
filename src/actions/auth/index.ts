@@ -43,17 +43,17 @@ export async function doLogin(formData: SignInSchema, callbackUrl = DEFAULT_LOGI
         const nextError = e as AuthError;
         const error = nextError.cause?.err as CustomError;
 
-        if (error && (error instanceof InvalidCredentialsError
+        if (error && (
+            error instanceof InvalidCredentialsError
             || error instanceof OtpRequiredError
             || error instanceof AccountVerificationError
-            || error instanceof InvalidCredentialsError
             || error instanceof OtpInvalidError
             || error instanceof ServerError
         )) {
             return { success: false, error: { message: error.message, code: error.code } };
         }
 
-        return { success: false, error: { message: 'An unexpected error occurred.' } };
+        return { success: false, error: { message: error.errors[0] || 'An unexpected error occurred.' } };
     }
 }
 

@@ -196,7 +196,7 @@ const data = [
 const valueFormatter = (number: number) =>
     `$${Intl.NumberFormat('us').format(number).toString()}`;
 
-export const WalletOverviewLineChart = React.memo(() => {
+export const AccountOverviewLineChart = React.memo(() => {
     return (
         <LineChart
             categories={[

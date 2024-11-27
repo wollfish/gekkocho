@@ -3,22 +3,24 @@
 import React from 'react';
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@nextui-org/modal';
 
-import { WithdrawalForm } from '@/app/dashboard/wallet/utils';
+import { BeneficiaryForm } from '@/app/dashboard/account/utils';
+import { CurrencyResponseInterface } from '@/lib/zod';
 
 interface OwnProps {
     isOpen: boolean,
+    currencies: CurrencyResponseInterface[],
     onClose: () => void
 }
 
-export const WithdrawFormModal: React.FC<OwnProps> = (props) => {
-    const { isOpen, onClose } = props;
+export const BeneficiaryFormModal: React.FC<OwnProps> = (props) => {
+    const { isOpen, currencies, onClose } = props;
 
     return (
         <Modal backdrop="blur" isDismissable={false} isOpen={isOpen} onClose={onClose}>
             <ModalContent>
-                <ModalHeader className="flex flex-col gap-1">Create New Withdrawal</ModalHeader>
+                <ModalHeader className="flex flex-col gap-1">Create New Beneficiary</ModalHeader>
                 <ModalBody>
-                    <WithdrawalForm onClose={onClose}/>
+                    <BeneficiaryForm currencies={currencies} onClose={onClose}/>
                 </ModalBody>
                 <ModalFooter/>
             </ModalContent>

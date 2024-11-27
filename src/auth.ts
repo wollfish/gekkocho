@@ -28,8 +28,6 @@ export const authConfig: NextAuthConfig = {
                 //     uid: '1',
                 // };
 
-                console.error('Login - data', process.env.NEXT_PUBLIC_BASE_URL);
-
                 const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v2/barong/identity/sessions`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -38,10 +36,11 @@ export const authConfig: NextAuthConfig = {
 
                 console.error('Login - data', res);
 
-
                 const resBody = await res.json();
+
                 if (!res.ok) {
-                    console.log('Login - data', resBody);
+
+                    console.error('Login - data', resBody);
 
                     if (resBody.errors?.length) {
                         resBody.errors.forEach((error: string) => {

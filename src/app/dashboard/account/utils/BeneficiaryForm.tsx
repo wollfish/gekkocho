@@ -9,23 +9,24 @@ import { Controller, useForm } from 'react-hook-form';
 
 import { toast } from 'sonner';
 
-import { addNewBeneficiary } from '@/actions/dashboard/wallet';
-import { Icons } from '@/components/icons';
-import { BeneficiaryFormInterface, beneficiaryFormSchema } from '@/lib/zod';
+import { addNewBeneficiary } from '@/actions/dashboard/account';
+import { CryptoIcon } from '@/lib/misc/CryptoIcon';
+import { BeneficiaryFormInterface, beneficiaryFormSchema, CurrencyResponseInterface } from '@/lib/zod';
 
 interface OwnProps {
     onClose: () => void;
+    currencies: CurrencyResponseInterface[];
 }
 
 export const BeneficiaryForm: React.FC<OwnProps> = (props) => {
-    const { handleSubmit, formState, control, reset } = useForm<BeneficiaryFormInterface>({
+    const { handleSubmit, formState, control, reset, watch } = useForm<BeneficiaryFormInterface>({
         resolver: zodResolver(beneficiaryFormSchema),
         defaultValues: {
             address: '',
             currency: '',
             description: '',
             network: '',
-            nickname: '',
+            name: '',
         },
     });
 
@@ -37,7 +38,7 @@ export const BeneficiaryForm: React.FC<OwnProps> = (props) => {
             reset();
             props.onClose();
         } else {
-            toast.error(error?.message);
+            toast.error(error);
         }
     };
 
@@ -45,14 +46,14 @@ export const BeneficiaryForm: React.FC<OwnProps> = (props) => {
         <form autoComplete="off" className="grid grid-cols-2 gap-4" method="POST" onSubmit={handleSubmit(onSubmit)}>
             <Controller
                 control={control}
-                name="nickname"
+                name="name"
                 render={({ field, formState }) => (
                     <Input
                         autoComplete="off"
                         className="col-span-2"
-                        errorMessage={formState.errors?.['nickname']?.message?.toString()}
-                        isInvalid={!!formState.errors?.['nickname']?.message}
-                        label="Nickname"
+                        errorMessage={formState.errors?.['name']?.message?.toString()}
+                        isInvalid={!!formState.errors?.['name']?.message}
+                        label="Name"
                         labelPlacement="outside"
                         placeholder=" "
                         type="text"
@@ -77,27 +78,15 @@ export const BeneficiaryForm: React.FC<OwnProps> = (props) => {
                             value={field.value}
                             onChange={field.onChange}
                         >
-                            <SelectItem
-                                key="usd"
-                                classNames={{ selectedIcon: 'hidden' }}
-                                startContent={<Icons.usdt/>}
-                            >
-                                USDT
-                            </SelectItem>
-                            <SelectItem
-                                key="btc"
-                                classNames={{ selectedIcon: 'hidden' }}
-                                startContent={<Icons.btc/>}
-                            >
-                                BTC
-                            </SelectItem>
-                            <SelectItem
-                                key="eth"
-                                classNames={{ selectedIcon: 'hidden' }}
-                                startContent={<Icons.eth/>}
-                            >
-                                ETH
-                            </SelectItem>
+                            {props.currencies.map((currency) => (
+                                <SelectItem
+                                    key={currency.id}
+                                    classNames={{ selectedIcon: 'hidden' }}
+                                    startContent={<CryptoIcon code={currency.id}/>}
+                                >
+                                    {currency.id.toUpperCase()}
+                                </SelectItem>
+                            ))}
                         </Select>
                     )}
                 />
@@ -107,7 +96,7 @@ export const BeneficiaryForm: React.FC<OwnProps> = (props) => {
                     render={({ field, formState }) => (
                         <Select
                             className="col-span-2"
-                            disallowEmptySelection={true}
+                            disallowEmptySelection={false}
                             errorMessage={formState.errors?.['network']?.message?.toString()}
                             isInvalid={!!formState.errors?.['network']?.message}
                             label="Network"
@@ -116,24 +105,14 @@ export const BeneficiaryForm: React.FC<OwnProps> = (props) => {
                             value={field.value}
                             onChange={field.onChange}
                         >
-                            <SelectItem
-                                key="tether"
-                                classNames={{ selectedIcon: 'hidden' }}
-                            >
-                                Tether
-                            </SelectItem>
-                            <SelectItem
-                                key="tron"
-                                classNames={{ selectedIcon: 'hidden' }}
-                            >
-                                TRON
-                            </SelectItem>
-                            <SelectItem
-                                key="ethereum"
-                                classNames={{ selectedIcon: 'hidden' }}
-                            >
-                                Ethereum
-                            </SelectItem>
+                            {props.currencies.find((currency) => currency.id === watch()?.currency)?.networks.map((network) => (
+                                <SelectItem
+                                    key={network.blockchain_key}
+                                    classNames={{ selectedIcon: 'hidden' }}
+                                >
+                                    {network.protocol || network.blockchain_key}
+                                </SelectItem>
+                            ))}
                         </Select>
                     )}
                 />

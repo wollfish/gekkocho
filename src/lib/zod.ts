@@ -192,15 +192,16 @@ export const paymentMethodSchema = z.object({
     status: z.string(),
 });
 
-export const walletResponseInterface = z.object({
+export const accountResponseInterface = z.object({
     currency: z.string(),
     balance: z.string(),
     locked: z.string(),
     escrow: z.string(),
+    wallet_type: z.string(),
 });
 
 export const beneficiaryFormSchema = z.object({
-    nickname: z.string({ required_error: 'Nickname is required' })
+    name: z.string({ required_error: 'Name is required' })
         .min(1, 'Nickname is required')
         .max(30, 'Nickname must be less than 30 characters'),
     currency: z.string({ required_error: 'Currency is required' })
@@ -212,12 +213,28 @@ export const beneficiaryFormSchema = z.object({
     description: z.string().optional(),
 });
 
+export const beneficiaryActivationFromSchema = z.object({
+    id: z.string({ required_error: 'Id is required' })
+        .min(1, 'Id is required')
+        .max(30, 'Id must be less than 30 characters'),
+    pin: z.string({ required_error: 'Otp is required' })
+        .min(1, 'Otp is required')
+        .max(6, 'Otp must be less than 6 characters'),
+}).refine((data) => data.pin.length === 6, {
+    message: 'Otp must be 6 characters',
+    path: ['pin'],
+});
+
 export const beneficiarySchema = z.object({
     id: z.string(),
-    nickname: z.string(),
+    state: z.string(),
+    name: z.string(),
     currency: z.string(),
-    address: z.string(),
-    network: z.string(),
+    data: z.object({
+        address: z.string(),
+    }),
+    blockchain_key: z.string(),
+    protocol: z.string(),
     description: z.string(),
 });
 
@@ -255,16 +272,41 @@ export const withdrawalSchema = z.object({
     updated_at: z.coerce.date().nullable(),
 });
 
-export type LabelInterface = z.infer<typeof LabelSchema>;
+export const networkSchema = z.object({
+    id: z.string(),
+    status: z.string(),
+    blockchain_key: z.string(),
+    protocol: z.string(),
+    deposit_fee: z.string(),
+    withdraw_fee: z.string(),
+    min_deposit_amount: z.string(),
+    min_withdraw_amount: z.string(),
+});
+
+export const currencyResponseSchema = z.object({
+    id: z.string(),
+    status: z.string(),
+    name: z.string(),
+    price: z.string(),
+    precision: z.number(),
+    icon_url: z.string(),
+    networks: z.array(networkSchema),
+});
+
 export type PaymentFormInterface = z.infer<typeof paymentFormSchema>;
 export type PaymentMethodFormInterface = z.infer<typeof paymentMethodFormSchema>;
 export type BeneficiaryFormInterface = z.infer<typeof beneficiaryFormSchema>;
 export type BeneficiaryInterface = z.infer<typeof beneficiarySchema>;
+export type BeneficiaryActivationFormInterface = z.infer<typeof beneficiaryActivationFromSchema>;
 export type WithdrawalInterface = z.infer<typeof withdrawalSchema>;
 export type WithdrawalFormInterface = z.infer<typeof withdrawalFormSchema>;
 export type PaymentResponseInterface = z.infer<typeof paymentResponseSchema>;
 export type PaymentMethodInterface = z.infer<typeof paymentMethodSchema>;
-export type WalletResponseInterface = z.infer<typeof walletResponseInterface>;
+export type AccountResponseInterface = z.infer<typeof accountResponseInterface>;
+export type NetworkInterface = z.infer<typeof networkSchema>;
+export type CurrencyResponseInterface = z.infer<typeof currencyResponseSchema>;
+
+export type LabelInterface = z.infer<typeof LabelSchema>;
 export type PhoneInterface = z.infer<typeof PhoneSchema>;
 export type ProfileInterface = z.infer<typeof ProfileSchema>;
 export type SignInSchema = z.infer<typeof signInSchema>;

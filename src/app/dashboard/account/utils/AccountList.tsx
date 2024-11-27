@@ -9,7 +9,7 @@ import { SlotsToClasses, TableSlots } from '@nextui-org/theme';
 
 import { Icons } from '@/components/icons';
 import { cryptoIcons } from '@/constant';
-import { WalletResponseInterface } from '@/lib/zod';
+import { AccountResponseInterface } from '@/lib/zod';
 
 const columns = [
     { key: 'id', label: 'ID' },
@@ -22,18 +22,20 @@ const columns = [
     { key: 'actions', label: 'Actions' },
 ];
 
-export const WalletList: React.FC<{ data: WalletResponseInterface[] }> = (props) => {
+export const AccountList: React.FC<{ data: AccountResponseInterface[] }> = (props) => {
     const { data } = props;
 
-    const tableData = useMemo(() => data.map((item, index) => ({
-        ...item,
-        id: index + 1,
-        balance: item.balance + ' ' + item.currency.toUpperCase(),
-        locked: item.locked + ' ' + item.currency.toUpperCase(),
-        escrow: item.escrow + ' ' + item.currency.toUpperCase(),
-        total: Number(item.balance) + Number(item.locked) + Number(item.escrow) + ' ' + item.currency.toUpperCase(),
-        estimated: '00.00' + ' ' + 'USD',
-    })), [data]);
+    const tableData = useMemo(() => data
+        .filter((item) => item.wallet_type !== 'spot')
+        .map((item, index) => ({
+            ...item,
+            id: index + 1,
+            balance: item.balance + ' ' + item.currency.toUpperCase(),
+            locked: item.locked + ' ' + item.currency.toUpperCase(),
+            escrow: item.escrow + ' ' + item.currency.toUpperCase(),
+            total: Number(item.balance) + Number(item.locked) + Number(item.escrow) + ' ' + item.currency.toUpperCase(),
+            estimated: '00.00' + ' ' + 'USD',
+        })), [data]);
 
     const classNames: SlotsToClasses<TableSlots> = useMemo(() => ({
         base: 'overflow-auto',
@@ -41,8 +43,8 @@ export const WalletList: React.FC<{ data: WalletResponseInterface[] }> = (props)
         th: ['bg-transparent', 'text-default-500', 'border-b', 'border-divider'],
     }), []);
 
-    const renderCell = useCallback((data: WalletResponseInterface, columnKey: React.Key) => {
-        const cellValue = data[columnKey as keyof WalletResponseInterface] as string | number | undefined;
+    const renderCell = useCallback((data: AccountResponseInterface, columnKey: React.Key) => {
+        const cellValue = data[columnKey as keyof AccountResponseInterface] as string | number | undefined;
 
         switch (columnKey) {
             case 'name':
@@ -84,7 +86,7 @@ export const WalletList: React.FC<{ data: WalletResponseInterface[] }> = (props)
     }, []);
 
     return (
-        <section aria-label="Wallet List" className="flex size-full flex-col">
+        <section aria-label="Account List" className="flex size-full flex-col">
             <Table
                 isHeaderSticky
                 removeWrapper
@@ -94,14 +96,12 @@ export const WalletList: React.FC<{ data: WalletResponseInterface[] }> = (props)
             >
                 <TableHeader columns={columns}>
                     {(column) => (
-                        <TableColumn
-                            key={column.key}
-                        >
+                        <TableColumn key={column.key}>
                             {column.label}
                         </TableColumn>
                     )}
                 </TableHeader>
-                <TableBody items={tableData}>
+                <TableBody emptyContent="No data to display" items={tableData}>
                     {(item) => (
                         <TableRow key={item.currency}>
                             {columns.map((columnKey) => (

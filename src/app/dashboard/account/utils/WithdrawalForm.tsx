@@ -9,7 +9,7 @@ import { Controller, useForm } from 'react-hook-form';
 
 import { toast } from 'sonner';
 
-import { createWithdrawal } from '@/actions/dashboard/wallet';
+import { createWithdrawal } from '@/actions/dashboard/account';
 import { Icons } from '@/components/icons';
 import { WithdrawalFormInterface, withdrawalFormSchema } from '@/lib/zod';
 

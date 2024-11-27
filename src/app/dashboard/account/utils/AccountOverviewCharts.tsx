@@ -17,7 +17,7 @@ interface OwnProps {
 
 const currencyFormatter = (number: number) => '$' + Intl.NumberFormat('us').format(number).toString();
 
-export const WalletOverviewCharts: React.FC<OwnProps> = React.memo(({ data }) => {
+export const AccountOverviewCharts: React.FC<OwnProps> = React.memo(({ data }) => {
     return (
         <section className="">
             <div className="flex items-center gap-8">
