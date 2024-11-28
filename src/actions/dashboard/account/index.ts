@@ -9,7 +9,7 @@ import {
     BeneficiaryInterface,
     CurrencyResponseInterface,
     WithdrawalFormInterface,
-    withdrawalFormSchema,
+    withdrawalFormSchema, WithdrawalInterface,
 } from '@/lib/zod';
 
 export async function getAccountList(): Promise<ApiResponse<AccountResponseInterface[]>> {
@@ -26,10 +26,15 @@ export async function getWithdrawalList(): Promise<ApiResponse<AccountResponseIn
     });
 }
 
-export async function getBeneficiaryList(): Promise<ApiResponse<AccountResponseInterface[]>> {
-    return await makeApiRequest<AccountResponseInterface[]>({
+type GetBeneficiaryListParams = {
+    currency_id: string;
+    blockchain_key: string;
+};
+export async function getBeneficiaryList(payload?: GetBeneficiaryListParams): Promise<ApiResponse<BeneficiaryInterface[]>> {
+    return await makeApiRequest<BeneficiaryInterface[]>({
         endpoint: '/account/beneficiaries',
         apiVersion: 'peatio',
+        payload,
     });
 }
 
@@ -70,7 +75,7 @@ export async function addNewBeneficiary(formData: BeneficiaryFormInterface): Pro
         apiVersion: 'peatio',
         method: 'POST',
         payload: payload,
-        pathToRevalidate: '/dashboard/account/beneficiaries',
+        pathToRevalidate: ['/dashboard/account/beneficiaries'],
     });
 }
 
@@ -80,7 +85,7 @@ export async function activateBeneficiary(formData: BeneficiaryActivationFormInt
         apiVersion: 'peatio',
         method: 'PATCH',
         payload: formData,
-        pathToRevalidate: '/dashboard/account/beneficiaries',
+        pathToRevalidate: ['/dashboard/account/beneficiaries'],
     });
 }
 
@@ -92,41 +97,30 @@ export async function deleteBeneficiary(id: string): Promise<ApiResponse<Benefic
     });
 }
 
-export async function createWithdrawal(formData: WithdrawalFormInterface) {
-    try {
-        const validatedFormData = withdrawalFormSchema.safeParse(formData);
+export async function doWithdrawal(formData: WithdrawalFormInterface): Promise<ApiResponse<WithdrawalInterface>> {
+    const validatedFormData = withdrawalFormSchema.safeParse(formData);
 
-        if (!validatedFormData.success) {
-            return {
-                success: false,
-                error: {
-                    message: validatedFormData.error.message,
-                    details: JSON.stringify(validatedFormData.error.errors),
-                },
-            };
-        }
-
-        const data = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/beneficiary/new`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData),
-            cache: 'no-store',
-        });
-
-        const res = await data.json();
-
-        if (!data.ok) {
-            console.warn('createWithdrawal - data', res);
-
-            return { success: false, error: res?.error, data: null };
-        }
-
-        return { success: true, error: null, data: res };
-
-    } catch (e) {
-        console.error('createWithdrawal - error', e);
-        throw e;
+    if (!validatedFormData.success) {
+        return {
+            success: false,
+            error: validatedFormData.error.message,
+            data: null,
+        };
     }
+
+    const payload = {
+        currency: validatedFormData.data.currency,
+        amount: validatedFormData.data.amount,
+        otp: validatedFormData.data.otp,
+        beneficiary_id: validatedFormData.data.beneficiary_id,
+        note: validatedFormData.data.remarks,
+    };
+
+    return await makeApiRequest<WithdrawalInterface>({
+        endpoint: '/account/withdraws',
+        apiVersion: 'peatio',
+        method: 'POST',
+        payload: payload,
+        pathToRevalidate: ['/dashboard/account', '/dashboard/account/withdrawals'],
+    });
 }

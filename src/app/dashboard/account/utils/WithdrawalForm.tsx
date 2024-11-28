@@ -1,43 +1,76 @@
 'use client';
 
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect, useMemo } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@nextui-org/button';
 import { Input } from '@nextui-org/input';
 import { Select, SelectItem } from '@nextui-org/select';
+import { useQuery } from '@tanstack/react-query';
 import { Controller, useForm } from 'react-hook-form';
-
 import { toast } from 'sonner';
 
-import { createWithdrawal } from '@/actions/dashboard/account';
-import { Icons } from '@/components/icons';
-import { WithdrawalFormInterface, withdrawalFormSchema } from '@/lib/zod';
+import { doWithdrawal, getBeneficiaryList, getCurrencyList } from '@/actions/dashboard/account';
+import { CryptoIcon } from '@/lib/misc/CryptoIcon';
+import { InputOtp } from '@/lib/otpInput';
+import { AccountResponseInterface, WithdrawalFormInterface, withdrawalFormSchema } from '@/lib/zod';
 
 interface OwnProps {
+    selectedAccount: string;
+    accounts: AccountResponseInterface[];
     onClose: () => void;
 }
 
 export const WithdrawalForm: React.FC<OwnProps> = (props) => {
-    const { handleSubmit, formState, control, reset } = useForm<WithdrawalFormInterface>({
+    const { selectedAccount, accounts } = props;
+
+    const { data: currencies, isLoading: currenciesLoading } = useQuery({
+        queryKey: ['currencies'],
+        queryFn: () => getCurrencyList(),
+    });
+
+    const { handleSubmit, formState, control, setValue, watch, reset } = useForm<WithdrawalFormInterface>({
         resolver: zodResolver(withdrawalFormSchema),
         defaultValues: {
-            address: '',
-            currency: '',
-            remarks: '',
+            amount: '',
+            otp: '',
+            currency: selectedAccount || '',
+            beneficiary_id: '',
             network: '',
-            amount: null,
+            remarks: '',
         },
     });
 
+    const selectedCurrency = watch('currency');
+    const selectedNetwork = watch('network');
+
+    const { data: beneficiaries, isLoading: beneficiariesLoading, isFetched: beneficiariesFetched } = useQuery({
+        queryKey: ['beneficiaries', selectedCurrency, selectedNetwork],
+        queryFn: () => getBeneficiaryList({ currency_id: selectedCurrency, blockchain_key: selectedNetwork }),
+    });
+
+    useEffect(() => {
+        if (beneficiariesFetched) {
+            setValue('beneficiary_id', '');
+        }
+    }, [beneficiariesFetched]);
+
+    const availableBalance = useMemo(() => {
+        return accounts?.find((acc) => acc.currency === selectedCurrency)?.balance || 0;
+    }, [accounts, selectedCurrency]);
+
+    const networks = useMemo(() => {
+        return currencies?.data?.find((currency) => currency.id === selectedCurrency)?.networks || [];
+    }, [currencies, selectedCurrency]);
+
     const onSubmit = async (values: WithdrawalFormInterface) => {
-        const { error, success } = await createWithdrawal(values) || {};
+        const { error, success } = await doWithdrawal(values) || {};
 
         if (success) {
-            toast.success('Withdrawal added');
+            toast.success('Withdrawal successful');
             reset();
             props.onClose();
         } else {
-            toast.error(error?.message);
+            toast.error(error);
         }
     };
 
@@ -47,41 +80,33 @@ export const WithdrawalForm: React.FC<OwnProps> = (props) => {
                 <Controller
                     control={control}
                     name="currency"
-                    render={({ field, formState }) => (
-                        <Select
-                            className="col-span-4"
-                            disallowEmptySelection={true}
-                            errorMessage={formState.errors?.['currency']?.message?.toString()}
-                            isInvalid={!!formState.errors?.['currency']?.message}
-                            label="Currency"
-                            labelPlacement="outside"
-                            placeholder=" "
-                            value={field.value}
-                            onChange={field.onChange}
-                        >
-                            <SelectItem
-                                key="usd"
-                                classNames={{ selectedIcon: 'hidden' }}
-                                startContent={<Icons.usdt/>}
+                    render={({ field, formState }) => {
+                        return (
+                            <Select
+                                className="col-span-4"
+                                disallowEmptySelection={false}
+                                errorMessage={formState.errors?.['currency']?.message?.toString()}
+                                isInvalid={!!formState.errors?.['currency']?.message}
+                                items={accounts}
+                                label="Currency"
+                                labelPlacement="outside"
+                                placeholder=" "
+                                selectedKeys={[field.value]}
+                                onChange={field.onChange}
                             >
-                                USDT
-                            </SelectItem>
-                            <SelectItem
-                                key="btc"
-                                classNames={{ selectedIcon: 'hidden' }}
-                                startContent={<Icons.btc/>}
-                            >
-                                BTC
-                            </SelectItem>
-                            <SelectItem
-                                key="eth"
-                                classNames={{ selectedIcon: 'hidden' }}
-                                startContent={<Icons.eth/>}
-                            >
-                                ETH
-                            </SelectItem>
-                        </Select>
-                    )}
+                                {(account) => (
+                                    <SelectItem
+                                        key={account.currency}
+                                        classNames={{ selectedIcon: 'hidden' }}
+                                        startContent={<CryptoIcon code={account.currency}/>}
+                                        value={account.currency}
+                                    >
+                                        {account.currency?.toUpperCase()}
+                                    </SelectItem>
+                                )}
+                            </Select>
+                        );
+                    }}
                 />
                 <Controller
                     control={control}
@@ -92,30 +117,23 @@ export const WithdrawalForm: React.FC<OwnProps> = (props) => {
                             disallowEmptySelection={true}
                             errorMessage={formState.errors?.['network']?.message?.toString()}
                             isInvalid={!!formState.errors?.['network']?.message}
+                            isLoading={currenciesLoading}
+                            items={networks || []}
                             label="Network"
                             labelPlacement="outside"
                             placeholder=" "
-                            value={field.value}
+                            selectedKeys={[field.value]}
                             onChange={field.onChange}
                         >
-                            <SelectItem
-                                key="tether"
-                                classNames={{ selectedIcon: 'hidden' }}
-                            >
-                                Tether
-                            </SelectItem>
-                            <SelectItem
-                                key="tron"
-                                classNames={{ selectedIcon: 'hidden' }}
-                            >
-                                TRON
-                            </SelectItem>
-                            <SelectItem
-                                key="ethereum"
-                                classNames={{ selectedIcon: 'hidden' }}
-                            >
-                                Ethereum
-                            </SelectItem>
+                            {(network) => (
+                                <SelectItem
+                                    key={network.blockchain_key}
+                                    classNames={{ selectedIcon: 'hidden' }}
+                                    textValue={network.blockchain_key}
+                                >
+                                    {network.protocol || network.blockchain_key}
+                                </SelectItem>
+                            )}
                         </Select>
                     )}
                 />
@@ -134,7 +152,7 @@ export const WithdrawalForm: React.FC<OwnProps> = (props) => {
                             <div className="flex items-center justify-between gap-1">
                                 <span>Amount</span>
                                 <span className="text-xs">
-                                    Balance: 85766.08 USDT
+                                    Balance: {availableBalance}
                                 </span>
                             </div>
                         }
@@ -148,64 +166,40 @@ export const WithdrawalForm: React.FC<OwnProps> = (props) => {
             />
             <Controller
                 control={control}
-                name="address"
+                name="beneficiary_id"
                 render={({ field, formState }) => (
                     <Select
                         className="col-span-2"
                         disallowEmptySelection={true}
-                        errorMessage={formState.errors?.['address']?.message?.toString()}
-                        isInvalid={!!formState.errors?.['address']?.message}
-                        label="Address"
+                        errorMessage={formState.errors?.['beneficiary_id']?.message?.toString()}
+                        isInvalid={!!formState.errors?.['beneficiary_id']?.message}
+                        isLoading={beneficiariesLoading}
+                        items={beneficiaries?.data || []}
+                        label="Beneficiary"
                         labelPlacement="outside"
                         placeholder=" "
-                        value={field.value}
+                        selectedKeys={[field.value]}
                         onChange={field.onChange}
                     >
-                        <SelectItem
-                            key="1MM67SnmHrRcuRtbQunU2HUkembjxuzrgD"
-                            classNames={{ selectedIcon: 'hidden' }}
-                            textValue="1MM67SnmHrRcuRtbQunU2HUkembjxuzrgD"
-                        >
-                            <div className="flex items-center gap-2">
-                                <Icons.btc fill="orange" size={20}/>
-                                <div className="flex flex-col">
-                                    <span className="text-small">Beneficiary Nickname | BTC</span>
-                                    <span className="text-tiny text-default-400">
-                                        1MM67SnmHrRcuRtbQunU2HUkembjxuzrgD
-                                    </span>
+                        {(beneficiary) => (
+                            <SelectItem
+                                key={beneficiary.id}
+                                classNames={{ selectedIcon: 'hidden' }}
+                                textValue={beneficiary.name}
+                            >
+                                <div className="flex items-center gap-2">
+                                    <CryptoIcon code={beneficiary.currency}/>
+                                    <div className="flex flex-col">
+                                        <span className="text-small">
+                                            {beneficiary.name} | {beneficiary.protocol}
+                                        </span>
+                                        <span className="text-tiny text-default-400">
+                                            {beneficiary.data?.address}
+                                        </span>
+                                    </div>
                                 </div>
-                            </div>
-                        </SelectItem>
-                        <SelectItem
-                            key="0x8d12a197652b3cc77e6b353621db459e"
-                            classNames={{ selectedIcon: 'hidden' }}
-                            textValue="0x8d12a197652b3cc77e6b353621db459e"
-                        >
-                            <div className="flex items-center gap-2">
-                                <Icons.ada fill="orange" size={20}/>
-                                <div className="flex flex-col">
-                                    <span className="text-small">Beneficiary Nickname | ADA</span>
-                                    <span className="text-tiny text-default-400">
-                                        0x8d12a197652b3cc77e6b353621db459e
-                                    </span>
-                                </div>
-                            </div>
-                        </SelectItem>
-                        <SelectItem
-                            key="0x9f8F72aA9304c8B593d555F12eF6589c"
-                            classNames={{ selectedIcon: 'hidden' }}
-                            textValue="0x9f8F72aA9304c8B593d555F12eF6589c"
-                        >
-                            <div className="flex items-center gap-2">
-                                <Icons.polkadot fill="#ff0000" size={20}/>
-                                <div className="flex flex-col">
-                                    <span className="text-small">Beneficiary Nickname | Ethereum</span>
-                                    <span className="text-tiny text-default-400">
-                                        0x9f8F72aA9304c8B593d555F12eF6589c
-                                    </span>
-                                </div>
-                            </div>
-                        </SelectItem>
+                            </SelectItem>
+                        )}
                     </Select>
                 )}
             />
@@ -226,11 +220,31 @@ export const WithdrawalForm: React.FC<OwnProps> = (props) => {
                     />
                 )}
             />
+            <Controller
+                control={control}
+                name="otp"
+                render={({ field, formState }) => (
+                    <InputOtp
+                        classNames={{ segmentWrapper: 'justify-between', base: 'w-full' }}
+                        color={!!formState.errors?.otp?.message ? 'danger' : 'default'}
+                        errorMessage={formState.errors?.otp?.message}
+                        label="OTP"
+                        otplength={6}
+                        radius="lg"
+                        variant="faded"
+                        onFill={() => handleSubmit(onSubmit)()}
+                        onInput={field.onChange}
+                    />
+                )}
+            />
             <div className="col-span-2 flex justify-end gap-4">
                 <Suspense>
                     <Button
                         variant="bordered"
-                        onClick={() => reset()}
+                        onClick={() => {
+                            reset();
+                            setValue('currency', '');
+                        }}
                     >
                         Clear All
                     </Button>

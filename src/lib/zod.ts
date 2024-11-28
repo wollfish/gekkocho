@@ -131,6 +131,16 @@ export const UserSchema = z.object({
     updated_at: z.coerce.date(),
 });
 
+export const twoFactorAuthFormSchema = z.object({
+    code: z.string({ required_error: 'Code is required' })
+        .min(1, 'Code is required')
+        .max(6, 'Code must be less than 6 characters'),
+    status: z.enum(['enable', 'disable']),
+}).refine((data) => data.code.length === 6, {
+    path: ['code'],
+    message: 'Code must be 6 characters',
+});
+
 export const paymentFormSchema = z.object({
     order_id: z.string().optional(),
     order_amount: z.coerce
@@ -241,14 +251,22 @@ export const beneficiarySchema = z.object({
 export const withdrawalFormSchema = z.object({
     currency: z.string({ required_error: 'Currency is required' })
         .min(1, 'Currency is required'),
-    address: z.string({ required_error: 'Address is required' })
-        .min(1, 'Address is required'),
-    amount: z.coerce
-        .number({ required_error: 'Amount is required' })
-        .gt(0, 'Amount must be greater than 0'),
+    amount: z.string({ required_error: 'Amount is required' })
+        .min(1, 'Amount is required'),
+    otp: z.string()
+        .min(1, 'OTP is required')
+        .max(6, 'OTP must be 6 characters'),
     network: z.string({ required_error: 'Network is required' })
         .min(1, 'Network is required'),
+    beneficiary_id: z.string({ required_error: 'Network is required' })
+        .min(1, 'Network is required'),
     remarks: z.string().optional(),
+}).refine((data) => +data.amount > 0, {
+    message: 'Amount must be greater than 0',
+    path: ['amount'],
+}).refine((data) => data.otp.length === 6, {
+    message: 'OTP must be 6 characters',
+    path: ['otp'],
 });
 
 export const withdrawalSchema = z.object({
@@ -313,3 +331,5 @@ export type SignInSchema = z.infer<typeof signInSchema>;
 export type SignUpSchema = z.infer<typeof signUpSchema>;
 export type UserInterface = z.infer<typeof UserSchema>;
 export type ContactUsSchema = z.infer<typeof contactUsSchema>;
+
+export type TwoFactorAuthFormInterface = z.infer<typeof twoFactorAuthFormSchema>;

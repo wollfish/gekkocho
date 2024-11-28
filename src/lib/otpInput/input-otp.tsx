@@ -19,6 +19,7 @@ const InputOtp = forwardRef<'div', InputOtpProps>((props, ref) => {
         hasHelper,
         isInvalid,
         errorMessage,
+        label,
         description,
         getBaseProps,
         getInputWrapperProps,
@@ -32,6 +33,18 @@ const InputOtp = forwardRef<'div', InputOtpProps>((props, ref) => {
         ...props,
         ref,
     });
+
+    const labelSection = useMemo(() => {
+        if (!label) {
+            return null;
+        }
+
+        return (
+            <div className="mb-1 text-sm font-medium">
+                {label}
+            </div>
+        );
+    }, [label]);
 
     const segmentsSection = useMemo(() => {
         return (
@@ -84,6 +97,7 @@ const InputOtp = forwardRef<'div', InputOtpProps>((props, ref) => {
 
     return (
         <Component ref={domRef} className={styles} {...otherProps} {...getBaseProps()}>
+            {labelSection}
             {segmentsSection}
             {inputSection}
             {helperSection}

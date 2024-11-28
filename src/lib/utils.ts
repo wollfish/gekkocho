@@ -18,3 +18,25 @@ export const truncateTo32Chars = (input: string): string => {
 
     return `${start}...${end}`;
 };
+
+const genArrayArg = (key: string, values: any[]): string =>
+    values.map((value) => `${key}[]=${encodeURIComponent(value)}`).join('&');
+
+const genPlainArg = (key: string, value: any): string =>
+    `${key}=${encodeURIComponent(value)}`;
+
+const isEmptyValue = (value: any): boolean =>
+    value === '' || value === null || value === undefined || (Array.isArray(value) && value.length === 0);
+
+export const buildQueryString = (action: Record<string, any>, excludeKeys: string[] = []): string => {
+    const queryString = Object.entries(action)
+        .filter(([key, value]) =>
+            !excludeKeys.includes(key) && !isEmptyValue(value)
+        )
+        .map(([key, value]) =>
+            Array.isArray(value) ? genArrayArg(key, value) : genPlainArg(key, value)
+        )
+        .join('&');
+
+    return queryString ? `?${queryString}` : '';
+};

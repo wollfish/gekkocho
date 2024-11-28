@@ -37,10 +37,10 @@ const data1 = [
 ];
 
 export default async function Page() {
-    const { loading, data, error } = await fetchData(getAccountList);
+    const { loading, data: accounts, error } = await fetchData(getAccountList);
 
     return (
-        <DataPageTemplate data={data} error={error} loading={loading}>
+        <DataPageTemplate data={accounts} error={error} loading={loading}>
             <section className="flex flex-1 flex-col overflow-hidden py-4">
                 <div className="relative mb-4 flex flex-wrap justify-between gap-4">
                     <div className="relative flex flex-col gap-3 pl-2">
@@ -65,7 +65,7 @@ export default async function Page() {
                 </div>
                 <Divider/>
                 <section className="flex grow flex-col overflow-auto py-4">
-                    <AccountList data={data}/>
+                    <AccountList accounts={accounts}/>
                 </section>
             </section>
         </DataPageTemplate>

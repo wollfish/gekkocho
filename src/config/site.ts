@@ -73,7 +73,7 @@ export const siteConfig = {
             icon: Icons.dashboard,
         },
         {
-            label: 'Account',
+            label: 'Accounts',
             href: '/dashboard/account',
             icon: Icons.wallet,
         },
@@ -124,7 +124,7 @@ export const siteConfig = {
     ],
     dashboardAccountNavItems: [
         {
-            label: 'Account',
+            label: 'Accounts',
             path: '/dashboard/account',
         },
         {

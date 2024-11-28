@@ -1,12 +1,14 @@
 'use client';
 
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Button } from '@nextui-org/button';
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@nextui-org/dropdown';
+import { useDisclosure } from '@nextui-org/modal';
 import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/table';
 
 import { SlotsToClasses, TableSlots } from '@nextui-org/theme';
 
+import { WithdrawFormModal } from '@/app/dashboard/account/utils/WithdrawFormModal';
 import { Icons } from '@/components/icons';
 import { cryptoIcons } from '@/constant';
 import { AccountResponseInterface } from '@/lib/zod';
@@ -22,11 +24,23 @@ const columns = [
     { key: 'actions', label: 'Actions' },
 ];
 
-export const AccountList: React.FC<{ data: AccountResponseInterface[] }> = (props) => {
-    const { data } = props;
+interface OwnProps {
+    accounts: AccountResponseInterface[];
+}
 
-    const tableData = useMemo(() => data
-        .filter((item) => item.wallet_type !== 'spot')
+export const AccountList: React.FC<OwnProps> = (props) => {
+    const { accounts } = props;
+
+    const {
+        isOpen: isWithdrawFormModalOpen,
+        onOpen: onWithdrawFormModalOpen,
+        onClose: onWithdrawFormModalClose,
+    } = useDisclosure();
+
+    const [selectedAccount, setSelectedAccount] = useState<AccountResponseInterface['currency']>(null);
+
+    const tableData = useMemo(() => accounts
+        .filter((item) => item.wallet_type !== 'p2p')
         .map((item, index) => ({
             ...item,
             id: index + 1,
@@ -35,7 +49,12 @@ export const AccountList: React.FC<{ data: AccountResponseInterface[] }> = (prop
             escrow: item.escrow + ' ' + item.currency.toUpperCase(),
             total: Number(item.balance) + Number(item.locked) + Number(item.escrow) + ' ' + item.currency.toUpperCase(),
             estimated: '00.00' + ' ' + 'USD',
-        })), [data]);
+        })), [accounts]);
+
+    const onTableRowClick = useCallback((key: AccountResponseInterface['currency']) => {
+        setSelectedAccount(String(key));
+        onWithdrawFormModalOpen();
+    }, [onWithdrawFormModalOpen]);
 
     const classNames: SlotsToClasses<TableSlots> = useMemo(() => ({
         base: 'overflow-auto',
@@ -74,7 +93,9 @@ export const AccountList: React.FC<{ data: AccountResponseInterface[] }> = (prop
                             </DropdownTrigger>
                             <DropdownMenu>
                                 <DropdownItem>View</DropdownItem>
-                                <DropdownItem>Withdraw</DropdownItem>
+                                <DropdownItem onClick={() => onTableRowClick(data.currency)}>
+                                    Withdraw
+                                </DropdownItem>
                                 <DropdownItem>Delete</DropdownItem>
                             </DropdownMenu>
                         </Dropdown>
@@ -113,6 +134,12 @@ export const AccountList: React.FC<{ data: AccountResponseInterface[] }> = (prop
                     )}
                 </TableBody>
             </Table>
+            <WithdrawFormModal
+                accounts={tableData}
+                isOpen={isWithdrawFormModalOpen}
+                selectedAccount={selectedAccount}
+                onClose={onWithdrawFormModalClose}
+            />
         </section>
     );
 };

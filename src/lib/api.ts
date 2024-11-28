@@ -2,15 +2,16 @@ import { revalidatePath } from 'next/cache';
 
 import { auth } from '@/auth';
 import { decryptToken } from '@/lib/encryption';
+import { buildQueryString } from '@/lib/utils';
 
 interface ApiRequestParams {
     endpoint: string; // API endpoint
-    apiVersion: 'peatio' | 'borang';
+    apiVersion: 'peatio' | 'barong';
     method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'; // HTTP method
     payload?: Record<string, any> | null; // Request body for POST, PUT, etc.
     headers?: Record<string, string>; // Additional request headers
     noCache?: boolean; // Disable caching
-    pathToRevalidate?: string;
+    pathToRevalidate?: string[];
 }
 
 export interface ApiResponse<T = any> {
@@ -41,13 +42,17 @@ export async function makeApiRequest<T = any>(params: ApiRequestParams): Promise
     const barongSession = await decryptToken(session.user?.access_token);
     const csrfToken = await decryptToken(session.user?.csrf_token);
 
-    const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/v2/${apiVersion}/${endpointPath}`;
+    let url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/v2/${apiVersion}/${endpointPath}`;
+
     const defaultHeaders: Record<string, string> = {
         'Content-Type': 'application/json',
         'Cookie': `_barong_session=${barongSession}`,
     };
 
-    if (method !== 'GET') {
+    if (method === 'GET' && payload) {
+        url += buildQueryString(payload);
+
+    } else {
         defaultHeaders['X-CSRF-Token'] = csrfToken;
     }
 
@@ -55,7 +60,7 @@ export async function makeApiRequest<T = any>(params: ApiRequestParams): Promise
         const res = await fetch(url, {
             method,
             headers: { ...defaultHeaders, ...headers },
-            body: payload ? JSON.stringify(payload) : null,
+            body: (method !== 'GET' && payload) ? JSON.stringify(payload) : null,
             cache: noCache ? 'no-cache' : 'default',
         });
 
@@ -63,17 +68,21 @@ export async function makeApiRequest<T = any>(params: ApiRequestParams): Promise
         const responseData = await parseResponse<T>(res);
 
         if (isSuccessful) {
-            if (pathToRevalidate) {
-                revalidatePath(pathToRevalidate);
+            if (pathToRevalidate?.length > 0) {
+                for (const path of pathToRevalidate) {
+                    revalidatePath(path);
+                }
             }
 
             return { success: true, error: null, data: responseData };
         }
 
+        console.info(responseData);
+
         return {
             success: false,
             // @ts-ignore
-            error: responseData?.error || `Error: ${res.status} ${res.statusText}`,
+            error: responseData?.errors?.[0] || `Error: ${res.status} ${res.statusText}`,
             data: null,
         };
     } catch (error) {

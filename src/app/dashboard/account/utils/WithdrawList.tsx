@@ -12,7 +12,6 @@ import { Selection, Table, TableBody, TableCell, TableColumn, TableHeader, Table
 
 import { SlotsToClasses, TableSlots } from '@nextui-org/theme';
 
-import { WithdrawFormModal } from '@/app/dashboard/account/utils';
 import { Icons, SearchIcon } from '@/components/icons';
 import { cryptoIcons } from '@/constant';
 import { capitalize, cn } from '@/lib/utils';
@@ -210,7 +209,7 @@ export const WithdrawList: React.FC<{ data: WithdrawalInterface[] }> = (props) =
                         size="sm"
                         onClick={onWithdrawFormModalOpen}
                     >
-                        Add New
+                        Create New Withdrawal
                     </Button>
                 </div>
             </div>
@@ -284,7 +283,11 @@ export const WithdrawList: React.FC<{ data: WithdrawalInterface[] }> = (props) =
                 </TableBody>
             </Table>
             {bottomContent}
-            <WithdrawFormModal isOpen={isWithdrawFormModalOpen} onClose={onWithdrawFormModalClose}/>
+            {/*<WithdrawFormModal*/}
+            {/*    accounts={accounts}*/}
+            {/*    isOpen={isWithdrawFormModalOpen}*/}
+            {/*    onClose={onWithdrawFormModalClose}*/}
+            {/*/>*/}
         </section>
     );
 };
