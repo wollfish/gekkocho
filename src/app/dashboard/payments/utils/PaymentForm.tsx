@@ -6,18 +6,20 @@ import { Avatar } from '@nextui-org/avatar';
 import { Button } from '@nextui-org/button';
 import { Input } from '@nextui-org/input';
 import { Select, SelectItem } from '@nextui-org/select';
-import { useQuery } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
 import { Controller, useForm } from 'react-hook-form';
 
 import { toast } from 'sonner';
 
-import { getCurrencyList } from '@/actions/dashboard/account';
 import { initializePayment } from '@/actions/dashboard/payment';
 import { PaymentFormInterface, paymentFormSchema } from '@/lib/zod';
 
-export const PaymentForm: React.FC = () => {
-    const router = useRouter();
+interface OwnProps {
+    onClose: () => void
+}
+
+export const PaymentForm: React.FC<OwnProps> = (props) => {
+
+    const { onClose } = props;
 
     const { handleSubmit, formState, control, reset } = useForm<PaymentFormInterface>({
         resolver: zodResolver(paymentFormSchema),
@@ -29,17 +31,11 @@ export const PaymentForm: React.FC = () => {
         },
     });
 
-    const { data: currencies, isLoading: currenciesLoading } = useQuery({
-        queryKey: ['currencies'],
-        queryFn: () => getCurrencyList(),
-    });
-
     const onSubmit = async (values: PaymentFormInterface) => {
         const { error, success, data } = await initializePayment(values) || {};
 
         if (success) {
-            console.log(data);
-            // router.push(data.payment_link);
+            onClose();
         } else {
             toast.error(error);
         }

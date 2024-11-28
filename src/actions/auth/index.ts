@@ -5,6 +5,7 @@ import { isRedirectError } from 'next/dist/client/components/redirect';
 import { AuthError } from 'next-auth';
 
 import { signIn, signOut } from '@/auth';
+import { ApiResponse, makeApiRequest } from '@/lib/api';
 import {
     AccountVerificationError,
     CustomError,
@@ -130,4 +131,13 @@ export async function doLogout() {
 
         return { success: false, error: { message: 'An unexpected error occurred.' } };
     }
+}
+
+export async function verifyEmailToken(payload: { token: string }): Promise<ApiResponse> {
+    return await makeApiRequest({
+        endpoint: '/identity/users/email/confirm_code',
+        apiVersion: 'barong',
+        method: 'POST',
+        payload,
+    });
 }

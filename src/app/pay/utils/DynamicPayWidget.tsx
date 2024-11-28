@@ -24,8 +24,8 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
     const { data: payment, isLoading: paymentLoading } = useQuery({
         queryKey: ['payment_info', props.id],
         queryFn: () => getPaymentInfo({ payment_id: props.id }),
-        retryDelay: 3000,
         refetchInterval: 5000,
+        refetchIntervalInBackground: false,
     });
     
     const { data: paymentMethods, isLoading: paymentMethodsLoading } = useQuery({

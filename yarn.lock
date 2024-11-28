@@ -1050,6 +1050,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@nextui-org/progress@npm:^2.0.34":
+  version: 2.0.34
+  resolution: "@nextui-org/progress@npm:2.0.34"
+  dependencies:
+    "@nextui-org/react-utils": "npm:2.0.17"
+    "@nextui-org/shared-utils": "npm:2.0.8"
+    "@nextui-org/use-is-mounted": "npm:2.0.6"
+    "@react-aria/i18n": "npm:3.11.1"
+    "@react-aria/progress": "npm:3.4.13"
+    "@react-aria/utils": "npm:3.24.1"
+    "@react-types/progress": "npm:3.5.4"
+  peerDependencies:
+    "@nextui-org/system": ">=2.0.0"
+    "@nextui-org/theme": ">=2.1.0"
+    react: ">=18"
+    react-dom: ">=18"
+  checksum: 10c0/c5727f953af232eaf3e00a1bb07788c444450f23e85664575aa615194ace4ec65024bf2dafa9be1f594517911a8f1f6da43de697603c4037e48e215fc0130dc4
+  languageName: node
+  linkType: hard
+
 "@nextui-org/react-rsc-utils@npm:2.0.14":
   version: 2.0.14
   resolution: "@nextui-org/react-rsc-utils@npm:2.0.14"
@@ -1500,6 +1520,15 @@ __metadata:
   peerDependencies:
     react: ">=18"
   checksum: 10c0/9b8e6999d1f10eaef076174aa4980f5655d7fbdaa19b5e6fbbcd033ba6ad07783bae974ecef0f83822e6d11e198943d96eb2b35c5e6a4fba6d20c70ecf852f98
+  languageName: node
+  linkType: hard
+
+"@nextui-org/use-is-mounted@npm:2.0.6":
+  version: 2.0.6
+  resolution: "@nextui-org/use-is-mounted@npm:2.0.6"
+  peerDependencies:
+    react: ">=18"
+  checksum: 10c0/e846c428a345e2c44cab95765a4f7e6a56e3dc0b4f41c56451e46f0fd7a1d0dacfff4796faab7506ca3cd7b7798941c6536e1c9269e823b96022289ed652ea0e
   languageName: node
   linkType: hard
 
@@ -2005,6 +2034,22 @@ __metadata:
     react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0
     react-dom: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0
   checksum: 10c0/4ec179c1074183ba553d235387ef1ee9aef1463dcef41cd45f48410c9a46aa148b83f562dce78a5d0767060a4b7362ae9e2b2877886931c41a2385b9d249b722
+  languageName: node
+  linkType: hard
+
+"@react-aria/progress@npm:3.4.13":
+  version: 3.4.13
+  resolution: "@react-aria/progress@npm:3.4.13"
+  dependencies:
+    "@react-aria/i18n": "npm:^3.11.1"
+    "@react-aria/label": "npm:^3.7.8"
+    "@react-aria/utils": "npm:^3.24.1"
+    "@react-types/progress": "npm:^3.5.4"
+    "@react-types/shared": "npm:^3.23.1"
+    "@swc/helpers": "npm:^0.5.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
+  checksum: 10c0/70d5fdf81bf2427ef3564ab676521a87a2cbf55dc2dc73b11b90ad7e4316d27eebbacb67eebc7611a67e44a239c84b1184bbc2f45e9de91acc7cfa6b46eba2d6
   languageName: node
   linkType: hard
 
@@ -2822,6 +2867,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-types/progress@npm:3.5.4":
+  version: 3.5.4
+  resolution: "@react-types/progress@npm:3.5.4"
+  dependencies:
+    "@react-types/shared": "npm:^3.23.1"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
+  checksum: 10c0/5a56ac1a075148f63013569086a0837ae63f2c2c933ddccc639c85c04c4d05f43c2e248103dc95bc5c5487e818062fa8bbeb6089a67245317fd9723870cddbed
+  languageName: node
+  linkType: hard
+
+"@react-types/progress@npm:^3.5.4":
+  version: 3.5.8
+  resolution: "@react-types/progress@npm:3.5.8"
+  dependencies:
+    "@react-types/shared": "npm:^3.26.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
+  checksum: 10c0/8bdda03146cb75569ad8aaab4b83d0df41f5ea9172e4c1b181483036422654e4a46f02b69578c2891a509f6916ad53c476f54f9d721718000f1fc464d7a1455d
+  languageName: node
+  linkType: hard
+
 "@react-types/select@npm:3.9.4":
   version: 3.9.4
   resolution: "@react-types/select@npm:3.9.4"
@@ -2857,6 +2924,15 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0
   checksum: 10c0/d168f6b404c345928ef8ead94f0cecd3831d8f6df708dbe897ac62d566949a0931c3b0d95ef6dd02bc5af05b183781b531e6f041ffd1d320bc2cab7697fd27d0
+  languageName: node
+  linkType: hard
+
+"@react-types/shared@npm:^3.26.0":
+  version: 3.26.0
+  resolution: "@react-types/shared@npm:3.26.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
+  checksum: 10c0/3ff20c24dc01d0ad9574f9a13f0e2519f5e3fe962251b7e9dd51e57ee0c1507c8f180792a987531217b02d8900ec2ae92658083b943afa02b9d68018fc79188f
   languageName: node
   linkType: hard
 
@@ -6573,6 +6649,7 @@ __metadata:
     "@nextui-org/modal": "npm:^2.0.41"
     "@nextui-org/navbar": "npm:^2.0.37"
     "@nextui-org/pagination": "npm:^2.0.36"
+    "@nextui-org/progress": "npm:^2.0.34"
     "@nextui-org/select": "npm:^2.2.7"
     "@nextui-org/snippet": "npm:^2.0.43"
     "@nextui-org/spinner": "npm:^2.0.34"
