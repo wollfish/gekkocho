@@ -17,7 +17,7 @@ import NextLink from 'next/link';
 import { PaymentFormModal } from '@/app/dashboard/payments/utils/PaymentFormModal';
 import { Icons, SearchIcon } from '@/components/icons';
 import { link, subtitle } from '@/components/primitives';
-import { cryptoIcons } from '@/constant';
+import { CryptoIcon } from '@/lib/misc/CryptoIcon';
 import { capitalize, cn } from '@/lib/utils';
 import { PaymentResponseInterface } from '@/lib/zod';
 
@@ -37,20 +37,19 @@ const statusOptions = [
 ];
 
 const columns = [
-    { key: 'order_id', label: 'ID' },
-    { key: 'amount', label: 'Amount' },
-    { key: 'currency', label: 'Currency' },
-    { key: 'payer_amount', label: 'Payer Amount' },
-    { key: 'payer_currency', label: 'Payer Currency' },
-    { key: 'network', label: 'Network', options: { capitalize: true } },
-    { key: 'confirms', label: 'Confirmations' },
-    { key: 'status', label: 'Status' },
-    { key: 'created_at', label: 'Created At' },
+    { key: 'reference_id', label: 'ID' },
+    { key: 'req_amount', label: 'Amount' },
+    { key: 'req_currency', label: 'Currency' },
+    { key: 'pay_amount', label: 'Payer Amount' },
+    { key: 'pay_currency', label: 'Payer Currency' },
+    { key: 'pay_blockchain', label: 'Network', options: { capitalize: true } },
+    { key: 'state', label: 'State' },
+    { key: 'initiated_at', label: 'Created At' },
     { key: 'actions', label: 'Actions' },
 ];
 
 const pages = 10;
-const INITIAL_VISIBLE_COLUMNS = ['order_id', 'amount', 'currency', 'payer_amount', 'payer_currency', 'network', 'confirms', 'status', 'created_at', 'actions'];
+const INITIAL_VISIBLE_COLUMNS = ['reference_id', 'req_amount', 'req_currency', 'pay_amount', 'pay_currency', 'pay_blockchain', 'state', 'initiated_at', 'actions'];
 
 export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (props) => {
     const {
@@ -70,7 +69,7 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
     const [statusFilter, setStatusFilter] = React.useState<Selection>('all');
     const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
     const [visibleColumns, setVisibleColumns] = React.useState<Selection>(new Set(INITIAL_VISIBLE_COLUMNS));
-    const [selectedRowKey, setSelectedRowKey] = useState<PaymentResponseInterface['uuid']>(null);
+    const [selectedRowKey, setSelectedRowKey] = useState<PaymentResponseInterface['id']>(null);
 
     const classNames: SlotsToClasses<TableSlots> = useMemo(() => ({
         base: 'overflow-auto',
@@ -82,46 +81,46 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
         const data: PaymentResponseInterface[] = props.data.map((row) => {
             return {
                 ...row,
-                confirms: row.confirms + ' / ' + row.need_confirms as any,
             };
         });
 
         if (filterValue) {
-            return data.filter((row) => row.order_id.includes(filterValue));
+            return data.filter((row) => row.reference_id.includes(filterValue));
         }
 
         return data;
     }, [filterValue, props.data]);
 
-    const onTableRowClick = useCallback((key: PaymentResponseInterface['uuid']) => {
+    const onTableRowClick = useCallback((key: PaymentResponseInterface['reference_id']) => {
         setSelectedRowKey(key);
         onDetailModalOpen();
     }, [onDetailModalOpen]);
 
-    const selectedPayment = useMemo(() => data.find((row) => row.uuid === selectedRowKey), [data, selectedRowKey]);
+    const selectedPayment = useMemo(() => data.find((row) => row.reference_id === selectedRowKey), [data, selectedRowKey]);
 
     const visibleHeaders = useMemo(() => {
         return visibleColumns === 'all' ? columns : columns.filter((col) => visibleColumns.has(col.key));
     }, [visibleColumns]);
 
-    const renderCell = useCallback((data: PaymentResponseInterface, columnKey: React.Key) => {
-        const cellValue = data[columnKey as keyof PaymentResponseInterface] as string | number | undefined;
+    const renderCell = useCallback((data: PaymentResponseInterface, columnKey: any) => {
+        const cellKey = columnKey.key;
+        const cellValue = data[cellKey as keyof PaymentResponseInterface] as string | number | undefined;
 
-        switch (columnKey) {
+        switch (cellKey) {
             case 'name':
             case 'role':
             case 'currency':
-            case 'payer_currency':
-                const Icon = cryptoIcons[(cellValue as string).toLowerCase() as keyof typeof cryptoIcons];
-
+            case 'pay_currency':
+            case 'req_currency':
                 return (
                     <span className="flex items-center gap-2 uppercase">
-                        {Icon && <Icon.icon fill={Icon.fill} size={24}/>}  {cellValue}
+                        <CryptoIcon code={cellValue as string} size={16}/> {cellValue}
                     </span>
                 );
             case 'status':
+            case 'state':
                 return (
-                    <Chip className="capitalize" color={statusColorMap[data.status]} size="sm" variant="light">
+                    <Chip className="capitalize" color={statusColorMap[data.state]} size="sm" variant="light">
                         {cellValue}
                     </Chip>
                 );
@@ -147,7 +146,7 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
                     </div>
                 );
             default:
-                return cellValue;
+                return cellValue || '-';
         }
     }, []);
 
@@ -277,21 +276,19 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
             >
                 <TableHeader columns={visibleHeaders}>
                     {(column) => (
-                        <TableColumn
-                            key={column.key}
-                        >
+                        <TableColumn key={column.key}>
                             {column.label}
                         </TableColumn>
                     )}
                 </TableHeader>
                 <TableBody emptyContent="No rows to display." items={data}>
                     {(item) => (
-                        <TableRow key={item.uuid}>
+                        <TableRow key={item.reference_id}>
                             {visibleHeaders.map((columnKey) => (
                                 <TableCell
                                     key={columnKey.key}
                                     className={cn({ 'capitalize': columnKey?.options?.capitalize })}>
-                                    {renderCell(item, columnKey.key)}
+                                    {renderCell(item, columnKey)}
                                 </TableCell>
                             ))}
                         </TableRow>
@@ -313,18 +310,18 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
             >
                 {selectedPayment && <ModalContent>
                     <ModalHeader className={cn('flex items-center justify-between gap-1', {
-                        'bg-success-300/40': statusColorMap[selectedPayment.status] === 'success',
-                        'bg-danger-300/40': statusColorMap[selectedPayment.status] === 'danger',
-                        'bg-warning-300/40': statusColorMap[selectedPayment.status] === 'warning',
+                        'bg-success-300/40': statusColorMap[selectedPayment.state] === 'success',
+                        'bg-danger-300/40': statusColorMap[selectedPayment.state] === 'danger',
+                        'bg-warning-300/40': statusColorMap[selectedPayment.state] === 'warning',
                     })}>
-                        <h2>Transaction Details <sup>#{selectedPayment.order_id}</sup></h2>
+                        <h2>Transaction Details <sup>#{selectedPayment.id}</sup></h2>
                         <Chip
                             className="capitalize"
-                            color={statusColorMap[selectedPayment.status]}
+                            color={statusColorMap[selectedPayment.state]}
                             size="sm"
                             variant="flat"
                         >
-                            {selectedPayment.status}
+                            {selectedPayment.state}
                         </Chip>
                     </ModalHeader>
                     <ModalBody>
@@ -337,26 +334,26 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
                                 <div className="p-4">
                                     <p className="flex justify-between">
                                         <span className="text-xs text-default-400">Order ID :</span>
-                                        <span>{selectedPayment.order_id}</span>
+                                        <span>{selectedPayment.reference_id}</span>
                                     </p>
                                     <p className="flex justify-between">
                                         <span className="text-xs  text-default-400">Amount :</span>
-                                        <span>{selectedPayment.amount} {selectedPayment.currency}</span>
+                                        <span>{selectedPayment.req_amount} {selectedPayment.req_currency}</span>
                                     </p>
                                     <p className="flex justify-between">
                                         <span className="text-xs text-default-400">Payer Amount :</span>
-                                        <span>{selectedPayment.payment_amount} {selectedPayment.payer_currency}</span>
+                                        <span>{selectedPayment.pay_amount} {selectedPayment.pay_currency}</span>
                                     </p>
                                     <p className="flex justify-between">
                                         <span className="text-xs text-default-400">Status :</span>
                                         <span className={cn(
                                             'capitalize',
                                             {
-                                                'text-success-500': statusColorMap[selectedPayment.status] === 'success',
-                                                'text-danger-500': statusColorMap[selectedPayment.status] === 'danger',
-                                                'text-warning-500': statusColorMap[selectedPayment.status] === 'warning',
+                                                'text-success-500': statusColorMap[selectedPayment.state] === 'success',
+                                                'text-danger-500': statusColorMap[selectedPayment.state] === 'danger',
+                                                'text-warning-500': statusColorMap[selectedPayment.state] === 'warning',
                                             }
-                                        )}>{selectedPayment.status}</span>
+                                        )}>{selectedPayment.state}</span>
                                     </p>
                                 </div>
                             </div>
@@ -369,20 +366,16 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
                                     <p className="flex justify-between">
                                         <span className="text-xs text-default-400">Currency & Network :</span>
                                         <span className="uppercase">
-                                            {selectedPayment.payer_currency} | {selectedPayment.network}
+                                            {selectedPayment.pay_currency} | {selectedPayment.pay_blockchain}
                                         </span>
                                     </p>
                                     <p className="flex justify-between">
                                         <span className="text-xs text-default-400">Payment Amount :</span>
-                                        <span>{selectedPayment.payment_amount}</span>
-                                    </p>
-                                    <p className="flex justify-between">
-                                        <span className="text-xs text-default-400">Remains Amount :</span>
-                                        <span>{selectedPayment.remains_amount}</span>
+                                        <span>{selectedPayment.pay_amount}</span>
                                     </p>
                                     <p className="flex justify-between">
                                         <span className="text-xs text-default-400">Fee Amount :</span>
-                                        <span>{selectedPayment.fee_amount}</span>
+                                        <span>---</span>
                                     </p>
                                 </div>
                             </div>
@@ -407,14 +400,6 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
                                             <Icons.clipboard/>
                                         </span>
                                     </p>
-                                    <p className="flex justify-between">
-                                        <span className="text-xs  text-default-400">Block :</span>
-                                        <span>{selectedPayment.block}</span>
-                                    </p>
-                                    <p className="flex justify-between">
-                                        <span className="text-xs text-default-400">Confirmations :</span>
-                                        <span>{selectedPayment.need_confirms} / {selectedPayment.confirms}</span>
-                                    </p>
                                 </div>
                             </div>
                         </section>
@@ -426,16 +411,12 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
                                 </div>
                                 <div className="p-4">
                                     <p className="flex justify-between">
-                                        <span className="text-xs text-default-400">Description :</span>
-                                        <span>{selectedPayment.desc}</span>
-                                    </p>
-                                    <p className="flex justify-between">
                                         <span className="text-xs  text-default-400">Return URL :</span>
-                                        <span>{selectedPayment.return_url}</span>
+                                        <span>{selectedPayment.redirect_url}</span>
                                     </p>
                                     <p className="flex justify-between">
                                         <span className="text-xs text-default-400">Created At :</span>
-                                        <span>{String(selectedPayment.created_at)}</span>
+                                        <span>{String(selectedPayment.initiated_at)}</span>
                                     </p>
                                     <p className="flex justify-between">
                                         <span className="text-xs text-default-400">Expires At :</span>
@@ -444,14 +425,14 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
                                     <p className="flex justify-between">
                                         <span className="text-xs text-default-400">UUID :</span>
                                         <span className="flex items-center gap-2">
-                                            {selectedPayment.uuid}
+                                            {selectedPayment.id}
                                             <Icons.clipboard/>
                                         </span>
                                     </p>
                                     <div className="flex justify-between">
                                         <span className="text-xs text-default-400">Page Link :</span>
-                                        <NextLink className={link().base()} href={`/pay/${selectedPayment.uuid}`}>
-                                            http://localhost:3000/pay/{selectedPayment.uuid}
+                                        <NextLink className={link().base()} href={`/pay/${selectedPayment.id}`}>
+                                            http://localhost:3000/pay/{selectedPayment.id}
                                         </NextLink>
                                     </div>
                                 </div>
@@ -459,7 +440,7 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
                         </section>
                     </ModalBody>
                     <ModalFooter>
-                        {selectedPayment.status === 'pending' &&
+                        {selectedPayment.state === 'pending' &&
                             <div className="flex w-full items-center gap-2 text-sm">
                                 <Icons.info color="#F7931A" size={16}/>
                                 <p className="mr-auto">Transaction is pending confirmation</p>
@@ -468,7 +449,7 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
                                     <Icons.arrowRight/>
                                 </Button>
                             </div>}
-                        {selectedPayment.status === 'failed' &&
+                        {selectedPayment.state === 'failed' &&
                             <div className="flex w-full items-center gap-2 text-sm">
                                 <Icons.info color="red" size={16}/>
                                 <p className="mr-auto">Transaction Failed due to timeout</p>
@@ -477,7 +458,7 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
                                     <Icons.bell/>
                                 </Button>
                             </div>}
-                        {selectedPayment.status === 'confirmed' &&
+                        {selectedPayment.state === 'confirmed' &&
                             <div className="flex w-full items-center gap-2 text-sm">
                                 <Icons.flower color="green" size={16}/>
                                 <p className="mr-auto">Transaction Completed</p>

@@ -17,19 +17,21 @@ import { QRCodeGenerator } from '@/components/qrCodeGenerator';
 import { CountdownTimer } from '@/components/ui/CountdownTimer';
 import { cn } from '@/lib/utils';
 
-const WRAPPER_CLASS = 'w-full rounded-lg border border-dashed bg-white shadow-lg contain-content dark:border-default dark:bg-default-50 md:max-w-md';
+const WRAPPER_CLASS = 'w-full rounded-lg border border-dashed bg-white shadow-lg contain-content dark:border-default dark:bg-default-50 md:max-w-md min-w-[380px]';
 const NETWORK_CLASS = 'mx-auto mb-2 flex w-fit items-center gap-2 rounded border border-dashed px-2 py-1 text-sm dark:border-default';
 
 export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
     const { data: payment, isLoading: paymentLoading } = useQuery({
         queryKey: ['payment_info', props.id],
         queryFn: () => getPaymentInfo({ payment_id: props.id }),
+        retryDelay: 3000,
+        refetchInterval: 5000,
     });
-
+    
     const { data: paymentMethods, isLoading: paymentMethodsLoading } = useQuery({
-        queryKey: ['payment_methods', props.id],
-        queryFn: () => getPaymentMethods({ payment_id: props.id }),
-        enabled: payment?.success && !payment?.data?.network,
+        queryKey: ['payment_methods'],
+        queryFn: () => getPaymentMethods(),
+        enabled: payment?.success && !payment?.data?.pay_blockchain,
     });
 
     if (paymentLoading || paymentMethodsLoading) {
@@ -41,23 +43,31 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
     }
 
     const {
-        order_id,
-        amount,
-        currency,
-        network,
+        id,
+        initiated_at,
         address,
-        payer_amount,
-        payer_currency,
+        pay_blockchain,
+        pay_amount,
+        created_at,
+
         expired_at,
-        uuid,
+        pay_currency,
+        req_amount,
+        exchange_rate,
+        state,
+        req_currency,
+        redirect_url,
+        reference_id,
     } = payment?.data || {};
 
     if (!payment.data) {
-        return ( 
+        return (
             <section className={cn(WRAPPER_CLASS, 'shadow-none')}>
                 <div className="flex flex-col items-center justify-center p-4 text-sm">
-                    <p className="mb-4 text-center">No payment found by this ID: <span className="font-semibold">{props.id}</span></p>
-                    <Button as={NextLink} color="primary" href="/" radius="full" startContent={<Icons.home/>} variant="flat">
+                    <p className="mb-4 text-center">No payment found by this ID: <span
+                        className="font-semibold">{props.id}</span></p>
+                    <Button as={NextLink} color="primary" href="/" radius="full" startContent={<Icons.home/>}
+                        variant="flat">
                         Go home
                     </Button>
                 </div>
@@ -73,26 +83,33 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
                         <Logo size={32}/>
                         <p className="font-bold">CoinDhan Pay</p>
                     </div>
-                    <div>Order Id: <span className="text-sm font-semibold">#{order_id}</span></div>
+                    <div>Order Id: <span className="text-sm font-semibold">#{reference_id}</span></div>
                 </div>
                 <div className="capitalize">
                     <span>Amount: </span>
-                    <span className="font-semibold uppercase">{amount} {currency}</span>
+                    <span className="font-semibold uppercase">{req_amount} {req_currency}</span>
                 </div>
                 <div className="absolute right-4"><ReloadBtn/></div>
             </div>
             <div className="p-4" slot="body">
-                {!network && !paymentMethodsLoading
-                    ? <PaymentMethodForm methods={paymentMethods?.data || []} uuid={uuid}/>
+                {!pay_blockchain && !paymentMethodsLoading ?
+                    <PaymentMethodForm
+                        methods={paymentMethods.data}
+                        reqAmount={req_amount} reqCurrency={req_currency}
+                        uuid={id}
+                    />
                     : <div>
                         <div className={NETWORK_CLASS}>
                             <span>Network :</span>
                             <span className="flex items-center justify-center font-semibold">
                                 <Icons.eth/>
-                                <span className="ml-1 mr-2 uppercase">{network}</span>
+                                <span className="ml-1 mr-2 uppercase">{pay_blockchain}</span>
                                 <Tooltip content="You pay network fee" radius="sm">
                                     <Button className="!size-4 min-w-0" isIconOnly={true} radius="full" variant="light"> 
-                                        <Icons.info aria-label="More information about Network" className="text-primary"/>
+                                        <Icons.info
+                                            aria-label="More information about Network"
+                                            className="text-primary"
+                                        />
                                     </Button>
                                 </Tooltip>
                             </span>
@@ -106,7 +123,7 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
                                 classNames={{ pre: 'break-all whitespace-normal' }}
                                 radius="sm"
                             >
-                                {`${payer_amount} ${payer_currency}`}
+                                {`${pay_amount} ${pay_currency}`}
                             </Snippet>
                         </div>
                         <div className="mb-4">

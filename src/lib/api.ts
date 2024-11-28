@@ -10,7 +10,7 @@ interface ApiRequestParams {
     method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'; // HTTP method
     payload?: Record<string, any> | null; // Request body for POST, PUT, etc.
     headers?: Record<string, string>; // Additional request headers
-    noCache?: boolean; // Disable caching
+    cache?: boolean; // Enable caching
     pathToRevalidate?: string[];
 }
 
@@ -32,7 +32,7 @@ export async function makeApiRequest<T = any>(params: ApiRequestParams): Promise
         method = 'GET',
         payload = null,
         headers = {},
-        noCache = true,
+        cache = false,
         pathToRevalidate,
     } = params;
 
@@ -57,11 +57,13 @@ export async function makeApiRequest<T = any>(params: ApiRequestParams): Promise
     }
 
     try {
+        console.info('Making request', url);
+
         const res = await fetch(url, {
             method,
             headers: { ...defaultHeaders, ...headers },
             body: (method !== 'GET' && payload) ? JSON.stringify(payload) : null,
-            cache: noCache ? 'no-cache' : 'default',
+            cache: cache ? 'default' : 'no-cache',
         });
 
         const isSuccessful = res.ok;

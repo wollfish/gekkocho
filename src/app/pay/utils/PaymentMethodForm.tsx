@@ -2,106 +2,111 @@
 
 import React, { Suspense, useMemo } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Avatar } from '@nextui-org/avatar';
 import { Button } from '@nextui-org/button';
 import { Input } from '@nextui-org/input';
 import { Select, SelectItem } from '@nextui-org/select';
-import { useRouter } from 'next/navigation';
 import { Controller, useForm } from 'react-hook-form';
 
 import { toast } from 'sonner';
 
 import { setPaymentMethod } from '@/actions/pay';
+import { CryptoIcon } from '@/lib/misc/CryptoIcon';
+import { convertCurrency } from '@/lib/utils';
 import { PaymentMethodFormInterface, paymentMethodFormSchema, PaymentMethodInterface } from '@/lib/zod';
 
 interface OwnProps {
     uuid: string;
+    reqCurrency: string;
+    reqAmount: string;
     methods: PaymentMethodInterface[];
 }
 
 export const PaymentMethodForm: React.FC<OwnProps> = (props) => {
-    const { uuid, methods } = props;
+    const { uuid, reqAmount, reqCurrency, methods } = props;
 
-    const router = useRouter();
-
-    const { handleSubmit, formState, control, reset, watch } = useForm<PaymentMethodFormInterface>({
+    const { handleSubmit, formState, control, watch } = useForm<PaymentMethodFormInterface>({
         resolver: zodResolver(paymentMethodFormSchema),
         defaultValues: {
-            uuid: uuid,
-            currency: '',
-            network: '',
+            payment_id: String(uuid),
+            pay_currency: '',
+            pay_blockchain: '',
         },
     });
 
     const onSubmit = async (values: PaymentMethodFormInterface) => {
-        const { error, success, data } = await setPaymentMethod(values) || {};
+        const { error } = await setPaymentMethod(values) || {};
 
-        if (success) {
-            router.push(`/pay/${values.uuid}`);
-        } else {
-            toast.error(error?.message);
-        }
+        toast.error(error);
     };
 
-    const selectedCurrency = useMemo(() => methods.find((m) => m.currency === watch().currency), [methods, watch().currency]);
+    const selectedCurrencyId = watch('pay_currency');
+    const selectedCurrency = useMemo(() => methods.find((m) => m.id === selectedCurrencyId), [methods, selectedCurrencyId]);
+    const convertedAmount = useMemo(() => {
+        if (selectedCurrency) {
+            return convertCurrency(methods, reqAmount, reqCurrency, selectedCurrency.id);
+        }
+    }, [methods, reqAmount, reqCurrency, selectedCurrency]);
 
     return (
         <form autoComplete="off" className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
             <Controller
                 control={control}
-                name="currency"
+                name="pay_currency"
                 render={({ field, formState }) => (
                     <Select
-                        errorMessage={formState.errors?.['currency']?.message?.toString()}
-                        isInvalid={!!formState.errors?.['currency']?.message}
+                        errorMessage={formState.errors?.['pay_currency']?.message?.toString()}
+                        isInvalid={!!formState.errors?.['pay_currency']?.message}
+                        items={methods}
                         label="Select Currency"
                         labelPlacement="outside"
                         placeholder=" "
-                        value={field.value}
+                        selectedKeys={[field.value]}
                         onChange={field.onChange}
                     >
-                        {methods.map((method) => (
+                        {(method) => (
                             <SelectItem
-                                key={method.currency}
-                                startContent={<Avatar className="!size-6" src={method.currency_icon}/>}
-                                value={method.currency}
+                                key={method.id}
+                                startContent={<CryptoIcon code={method.id}/>}
+                                textValue={method.currency_name}
                             >
-                                {method.currency}
+                                {method.currency_name}
                             </SelectItem>
-                        ))}
+                        )}
                     </Select>
                 )}
             />
             <Controller
                 control={control}
-                name="network"
+                name="pay_blockchain"
                 render={({ field, formState }) => (
                     <Select
-                        errorMessage={formState.errors?.['network']?.message?.toString()}
-                        isInvalid={!!formState.errors?.['network']?.message}
+                        disallowEmptySelection={true}
+                        errorMessage={formState.errors?.['pay_blockchain']?.message?.toString()}
+                        isInvalid={!!formState.errors?.['pay_blockchain']?.message}
+                        items={selectedCurrency?.networks || []}
                         label="Select Network"
                         labelPlacement="outside"
                         placeholder=" "
-                        value={field.value}
+                        selectedKeys={[field.value]}
                         onChange={field.onChange}
                     >
-                        {methods.filter((m) => m.currency === watch().currency).map((method) => (
+                        {(network) => (
                             <SelectItem
-                                key={method.network}
-                                value={method.network}
+                                key={network.blockchain_key}
+                                textValue={network.protocol || network.blockchain_key}
                             >
-                                {method.network?.toUpperCase()}
+                                {network.protocol || network.blockchain_key}
                             </SelectItem>
-                        ))}
+                        )}
                     </Select>
                 )}
             />
             <Input
-                description={`Conversion Rate: ${selectedCurrency?.exchange_rate || 0}`}
+                description={`Conversion Rate: ${convertedAmount?.[1] || 0} ${reqCurrency.toUpperCase()}`}
                 label="Converted Amount"
                 labelPlacement="outside"
                 placeholder=" "
-                value={selectedCurrency?.real_amount || ''}
+                value={String(convertedAmount?.[0]) || ''}
             />
             <div className="flex justify-end gap-4">
                 <Suspense>

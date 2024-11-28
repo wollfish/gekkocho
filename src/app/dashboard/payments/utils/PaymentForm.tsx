@@ -6,11 +6,13 @@ import { Avatar } from '@nextui-org/avatar';
 import { Button } from '@nextui-org/button';
 import { Input } from '@nextui-org/input';
 import { Select, SelectItem } from '@nextui-org/select';
+import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { Controller, useForm } from 'react-hook-form';
 
 import { toast } from 'sonner';
 
+import { getCurrencyList } from '@/actions/dashboard/account';
 import { initializePayment } from '@/actions/dashboard/payment';
 import { PaymentFormInterface, paymentFormSchema } from '@/lib/zod';
 
@@ -20,22 +22,26 @@ export const PaymentForm: React.FC = () => {
     const { handleSubmit, formState, control, reset } = useForm<PaymentFormInterface>({
         resolver: zodResolver(paymentFormSchema),
         defaultValues: {
-            order_id: '',
-            order_amount: null,
-            order_currency: '',
-            order_currency_type: 'fiat',
-            order_description: '',
+            reference_id: '',
+            req_amount: null,
+            req_currency: '',
             redirect_url: '',
         },
+    });
+
+    const { data: currencies, isLoading: currenciesLoading } = useQuery({
+        queryKey: ['currencies'],
+        queryFn: () => getCurrencyList(),
     });
 
     const onSubmit = async (values: PaymentFormInterface) => {
         const { error, success, data } = await initializePayment(values) || {};
 
         if (success) {
-            router.push(data.payment_link);
+            console.log(data);
+            // router.push(data.payment_link);
         } else {
-            toast.error(error?.message);
+            toast.error(error);
         }
     };
 
@@ -44,14 +50,14 @@ export const PaymentForm: React.FC = () => {
             <div className="col-span-2 grid grid-cols-6 items-start gap-4">
                 <Controller
                     control={control}
-                    name="order_amount"
+                    name="req_amount"
                     render={({ field, formState }) => (
                         <Input
                             autoComplete="off"
                             className="col-span-4"
-                            errorMessage={formState.errors?.['order_amount']?.message?.toString()}
-                            isInvalid={!!formState.errors?.['order_amount']?.message}
-                            label="Order Amount"
+                            errorMessage={formState.errors?.['req_amount']?.message?.toString()}
+                            isInvalid={!!formState.errors?.['req_amount']?.message}
+                            label="Requested Amount"
                             labelPlacement="outside"
                             placeholder=" "
                             type="number"
@@ -62,12 +68,12 @@ export const PaymentForm: React.FC = () => {
                 />
                 <Controller
                     control={control}
-                    name="order_currency"
+                    name="req_currency"
                     render={({ field, formState }) => (
                         <Select
                             className="col-span-2"
-                            errorMessage={formState.errors?.['order_currency']?.message?.toString()}
-                            isInvalid={!!formState.errors?.['order_currency']?.message}
+                            errorMessage={formState.errors?.['req_currency']?.message?.toString()}
+                            isInvalid={!!formState.errors?.['req_currency']?.message}
                             label="Currency"
                             labelPlacement="outside"
                             placeholder=" "
@@ -101,13 +107,14 @@ export const PaymentForm: React.FC = () => {
             </div>
             <Controller
                 control={control}
-                name="order_id"
+                name="reference_id"
                 render={({ field, formState }) => (
                     <Input
                         autoComplete="off"
-                        errorMessage={formState.errors?.['order_id']?.message?.toString()}
-                        isInvalid={!!formState.errors?.['order_id']?.message}
-                        label="Order Id (Optional)"
+                        className="col-span-2"
+                        errorMessage={formState.errors?.['reference_id']?.message?.toString()}
+                        isInvalid={!!formState.errors?.['reference_id']?.message}
+                        label="Reference Id"
                         labelPlacement="outside"
                         placeholder=" "
                         value={field.value}
@@ -115,22 +122,22 @@ export const PaymentForm: React.FC = () => {
                     />
                 )}
             />
-            <Controller
-                control={control}
-                name="order_description"
-                render={({ field, formState }) => (
-                    <Input
-                        autoComplete="off"
-                        errorMessage={formState.errors?.['order_description']?.message?.toString()}
-                        isInvalid={!!formState.errors?.['order_description']?.message}
-                        label="Order Desc (Optional)"
-                        labelPlacement="outside"
-                        placeholder=" "
-                        value={field.value}
-                        onChange={field.onChange}
-                    />
-                )}
-            />
+            {/*<Controller*/}
+            {/*    control={control}*/}
+            {/*    name=""*/}
+            {/*    render={({ field, formState }) => (*/}
+            {/*        <Input*/}
+            {/*            autoComplete="off"*/}
+            {/*            errorMessage={formState.errors?.['order_description']?.message?.toString()}*/}
+            {/*            isInvalid={!!formState.errors?.['order_description']?.message}*/}
+            {/*            label="Order Desc (Optional)"*/}
+            {/*            labelPlacement="outside"*/}
+            {/*            placeholder=" "*/}
+            {/*            value={field.value}*/}
+            {/*            onChange={field.onChange}*/}
+            {/*        />*/}
+            {/*    )}*/}
+            {/*/>*/}
             <Controller
                 control={control}
                 name="redirect_url"

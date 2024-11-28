@@ -42,7 +42,7 @@ export async function getCurrencyList(): Promise<ApiResponse<CurrencyResponseInt
     return await makeApiRequest<CurrencyResponseInterface[]>({
         endpoint: '/public/currencies',
         apiVersion: 'peatio',
-        noCache: false,
+        cache: true,
     });
 }
 

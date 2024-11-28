@@ -141,25 +141,30 @@ export const twoFactorAuthFormSchema = z.object({
     message: 'Code must be 6 characters',
 });
 
+// req_currency
+// req_amount
+// reference_id [-, 0-9, A-Z, a-z]
+// pay_currency?
+// pay_blockchain?
+// redirect_url?
 export const paymentFormSchema = z.object({
-    order_id: z.string().optional(),
-    order_amount: z.coerce
+    reference_id: z.string({ required_error: 'Reference id is required' })
+        .min(8, 'Reference id should be at least 8 characters')
+        .max(64, 'Reference id must be less than 64 characters'),
+    req_amount: z.coerce
         .number({ required_error: 'Order amount is required' })
         .gt(0, 'Order amount must be greater than 0'),
-    order_currency: z.string({ required_error: 'Order currency is required' })
+    req_currency: z.string({ required_error: 'Order currency is required' })
         .min(1, 'Order currency is required'),
-    order_currency_type: z.enum(['fiat', 'crypto']),
-    order_description: z.string().optional(),
     redirect_url: z.string().optional(),
 });
-
 export const paymentMethodFormSchema = z.object({
-    uuid: z.string({ required_error: 'Payment method is required' }).min(1, 'Payment method is required'),
-    currency: z.string({ required_error: 'Currency is required' }).min(1, 'Currency is required'),
-    network: z.string({ required_error: 'Network is required' }).min(1, 'Network is required'),
+    payment_id: z.string({ required_error: 'Payment method is required' }).min(1, 'Payment method is required'),
+    pay_currency: z.string({ required_error: 'Currency is required' }).min(1, 'Currency is required'),
+    pay_blockchain: z.string({ required_error: 'Network is required' }).min(1, 'Network is required'),
 });
 
-export const paymentResponseSchema = z.object({
+export const paymentResponseSchemaV1 = z.object({
     uuid: z.string(),
     order_id: z.string(),
     amount: z.string(),
@@ -187,19 +192,22 @@ export const paymentResponseSchema = z.object({
     block: z.number(),
 });
 
-export const paymentMethodSchema = z.object({
-    amount: z.string(),
-    real_amount: z.string(),
-    exchange_rate: z.string(),
-    discount: z.number(),
-    discount_percent: z.number(),
-    currency: z.string(),
-    currency_icon: z.string(),
-    network: z.string(),
-    token_standard: z.string(),
-    is_popular_choice: z.boolean(),
-    min_amount: z.string(),
-    status: z.string(),
+export const paymentResponseSchema = z.object({
+    id: z.string(),
+    req_currency: z.string(),
+    pay_currency: z.string().nullable(),
+    pay_blockchain: z.string().nullable(),
+    exchange_rate: z.string().nullable(),
+    req_amount: z.string(),
+    pay_amount: z.string().nullable(),
+    address: z.string().nullable(),
+    txid: z.string().nullable(),
+    reference_id: z.string(),
+    redirect_url: z.string().nullable(),
+    state: z.string(),
+    created_at: z.coerce.date(),
+    initiated_at: z.coerce.date().nullable(),
+    expired_at: z.coerce.date().nullable(),
 });
 
 export const accountResponseInterface = z.object({
@@ -311,6 +319,18 @@ export const currencyResponseSchema = z.object({
     networks: z.array(networkSchema),
 });
 
+//pay_currency
+//pay_blockchain
+
+export const paymentMethodSchema = z.object({
+    id: z.string(),
+    exchange_rate: z.string(),
+    currency_name: z.string(),
+    currency_icon: z.string(),
+    networks: z.array(networkSchema),
+    status: z.string(),
+});
+
 export type PaymentFormInterface = z.infer<typeof paymentFormSchema>;
 export type PaymentMethodFormInterface = z.infer<typeof paymentMethodFormSchema>;
 export type BeneficiaryFormInterface = z.infer<typeof beneficiaryFormSchema>;
@@ -318,8 +338,10 @@ export type BeneficiaryInterface = z.infer<typeof beneficiarySchema>;
 export type BeneficiaryActivationFormInterface = z.infer<typeof beneficiaryActivationFromSchema>;
 export type WithdrawalInterface = z.infer<typeof withdrawalSchema>;
 export type WithdrawalFormInterface = z.infer<typeof withdrawalFormSchema>;
+
 export type PaymentResponseInterface = z.infer<typeof paymentResponseSchema>;
 export type PaymentMethodInterface = z.infer<typeof paymentMethodSchema>;
+
 export type AccountResponseInterface = z.infer<typeof accountResponseInterface>;
 export type NetworkInterface = z.infer<typeof networkSchema>;
 export type CurrencyResponseInterface = z.infer<typeof currencyResponseSchema>;

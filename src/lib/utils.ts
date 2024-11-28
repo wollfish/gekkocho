@@ -1,6 +1,8 @@
 import { ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
+import { PaymentMethodInterface } from '@/lib/zod';
+
 export const cn = (...inputs: ClassValue[]) => {
     return twMerge(clsx(inputs));
 };
@@ -39,4 +41,18 @@ export const buildQueryString = (action: Record<string, any>, excludeKeys: strin
         .join('&');
 
     return queryString ? `?${queryString}` : '';
+};
+
+export const convertCurrency = (currencies: PaymentMethodInterface[], amount: string | number, fromCurrencyId: string, toCurrencyId: string) => {
+    const fromCurrency = currencies.find((currency) => currency.id === fromCurrencyId);
+    const toCurrency = currencies.find((currency) => currency.id === toCurrencyId);
+
+    if (!fromCurrency || !toCurrency) {
+        throw new Error('Invalid currency IDs');
+    }
+
+    const conversionRate = +toCurrency.exchange_rate / +fromCurrency.exchange_rate;
+    const convertedAmount = +amount / conversionRate;
+
+    return [convertedAmount, conversionRate];
 };

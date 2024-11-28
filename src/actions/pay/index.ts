@@ -1,91 +1,38 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
+import { getCurrencyList } from '@/actions/dashboard/account';
+import { ApiResponse, makeApiRequest } from '@/lib/api';
+import { PaymentMethodFormInterface, PaymentMethodInterface, PaymentResponseInterface } from '@/lib/zod';
 
-import { PaymentMethodFormInterface, PaymentResponseInterface } from '@/lib/zod';
+export async function getPaymentInfo(payload: { payment_id: string }): Promise<ApiResponse<PaymentResponseInterface>> {
+    return await makeApiRequest<PaymentResponseInterface>({
+        endpoint: `/public/payment_requests/${payload.payment_id}`,
+        apiVersion: 'peatio',
+        cache: false,
+    });
+}
 
-export const getPaymentInfo = async (payload: { payment_id: string }): Promise<{
-    success: boolean;
-    error: string | null;
-    data: PaymentResponseInterface
-}> => {
-    try {
-        const data = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/payment/info?payment_id=${payload.payment_id}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(payload),
-            cache: 'no-cache',
-        });
+export async function getPaymentMethods(): Promise<ApiResponse<PaymentMethodInterface[]>> {
+    const { success, error, data } = await getCurrencyList();
 
-        const res = await data.json();
+    const res_data = data?.map((c) => ({
+        id: c.id,
+        currency_name: c.name,
+        networks: c.networks,
+        status: c.status,
+        exchange_rate: c.price,
+        currency_icon: c.icon_url,
+    }));
 
-        if (!data.ok) {
-            console.warn('getPaymentInfo - data', res);
+    return { success, error, data: res_data };
+}
 
-            return { success: false, error: res?.error || 'UUID not found', data: null };
-        }
-
-        revalidatePath('/pay/[id]', 'page');
-
-        return { success: true, error: null, data: res };
-    } catch (e) {
-        console.error('getPaymentInfo - error', e);
-        throw e;
-    }
-};
-
-export const getPaymentMethods = async (payload: { payment_id: string }) => {
-    try {
-        const data = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/payment/currencies`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(payload),
-            cache: 'no-cache',
-        });
-
-        const res = await data.json();
-
-        if (!data.ok) {
-            console.warn('getPaymentMethods - data', res);
-
-            return { success: false, error: res?.error, data: null };
-        }
-
-        return { success: true, error: null, data: res };
-    } catch (e) {
-        console.error('getPaymentMethods - error', e);
-        throw e;
-    }
-};
-
-export const setPaymentMethod = async (payload: PaymentMethodFormInterface) => {
-    try {
-        const data = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/payment/methods`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(payload),
-            cache: 'no-cache',
-        });
-
-        const res = await data.json();
-
-        if (!data.ok) {
-            console.warn('setPaymentMethod - data', res);
-
-            return { success: false, error: res?.error, data: null };
-        }
-
-        revalidatePath('/pay/[id]', 'page');
-
-        return { success: true, error: null, data: res };
-    } catch (e) {
-        console.error('setPaymentMethod - error', e);
-        throw e;
-    }
-};
+export async function setPaymentMethod(payload: PaymentMethodFormInterface) : Promise<ApiResponse<PaymentResponseInterface>> {
+    return await makeApiRequest<PaymentResponseInterface>({
+        endpoint: `/public/payment_requests/${payload.payment_id}`,
+        apiVersion: 'peatio',
+        method: 'PUT',
+        payload,
+        pathToRevalidate: ['/pay/[id]'],
+    });
+}

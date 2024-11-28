@@ -67,8 +67,6 @@ export async function toggleTwoFactor(formData: TwoFactorAuthFormInterface): Pro
 }
 
 export async function generateTwoFactorSecret(): Promise<ApiResponse> {
-    console.log('Making request');
-
     return await makeApiRequest({
         endpoint: '/resource/otp/generate_qrcode',
         apiVersion: 'barong',
