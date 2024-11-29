@@ -31,7 +31,6 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
     const { data: paymentMethods, isLoading: paymentMethodsLoading } = useQuery({
         queryKey: ['payment_methods'],
         queryFn: () => getPaymentMethods(),
-        enabled: payment?.success && !payment?.data?.pay_blockchain,
     });
 
     if (paymentLoading || paymentMethodsLoading) {
@@ -60,6 +59,8 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
         reference_id,
     } = payment?.data || {};
 
+    console.log(payment.data);
+
     if (!payment.data) {
         return (
             <section className={cn(WRAPPER_CLASS, 'shadow-none')}>
@@ -74,6 +75,7 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
             </section>
         );
     }
+
     const renderData = () => {
         if (state === 'success') {
             return (
@@ -103,7 +105,7 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
                 </div>
             );
         }
-        if (!pay_blockchain && !paymentMethods.data) {
+        if (state === 'pending') {
             return (
                 <PaymentMethodForm
                     methods={paymentMethods.data}

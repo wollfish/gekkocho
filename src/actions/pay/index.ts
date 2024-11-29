@@ -22,6 +22,7 @@ export async function getPaymentMethods(): Promise<ApiResponse<PaymentMethodInte
         status: c.status,
         exchange_rate: c.price,
         currency_icon: c.icon_url,
+        currency_type: c.type,
     }));
 
     return { success, error, data: res_data };
