@@ -16,15 +16,21 @@ export default function Page() {
 
     const token = searchParams.get('confirmation_token');
 
-    const { isSuccess } = useQuery({
+    const { isSuccess, data } = useQuery({
         queryKey: ['email_verification', token],
         queryFn: () => verifyEmailToken({ token }),
         retry: false,
     });
 
     useEffect(() => {
-        toast.success('Email verified successfully');
-    }, [isSuccess]);
+        if (data.success) {
+            toast.success('Email verified successfully');
+        }
+
+        if (data.error) {
+            toast.error(data.error);
+        }
+    }, [data]);
 
     return (
         <React.Fragment>

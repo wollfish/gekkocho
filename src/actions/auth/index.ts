@@ -139,5 +139,6 @@ export async function verifyEmailToken(payload: { token: string }): Promise<ApiR
         apiVersion: 'barong',
         method: 'POST',
         payload,
+        pathToRevalidate: ['/account/confirmation'],
     });
 }
