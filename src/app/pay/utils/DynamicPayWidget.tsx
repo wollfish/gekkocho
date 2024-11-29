@@ -34,6 +34,8 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
         queryFn: () => getPaymentMethods(),
     });
 
+    const payCurrency = paymentMethods?.data?.find((c) => c.id === payment?.data?.pay_currency);
+
     if (paymentLoading || paymentMethodsLoading) {
         return (
             <section className="flex items-center justify-center">
@@ -41,6 +43,8 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
             </section>
         );
     }
+
+    console.log(payment);
 
     const {
         id,
@@ -82,8 +86,7 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
                     <Icons.check className="text-green-500" size={32}/>
                     <p className="font-semibold">Payment is successful</p>
                     <p>For Order ID: <b>{reference_id}</b></p>
-                    <p>Request Amount: {req_amount} {req_currency?.toUpperCase()}</p>
-                    <p>Payment Amount: {pay_amount} {pay_currency?.toUpperCase()}</p>
+                    <p>Request Amount: {pay_amount} {pay_currency?.toUpperCase()}</p>
                     <Button
                         as={NextLink}
                         color="primary"
@@ -96,14 +99,14 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
                 </div>
             );
         }
-        if (state === 'error') {
+        if (state === 'rejected') {
             return (
                 <div className="flex flex-col items-center justify-center gap-4 p-4 text-sm">
                     <Icons.cancel className="text-red-500" size={32}/>
                     <p className="font-semibold">Payment is failed</p>
                     <p>For Order ID: <b>{reference_id}</b></p>
-                    <p>Request Amount: {req_amount} {req_currency?.toUpperCase()}</p>
-                    <p>Payment Amount: {pay_amount ?? '-'} {pay_currency?.toUpperCase()}</p>
+                    <p>Request Amount: {pay_amount} {pay_currency?.toUpperCase()}</p>
+                    <p>Received Amount: {0} {pay_currency?.toUpperCase()}</p>
                     <Button
                         as={NextLink} color="primary"
                         href={redirect_url}
@@ -141,7 +144,7 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
                             </Tooltip>
                         </span>
                     </div>
-                    <QRCodeGenerator value={address}/>
+                    <QRCodeGenerator icon={payCurrency?.currency_icon} value={address}/>
                     <div className="mb-4">
                         <div className="mb-1 text-sm font-semibold">Pay amount:</div>
                         <Snippet
@@ -153,6 +156,10 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
                         >
                             {[pay_amount, pay_currency?.toUpperCase()].join(' ')}
                         </Snippet>
+                        <p className="mt-1 text-xs text-default-400">
+                            <span>Exchange Rate: </span>
+                            <span className="uppercase">1 {pay_currency} = {exchange_rate} {req_currency}</span>
+                        </p>
                     </div>
                     <div className="mb-4">
                         <div className="mb-1 text-sm font-semibold">To address:</div>

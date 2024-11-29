@@ -5,8 +5,6 @@ import * as qr from '@bitjson/qr-code';
 import { Spinner } from '@nextui-org/spinner';
 import { useEventListener } from 'ahooks';
 
-import { CryptoIcon } from '@/lib/misc/CryptoIcon';
-
 interface OwnProps {
     value: string;
     icon?: string;
@@ -56,16 +54,15 @@ export const QRCodeGenerator: React.FC<OwnProps> = (props) => {
                 position-center-color="#ff8e5a"
                 position-ring-color="#bf6331"
             >
-                {/*<Image*/}
-                {/*    ref={logoRef}*/}
-                {/*    alt=""*/}
-                {/*    className="hidden"*/}
-                {/*    height="64"*/}
-                {/*    slot="icon"*/}
-                {/*    src={icon ? icon : '/images/logo.svg'}*/}
-                {/*    width="64"*/}
-                {/*/>*/}
-                <CryptoIcon code={'inr'}/>
+                <img
+                    ref={logoRef}
+                    alt=""
+                    className="hidden"
+                    height="64"
+                    slot="icon"
+                    src={icon ? icon : '/images/logo.svg'}
+                    width="64"
+                />
             </qr-code>
         </div>
     );
