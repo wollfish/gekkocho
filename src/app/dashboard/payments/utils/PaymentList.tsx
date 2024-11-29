@@ -25,6 +25,7 @@ const statusColorMap: Record<string, ChipProps['color']> = {
     active: 'success',
     confirmed: 'success',
     pending: 'warning',
+    processing: 'warning',
     vacation: 'warning',
     paused: 'danger',
     failed: 'danger',
@@ -333,16 +334,20 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
                                 </div>
                                 <div className="p-4">
                                     <p className="flex justify-between">
-                                        <span className="text-xs text-default-400">Order ID :</span>
+                                        <span className="text-xs text-default-400">Reference ID :</span>
                                         <span>{selectedPayment.reference_id}</span>
                                     </p>
                                     <p className="flex justify-between">
-                                        <span className="text-xs  text-default-400">Amount :</span>
-                                        <span>{selectedPayment.req_amount} {selectedPayment.req_currency}</span>
+                                        <span className="text-xs  text-default-400">Request Amount :</span>
+                                        <span className="uppercase">
+                                            {selectedPayment.req_amount} {selectedPayment.req_currency}
+                                        </span>
                                     </p>
                                     <p className="flex justify-between">
                                         <span className="text-xs text-default-400">Payer Amount :</span>
-                                        <span>{selectedPayment.pay_amount} {selectedPayment.pay_currency}</span>
+                                        <span className="uppercase">
+                                            {selectedPayment.pay_amount || 'N/A'} {selectedPayment.pay_currency}
+                                        </span>
                                     </p>
                                     <p className="flex justify-between">
                                         <span className="text-xs text-default-400">Status :</span>
@@ -366,16 +371,17 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
                                     <p className="flex justify-between">
                                         <span className="text-xs text-default-400">Currency & Network :</span>
                                         <span className="uppercase">
-                                            {selectedPayment.pay_currency} | {selectedPayment.pay_blockchain}
+                                            &nbsp;
+                                            {[selectedPayment.pay_currency, selectedPayment.pay_blockchain].filter((v) => v).join(' | ')}
                                         </span>
                                     </p>
                                     <p className="flex justify-between">
                                         <span className="text-xs text-default-400">Payment Amount :</span>
-                                        <span>{selectedPayment.pay_amount}</span>
+                                        <span>&nbsp;{selectedPayment.pay_amount}</span>
                                     </p>
                                     <p className="flex justify-between">
                                         <span className="text-xs text-default-400">Fee Amount :</span>
-                                        <span>---</span>
+                                        <span>-</span>
                                     </p>
                                 </div>
                             </div>
@@ -388,16 +394,17 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
                                     <div className="flex justify-between">
                                         <span className="text-xs text-default-400">To Address :</span>
                                         <span className="flex items-center gap-2">
-                                            {selectedPayment.address}
+                                            {selectedPayment.address || 'N/A'}
                                             {/*<CopyButton text={selectedPayment.address} title="address"/>*/}
-                                            <Icons.clipboard/>
+                                            {/*<Icons.clipboard/>*/}
                                         </span>
                                     </div>
                                     <p className="flex justify-between">
                                         <span className="text-xs text-default-400">TxID :</span>
                                         <span className="flex items-center gap-2">
-                                            {selectedPayment.txid}
-                                            <Icons.clipboard/>
+                                            &nbsp;
+                                            {selectedPayment.txid || 'N/A'}
+                                            {/*<Icons.clipboard/>*/}
                                         </span>
                                     </p>
                                 </div>
@@ -411,8 +418,10 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
                                 </div>
                                 <div className="p-4">
                                     <p className="flex justify-between">
-                                        <span className="text-xs  text-default-400">Return URL :</span>
-                                        <span>{selectedPayment.redirect_url}</span>
+                                        <span className="text-xs text-default-400">ID :</span>
+                                        <span className="flex items-center gap-2">
+                                            {selectedPayment.id}
+                                        </span>
                                     </p>
                                     <p className="flex justify-between">
                                         <span className="text-xs text-default-400">Created At :</span>
@@ -422,30 +431,33 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
                                         <span className="text-xs text-default-400">Expires At :</span>
                                         <span>{String(selectedPayment.expired_at)}</span>
                                     </p>
-                                    <p className="flex justify-between">
-                                        <span className="text-xs text-default-400">UUID :</span>
-                                        <span className="flex items-center gap-2">
-                                            {selectedPayment.id}
-                                            <Icons.clipboard/>
-                                        </span>
-                                    </p>
                                     <div className="flex justify-between">
                                         <span className="text-xs text-default-400">Page Link :</span>
                                         <NextLink className={link().base()} href={`/pay/${selectedPayment.id}`}>
-                                            http://localhost:3000/pay/{selectedPayment.id}
+                                            https://pay.coinfinacle.com/pay/{selectedPayment.id}
                                         </NextLink>
                                     </div>
+                                    <p className="flex justify-between">
+                                        <span className="text-xs  text-default-400">Redirect URL :</span>
+                                        <span>{selectedPayment.redirect_url || 'N/A'}</span>
+                                    </p>
                                 </div>
                             </div>
                         </section>
                     </ModalBody>
                     <ModalFooter>
-                        {selectedPayment.state === 'pending' &&
+                        {['pending', 'processing'].includes(selectedPayment.state) &&
                             <div className="flex w-full items-center gap-2 text-sm">
                                 <Icons.info color="#F7931A" size={16}/>
-                                <p className="mr-auto">Transaction is pending confirmation</p>
-                                <Button size="sm" variant="bordered" onClick={onDetailModalClose}>
-                                    View on Explorer
+                                <p className="mr-auto">Transaction is in progress</p>
+                                <Button
+                                    as={NextLink}
+                                    href={`/pay/${selectedPayment.id}`}
+                                    size="sm"
+                                    variant="bordered"
+                                    onClick={onDetailModalClose}
+                                >
+                                    View on Payment Page
                                     <Icons.arrowRight/>
                                 </Button>
                             </div>}
