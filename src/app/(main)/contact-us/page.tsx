@@ -20,9 +20,9 @@ export default function Page() {
                             <li className="flex items-start gap-2">
                                 <Icons.map className="mt-1 shrink-0"/>
                                 <span>
-                                    Wollfish Labs Private Limited, PLOT 76-D,
-                                    UDYOG VIHAR PHASE 4, GURUGRAM, Gurgaon,
-                                    Haryana, 122001
+                                    Dubai Silicon Oasis,
+                                    DDP, Building A1,
+                                    Dubai, UAE
                                 </span>
                             </li>
                             <li className="flex items-center gap-2">
