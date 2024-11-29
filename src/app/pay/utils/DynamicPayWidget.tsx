@@ -24,10 +24,10 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
     const { data: payment, isLoading: paymentLoading } = useQuery({
         queryKey: ['payment_info', props.id],
         queryFn: () => getPaymentInfo({ payment_id: props.id }),
-        refetchInterval: 5000,
-        refetchIntervalInBackground: false,
+        refetchInterval: 10000,
+        refetchOnWindowFocus: true,
     });
-    
+
     const { data: paymentMethods, isLoading: paymentMethodsLoading } = useQuery({
         queryKey: ['payment_methods'],
         queryFn: () => getPaymentMethods(),
@@ -74,6 +74,88 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
             </section>
         );
     }
+    const renderData = () => {
+        if (state === 'success') {
+            return (
+                <div className="flex flex-col items-center justify-center gap-4 p-4 text-sm">
+                    <Icons.check className="text-green-500" size={32}/>
+                    <p className="font-semibold">Payment is successful</p>
+                    <p>For Order ID: <span className="font-semibold">{reference_id}</span> | Amount: <span
+                        className="font-semibold">{pay_amount}</span> {pay_currency}</p>
+                    <Button as={NextLink} color="primary" href={redirect_url} radius="full" startContent={<Icons.home/>}
+                        variant="flat">
+                        Go home
+                    </Button>
+                </div>
+            );
+        }
+        if (state === 'error') {
+            return (
+                <div className="flex flex-col items-center justify-center gap-4 p-4 text-sm">
+                    <Icons.cancel className="text-red-500" size={32}/>
+                    <p className="font-semibold">Payment is failed</p>
+                    <p>For Order ID: <span className="font-semibold">{reference_id}</span> | Amount: <span
+                        className="font-semibold">{pay_amount}</span> {pay_currency}</p>
+                    <Button as={NextLink} color="primary" href={redirect_url} radius="full" startContent={<Icons.home/>}
+                        variant="flat">
+                        Go home
+                    </Button>
+                </div>
+            );
+        }
+        if (!pay_blockchain && !paymentMethods.data) {
+            return (
+                <PaymentMethodForm
+                    methods={paymentMethods.data}
+                    reqAmount={req_amount} reqCurrency={req_currency}
+                    uuid={id}
+                />
+            );
+        } else {
+            return (
+                <div>
+                    <div className={NETWORK_CLASS}>
+                        <span>Network :</span>
+                        <span className="flex items-center justify-center font-semibold">
+                            <Icons.eth/>
+                            <span className="ml-1 mr-2 uppercase">{pay_blockchain}</span>
+                            <Tooltip content="You pay network fee" radius="sm">
+                                <Button className="!size-4 min-w-0" isIconOnly={true} radius="full" variant="light">
+                                    <Icons.info
+                                        aria-label="More information about Network"
+                                        className="text-primary"
+                                    />
+                                </Button>
+                            </Tooltip>
+                        </span>
+                    </div>
+                    <QRCodeGenerator value={address}/>
+                    <div className="mb-4">
+                        <div className="mb-1 text-sm font-semibold">Pay amount:</div>
+                        <Snippet
+                            hideSymbol
+                            className="w-full"
+                            classNames={{ pre: 'break-all whitespace-normal' }}
+                            radius="sm"
+                        >
+                            {`${pay_amount} ${pay_currency}`}
+                        </Snippet>
+                    </div>
+                    <div className="mb-4">
+                        <div className="mb-1 text-sm font-semibold">To address:</div>
+                        <Snippet
+                            hideSymbol
+                            className="w-full"
+                            classNames={{ pre: 'break-all whitespace-normal' }}
+                            radius="sm"
+                        >
+                            {address}
+                        </Snippet>
+                    </div>
+                </div>
+            );
+        }
+    };
 
     return (
         <section className={WRAPPER_CLASS}>
@@ -92,52 +174,7 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
                 <div className="absolute right-4"><ReloadBtn/></div>
             </div>
             <div className="p-4" slot="body">
-                {!pay_blockchain && !paymentMethodsLoading ?
-                    <PaymentMethodForm
-                        methods={paymentMethods.data}
-                        reqAmount={req_amount} reqCurrency={req_currency}
-                        uuid={id}
-                    />
-                    : <div>
-                        <div className={NETWORK_CLASS}>
-                            <span>Network :</span>
-                            <span className="flex items-center justify-center font-semibold">
-                                <Icons.eth/>
-                                <span className="ml-1 mr-2 uppercase">{pay_blockchain}</span>
-                                <Tooltip content="You pay network fee" radius="sm">
-                                    <Button className="!size-4 min-w-0" isIconOnly={true} radius="full" variant="light"> 
-                                        <Icons.info
-                                            aria-label="More information about Network"
-                                            className="text-primary"
-                                        />
-                                    </Button>
-                                </Tooltip>
-                            </span>
-                        </div>
-                        <QRCodeGenerator value={address}/>
-                        <div className="mb-4">
-                            <div className="mb-1 text-sm font-semibold">Pay amount:</div>
-                            <Snippet
-                                hideSymbol
-                                className="w-full"
-                                classNames={{ pre: 'break-all whitespace-normal' }}
-                                radius="sm"
-                            >
-                                {`${pay_amount} ${pay_currency}`}
-                            </Snippet>
-                        </div>
-                        <div className="mb-4">
-                            <div className="mb-1 text-sm font-semibold">To address:</div>
-                            <Snippet
-                                hideSymbol
-                                className="w-full"
-                                classNames={{ pre: 'break-all whitespace-normal' }}
-                                radius="sm"
-                            >
-                                {address}
-                            </Snippet>
-                        </div>
-                    </div>}
+                {renderData()}
             </div>
             <Divider/>
             <div className="flex items-center justify-center gap-1 p-4 text-sm" slot="footer">

@@ -56,7 +56,7 @@ export const PaymentMethodForm: React.FC<OwnProps> = (props) => {
                     <Select
                         errorMessage={formState.errors?.['pay_currency']?.message?.toString()}
                         isInvalid={!!formState.errors?.['pay_currency']?.message}
-                        items={methods}
+                        items={methods.filter((m) => m.currency_type === 'crypto')}
                         label="Select Currency"
                         labelPlacement="outside"
                         placeholder=" "
