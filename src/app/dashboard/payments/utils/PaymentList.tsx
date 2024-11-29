@@ -29,6 +29,7 @@ const statusColorMap: Record<string, ChipProps['color']> = {
     vacation: 'warning',
     paused: 'danger',
     failed: 'danger',
+    rejected: 'danger',
 };
 
 const statusOptions = [
@@ -461,7 +462,7 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
                                     <Icons.arrowRight/>
                                 </Button>
                             </div>}
-                        {selectedPayment.state === 'failed' &&
+                        {selectedPayment.state === 'rejected' &&
                             <div className="flex w-full items-center gap-2 text-sm">
                                 <Icons.info color="red" size={16}/>
                                 <p className="mr-auto">Transaction Failed due to timeout</p>

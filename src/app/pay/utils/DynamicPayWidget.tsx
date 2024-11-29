@@ -185,7 +185,7 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
                         <Logo size={32}/>
                         <p className="font-bold">CoinDhan Pay</p>
                     </div>
-                    <div>Order Id: <span className="text-sm font-semibold">#{reference_id}</span></div>
+                    <div>Ref Id: <span className="text-sm font-semibold">#{reference_id}</span></div>
                 </div>
                 <div className="capitalize">
                     <span>Amount: </span>
