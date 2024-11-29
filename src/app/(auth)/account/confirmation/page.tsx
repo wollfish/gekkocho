@@ -23,11 +23,11 @@ export default function Page() {
     });
 
     useEffect(() => {
-        if (data.success) {
+        if (data?.success) {
             toast.success('Email verified successfully');
         }
 
-        if (data.error) {
+        if (data?.error) {
             toast.error(data.error);
         }
     }, [data]);
