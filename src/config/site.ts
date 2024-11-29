@@ -73,7 +73,7 @@ export const siteConfig = {
         },
         {
             label: 'Payments',
-            href: '/dashboard/payments',
+            href: '/dashboard/payments/list',
             icon: Icons.calendar,
         },
         {

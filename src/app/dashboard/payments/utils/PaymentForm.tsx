@@ -78,7 +78,7 @@ export const PaymentForm: React.FC<OwnProps> = (props) => {
                             errorMessage={formState.errors?.['req_currency']?.message?.toString()}
                             isInvalid={!!formState.errors?.['req_currency']?.message}
                             isLoading={currenciesLoading}
-                            items={currencies.data || []}
+                            items={currencies?.data || []}
                             label="Currency"
                             labelPlacement="outside"
                             placeholder=" "
@@ -90,9 +90,9 @@ export const PaymentForm: React.FC<OwnProps> = (props) => {
                                     key={currency.id}
                                     classNames={{ selectedIcon: 'hidden' }}
                                     startContent={<CryptoIcon code={currency.id}/>}
-                                    textValue={currency.name}
+                                    textValue={currency.id?.toUpperCase()}
                                 >
-                                    {currency.name}
+                                    {currency.id?.toUpperCase()}
                                 </SelectItem>
                             )}
                         </Select>
@@ -116,22 +116,6 @@ export const PaymentForm: React.FC<OwnProps> = (props) => {
                     />
                 )}
             />
-            {/*<Controller*/}
-            {/*    control={control}*/}
-            {/*    name=""*/}
-            {/*    render={({ field, formState }) => (*/}
-            {/*        <Input*/}
-            {/*            autoComplete="off"*/}
-            {/*            errorMessage={formState.errors?.['order_description']?.message?.toString()}*/}
-            {/*            isInvalid={!!formState.errors?.['order_description']?.message}*/}
-            {/*            label="Order Desc (Optional)"*/}
-            {/*            labelPlacement="outside"*/}
-            {/*            placeholder=" "*/}
-            {/*            value={field.value}*/}
-            {/*            onChange={field.onChange}*/}
-            {/*        />*/}
-            {/*    )}*/}
-            {/*/>*/}
             <Controller
                 control={control}
                 name="redirect_url"
