@@ -56,7 +56,7 @@ export const PaymentMethodForm: React.FC<OwnProps> = (props) => {
                     <Select
                         errorMessage={formState.errors?.['pay_currency']?.message?.toString()}
                         isInvalid={!!formState.errors?.['pay_currency']?.message}
-                        items={methods.filter((m) => m.currency_type === 'crypto')}
+                        items={methods.filter((m) => m.currency_type === 'coin')}
                         label="Select Currency"
                         labelPlacement="outside"
                         placeholder=" "
@@ -103,10 +103,11 @@ export const PaymentMethodForm: React.FC<OwnProps> = (props) => {
             />
             <Input
                 description={`Conversion Rate: ${convertedAmount?.[1] || 0} ${reqCurrency.toUpperCase()}`}
+                disabled={true}
                 label="Converted Amount"
                 labelPlacement="outside"
                 placeholder=" "
-                value={String(convertedAmount?.[0]) || ''}
+                value={(convertedAmount?.[0] || '') as string}
             />
             <div className="flex justify-end gap-4">
                 <Suspense>

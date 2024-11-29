@@ -4,6 +4,7 @@ import React from 'react';
 import { Button } from '@nextui-org/button';
 import { Divider } from '@nextui-org/divider';
 import { Snippet } from '@nextui-org/snippet';
+import { Spinner } from '@nextui-org/spinner';
 import { Tooltip } from '@nextui-org/tooltip';
 import { useQuery } from '@tanstack/react-query';
 
@@ -35,8 +36,8 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
 
     if (paymentLoading || paymentMethodsLoading) {
         return (
-            <section className={WRAPPER_CLASS}>
-                <p className="text-center">Loading...</p>
+            <section className="flex items-center justify-center">
+                <Spinner/>
             </section>
         );
     }
@@ -59,8 +60,6 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
         reference_id,
     } = payment?.data || {};
 
-    console.log(payment.data);
-
     if (!payment.data) {
         return (
             <section className={cn(WRAPPER_CLASS, 'shadow-none')}>
@@ -82,10 +81,16 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
                 <div className="flex flex-col items-center justify-center gap-4 p-4 text-sm">
                     <Icons.check className="text-green-500" size={32}/>
                     <p className="font-semibold">Payment is successful</p>
-                    <p>For Order ID: <span className="font-semibold">{reference_id}</span> | Amount: <span
-                        className="font-semibold">{pay_amount}</span> {pay_currency}</p>
-                    <Button as={NextLink} color="primary" href={redirect_url} radius="full" startContent={<Icons.home/>}
-                        variant="flat">
+                    <p>For Order ID: <b>{reference_id}</b></p>
+                    <p>Request Amount: {req_amount} {req_currency?.toUpperCase()}</p>
+                    <p>Payment Amount: {pay_amount} {pay_currency?.toUpperCase()}</p>
+                    <Button
+                        as={NextLink}
+                        color="primary"
+                        href={redirect_url}
+                        radius="full" startContent={<Icons.home/>}
+                        variant="flat"
+                    >
                         Go home
                     </Button>
                 </div>
@@ -96,10 +101,16 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
                 <div className="flex flex-col items-center justify-center gap-4 p-4 text-sm">
                     <Icons.cancel className="text-red-500" size={32}/>
                     <p className="font-semibold">Payment is failed</p>
-                    <p>For Order ID: <span className="font-semibold">{reference_id}</span> | Amount: <span
-                        className="font-semibold">{pay_amount}</span> {pay_currency}</p>
-                    <Button as={NextLink} color="primary" href={redirect_url} radius="full" startContent={<Icons.home/>}
-                        variant="flat">
+                    <p>For Order ID: <b>{reference_id}</b></p>
+                    <p>Request Amount: {req_amount} {req_currency?.toUpperCase()}</p>
+                    <p>Payment Amount: {pay_amount ?? '-'} {pay_currency?.toUpperCase()}</p>
+                    <Button
+                        as={NextLink} color="primary"
+                        href={redirect_url}
+                        radius="full"
+                        startContent={<Icons.home/>}
+                        variant="flat"
+                    >
                         Go home
                     </Button>
                 </div>
@@ -119,7 +130,6 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
                     <div className={NETWORK_CLASS}>
                         <span>Network :</span>
                         <span className="flex items-center justify-center font-semibold">
-                            <Icons.eth/>
                             <span className="ml-1 mr-2 uppercase">{pay_blockchain}</span>
                             <Tooltip content="You pay network fee" radius="sm">
                                 <Button className="!size-4 min-w-0" isIconOnly={true} radius="full" variant="light">
@@ -138,9 +148,10 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
                             hideSymbol
                             className="w-full"
                             classNames={{ pre: 'break-all whitespace-normal' }}
+                            codeString={pay_amount}
                             radius="sm"
                         >
-                            {`${pay_amount} ${pay_currency}`}
+                            {[pay_amount, pay_currency?.toUpperCase()].join(' ')}
                         </Snippet>
                     </div>
                     <div className="mb-4">
@@ -151,7 +162,7 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
                             classNames={{ pre: 'break-all whitespace-normal' }}
                             radius="sm"
                         >
-                            {address}
+                            {address || '-'}
                         </Snippet>
                     </div>
                 </div>

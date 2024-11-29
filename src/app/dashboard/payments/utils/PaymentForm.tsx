@@ -2,15 +2,17 @@
 
 import React, { Suspense } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Avatar } from '@nextui-org/avatar';
 import { Button } from '@nextui-org/button';
 import { Input } from '@nextui-org/input';
 import { Select, SelectItem } from '@nextui-org/select';
+import { useQuery } from '@tanstack/react-query';
 import { Controller, useForm } from 'react-hook-form';
 
 import { toast } from 'sonner';
 
+import { getCurrencyList } from '@/actions/dashboard/account';
 import { initializePayment } from '@/actions/dashboard/payment';
+import { CryptoIcon } from '@/lib/misc/CryptoIcon';
 import { PaymentFormInterface, paymentFormSchema } from '@/lib/zod';
 
 interface OwnProps {
@@ -20,6 +22,11 @@ interface OwnProps {
 export const PaymentForm: React.FC<OwnProps> = (props) => {
 
     const { onClose } = props;
+
+    const { data: currencies, isLoading: currenciesLoading } = useQuery({
+        queryKey: ['currencies'],
+        queryFn: () => getCurrencyList(),
+    });
 
     const { handleSubmit, formState, control, reset } = useForm<PaymentFormInterface>({
         resolver: zodResolver(paymentFormSchema),
@@ -70,33 +77,24 @@ export const PaymentForm: React.FC<OwnProps> = (props) => {
                             className="col-span-2"
                             errorMessage={formState.errors?.['req_currency']?.message?.toString()}
                             isInvalid={!!formState.errors?.['req_currency']?.message}
+                            isLoading={currenciesLoading}
+                            items={currencies.data || []}
                             label="Currency"
                             labelPlacement="outside"
                             placeholder=" "
-                            value={field.value}
+                            selectedKeys={[field.value]}
                             onChange={field.onChange}
                         >
-                            <SelectItem
-                                key="usd"
-                                classNames={{ selectedIcon: 'hidden' }}
-                                startContent={<Avatar className="!size-6" src="https://flagcdn.com/us.svg"/>}
-                            >
-                                USD
-                            </SelectItem>
-                            <SelectItem
-                                key="inr"
-                                classNames={{ selectedIcon: 'hidden' }}
-                                startContent={<Avatar className="!size-6" src="https://flagcdn.com/in.svg"/>}
-                            >
-                                INR
-                            </SelectItem>
-                            <SelectItem
-                                key="pound"
-                                classNames={{ selectedIcon: 'hidden' }}
-                                startContent={<Avatar className="!size-6" src="https://flagcdn.com/fr.svg"/>}
-                            >
-                                POUND
-                            </SelectItem>
+                            {(currency) => (
+                                <SelectItem
+                                    key={currency.id}
+                                    classNames={{ selectedIcon: 'hidden' }}
+                                    startContent={<CryptoIcon code={currency.id}/>}
+                                    textValue={currency.name}
+                                >
+                                    {currency.name}
+                                </SelectItem>
+                            )}
                         </Select>
                     )}
                 />

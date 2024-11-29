@@ -40,20 +40,20 @@ interface OwnProps {
     altIconUrl?: string;
 }
 
-export const CryptoIcon: React.FC<OwnProps> = React.memo((props) => {
+export const CryptoIcon: React.FC<OwnProps & React.RefAttributes<SVGSVGElement>> = React.forwardRef((props, ref) => {
     const { code, altIconUrl, size = 24, customClass } = props;
 
     const cx = cn(customClass);
 
     if (AvailableIcon.includes(code?.toLowerCase() as IconName)) {
         return (
-            <svg className={cx} height={size} width={size}>
+            <svg ref={ref} className={cx} height={size} width={size}>
                 <use xlinkHref={`/crypto_icon/crypto_icons.svg#icon-${code.toLowerCase()}`}/>
             </svg>
         );
     } else {
         return (
-            <img alt="" className={cx} height={size} src={altIconUrl} width={size}/>
+            <img ref={ref as any} alt="" className={cx} height={size} src={altIconUrl} width={size}/>
         );
     }
 });
