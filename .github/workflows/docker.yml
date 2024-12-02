@@ -42,12 +42,3 @@ jobs:
           tags: wollfish/${{ github.event.repository.name }}:${{ env.IMAGE_TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
-      - name: Docker Hub Description
-        uses: peter-evans/dockerhub-description@v4
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-          repository: wollfish/${{ github.event.repository.name }}
-          short-description: ${{ github.event.repository.description }}
-          readme-filepath: README.md
