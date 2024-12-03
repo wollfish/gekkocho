@@ -141,6 +141,13 @@ export const twoFactorAuthFormSchema = z.object({
     message: 'Code must be 6 characters',
 });
 
+export const twoFactorAuthResponseSchema = z.object({
+    data: z.object({
+        barcode: z.string(),
+        url: z.string(),
+    }),
+});
+
 // req_currency
 // req_amount
 // reference_id [-, 0-9, A-Z, a-z]
@@ -148,16 +155,22 @@ export const twoFactorAuthFormSchema = z.object({
 // pay_blockchain?
 // redirect_url?
 export const paymentFormSchema = z.object({
-    reference_id: z.string({ required_error: 'Reference id is required' })
-        .min(8, 'Reference id should be at least 8 characters')
-        .max(64, 'Reference id must be less than 64 characters'),
+    product_name: z.string({ required_error: 'Product name is required' })
+        .min(1, 'Product name is required')
+        .max(64, 'Product name must be less than 64 characters'),
+    reference_id: z.string({ required_error: 'Order id is required' })
+        .min(8, 'Order id should be at least 8 characters')
+        .max(64, 'Order id must be less than 64 characters'),
     req_amount: z.coerce
-        .number({ required_error: 'Order amount is required' })
-        .gt(0, 'Order amount must be greater than 0'),
-    req_currency: z.string({ required_error: 'Order currency is required' })
-        .min(1, 'Order currency is required'),
+        .number({ required_error: 'Request amount is required' })
+        .gt(0, 'Request amount must be greater than 0'),
+    req_currency: z.string({ required_error: 'Currency is required' })
+        .min(1, 'Currency is required'),
+    customer_name: z.string().optional(),
+    customer_email: z.string().optional(),
     redirect_url: z.string().optional(),
 });
+
 export const paymentMethodFormSchema = z.object({
     payment_id: z.string({ required_error: 'Payment method is required' }).min(1, 'Payment method is required'),
     pay_currency: z.string({ required_error: 'Currency is required' }).min(1, 'Currency is required'),
@@ -197,6 +210,7 @@ export const paymentResponseSchema = z.object({
     req_currency: z.string(),
     pay_currency: z.string().nullable(),
     pay_blockchain: z.string().nullable(),
+    pay_protocol: z.string().nullable(),
     exchange_rate: z.string().nullable(),
     req_amount: z.string(),
     pay_amount: z.string().nullable(),
@@ -320,9 +334,6 @@ export const currencyResponseSchema = z.object({
     networks: z.array(networkSchema),
 });
 
-//pay_currency
-//pay_blockchain
-
 export const paymentMethodSchema = z.object({
     id: z.string(),
     exchange_rate: z.string(),
@@ -331,6 +342,25 @@ export const paymentMethodSchema = z.object({
     currency_icon: z.string(),
     networks: z.array(networkSchema),
     status: z.string(),
+});
+
+export const apiKeyFormSchema = z.object({
+    kid: z.string().optional(),
+    totp_code: z.string()
+        .min(1, 'OTP must be 6 characters')
+        .max(6, 'OTP must be 6 characters'),
+    algorithm: z.string().optional(),
+    state: z.string().optional(),
+});
+
+export const apiKeyResponseSchema = z.object({
+    kid: z.string(),
+    state: z.string(),
+    algorithm: z.string(),
+    secret: z.string(),
+    scope: z.array(z.string()),
+    created_at: z.coerce.date(),
+    updated_at: z.coerce.date(),
 });
 
 export type PaymentFormInterface = z.infer<typeof paymentFormSchema>;
@@ -357,3 +387,7 @@ export type UserInterface = z.infer<typeof UserSchema>;
 export type ContactUsSchema = z.infer<typeof contactUsSchema>;
 
 export type TwoFactorAuthFormInterface = z.infer<typeof twoFactorAuthFormSchema>;
+export type TwoFactorAuthResponseInterface = z.infer<typeof twoFactorAuthResponseSchema>;
+
+export type ApiKeyFormInterface = z.infer<typeof apiKeyFormSchema>;
+export type ApiKeyResponseInterface = z.infer<typeof apiKeyResponseSchema>;

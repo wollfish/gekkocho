@@ -12,6 +12,7 @@ import { toast } from 'sonner';
 
 import { getCurrencyList } from '@/actions/dashboard/account';
 import { initializePayment } from '@/actions/dashboard/payment';
+import { Icons } from '@/components/icons';
 import { CryptoIcon } from '@/lib/misc/CryptoIcon';
 import { PaymentFormInterface, paymentFormSchema } from '@/lib/zod';
 
@@ -28,13 +29,15 @@ export const PaymentForm: React.FC<OwnProps> = (props) => {
         queryFn: () => getCurrencyList(),
     });
 
-    const { handleSubmit, formState, control, reset } = useForm<PaymentFormInterface>({
+    const { handleSubmit, formState, control, reset, setValue } = useForm<PaymentFormInterface>({
         resolver: zodResolver(paymentFormSchema),
         defaultValues: {
-            reference_id: '',
+            product_name: '',
             req_amount: null,
             req_currency: '',
-            redirect_url: '',
+            customer_email: '',
+            customer_name: '',
+            reference_id: '',
         },
     });
 
@@ -48,8 +51,38 @@ export const PaymentForm: React.FC<OwnProps> = (props) => {
         }
     };
 
+    const generateRandomId = () => {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let randomId = 'rand-';
+
+        for (let i = 0; i < 10; i++) {
+            randomId += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+
+        return randomId;
+    };
+
+    const onRandomise = () => setValue('reference_id', generateRandomId());
+
     return (
         <form autoComplete="off" className="grid grid-cols-2 gap-4" method="POST" onSubmit={handleSubmit(onSubmit)}>
+            <Controller
+                control={control}
+                name="product_name"
+                render={({ field, formState }) => (
+                    <Input
+                        autoComplete="off"
+                        className="col-span-2"
+                        errorMessage={formState.errors?.['product_name']?.message?.toString()}
+                        isInvalid={!!formState.errors?.['product_name']?.message}
+                        label="Product Name"
+                        labelPlacement="outside"
+                        placeholder=" "
+                        value={field.value}
+                        onChange={field.onChange}
+                    />
+                )}
+            />
             <div className="col-span-2 grid grid-cols-6 items-start gap-4">
                 <Controller
                     control={control}
@@ -60,7 +93,7 @@ export const PaymentForm: React.FC<OwnProps> = (props) => {
                             className="col-span-4"
                             errorMessage={formState.errors?.['req_amount']?.message?.toString()}
                             isInvalid={!!formState.errors?.['req_amount']?.message}
-                            label="Requested Amount"
+                            label="Request Amount"
                             labelPlacement="outside"
                             placeholder=" "
                             type="number"
@@ -106,9 +139,14 @@ export const PaymentForm: React.FC<OwnProps> = (props) => {
                     <Input
                         autoComplete="off"
                         className="col-span-2"
+                        endContent={
+                            <Button isIconOnly={true} radius="full" size="sm" type="button" onClick={onRandomise}>
+                                <Icons.dice className="size-4"/>
+                            </Button>
+                        }
                         errorMessage={formState.errors?.['reference_id']?.message?.toString()}
                         isInvalid={!!formState.errors?.['reference_id']?.message}
-                        label="Reference Id"
+                        label="Order Id"
                         labelPlacement="outside"
                         placeholder=" "
                         value={field.value}
@@ -118,14 +156,31 @@ export const PaymentForm: React.FC<OwnProps> = (props) => {
             />
             <Controller
                 control={control}
-                name="redirect_url"
+                name="customer_name"
                 render={({ field, formState }) => (
                     <Input
                         autoComplete="off"
                         className="col-span-2"
-                        errorMessage={formState.errors?.['redirect_url']?.message?.toString()}
-                        isInvalid={!!formState.errors?.['redirect_url']?.message}
-                        label="Redirect URL (Optional)"
+                        errorMessage={formState.errors?.['customer_name']?.message?.toString()}
+                        isInvalid={!!formState.errors?.['customer_name']?.message}
+                        label="Customer Name (Optional)"
+                        labelPlacement="outside"
+                        placeholder=" "
+                        value={field.value}
+                        onChange={field.onChange}
+                    />
+                )}
+            />
+            <Controller
+                control={control}
+                name="customer_email"
+                render={({ field, formState }) => (
+                    <Input
+                        autoComplete="off"
+                        className="col-span-2"
+                        errorMessage={formState.errors?.['customer_email']?.message?.toString()}
+                        isInvalid={!!formState.errors?.['customer_email']?.message}
+                        label="Customer Email (Optional)"
                         labelPlacement="outside"
                         placeholder=" "
                         value={field.value}

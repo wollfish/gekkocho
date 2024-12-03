@@ -7,6 +7,8 @@ import { getProfile } from '@/actions/dashboard/settings';
 import { TwoFactorAuthFormModal } from '@/app/dashboard/settings/security/TwoFactorAuthFormModal';
 import { description, subtitle } from '@/components/primitives';
 
+export const dynamic = 'force-dynamic';
+
 export default async function SecurityPage() {
     const user = await getProfile() as any;
     const _2faText = 'To set up 2FA, go to Settings > Security, click "Enable 2FA", scan QR code with authenticator app, and enter verification code to confirm';
@@ -40,7 +42,7 @@ export default async function SecurityPage() {
                     </div>
                     <div/>
                     <div className="flex justify-end gap-2">
-                        <Button className="" type="reset" variant="flat">Cancel</Button>
+                        <Button className="" type="reset" variant="flat">Clear</Button>
                         <Button className="" color="primary" type="submit">Update Password</Button>
                     </div>
                 </form>
@@ -55,7 +57,7 @@ export default async function SecurityPage() {
                 </div>
                 <div className="col-span-4 grid grid-cols-2 gap-x-8 gap-y-4 text-sm">
                     <div className="col-span-2 space-y-4 rounded-lg bg-default-100/50 p-4 backdrop-blur-sm">
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-between gap-2">
                             <p className={description({ size: 'xs' })}>
                                 Two-Factor Authentication (2FA) adds a second verification step to the login process.
                             </p>

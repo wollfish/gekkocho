@@ -7,7 +7,12 @@ import { auth } from '@/auth';
 import { ApiResponse, makeApiRequest } from '@/lib/api';
 import { decryptToken } from '@/lib/encryption';
 import { createServerAction, ServerActionError } from '@/lib/server-utils';
-import { TwoFactorAuthFormInterface, twoFactorAuthFormSchema, UserInterface } from '@/lib/zod';
+import {
+    ApiKeyFormInterface, ApiKeyResponseInterface,
+    TwoFactorAuthFormInterface,
+    TwoFactorAuthResponseInterface,
+    UserInterface,
+} from '@/lib/zod';
 
 export const getProfile = createServerAction<UserInterface>(async () => {
     const session = await auth();
@@ -46,30 +51,64 @@ export const getProfile = createServerAction<UserInterface>(async () => {
     }
 });
 
-export async function toggleTwoFactor(formData: TwoFactorAuthFormInterface): Promise<ApiResponse> {
-    const validatedFormData = twoFactorAuthFormSchema.safeParse(formData);
-
-    if (!validatedFormData.success) {
-        return {
-            success: false,
-            error: validatedFormData.error.message,
-            data: null,
-        };
-    }
-
+export async function toggleTwoFactor(payload: TwoFactorAuthFormInterface): Promise<ApiResponse> {
     return await makeApiRequest({
-        endpoint: `/resource/otp/${validatedFormData.data.status}`,
+        endpoint: `/resource/otp/${payload.status}`,
         apiVersion: 'barong',
         method: 'POST',
-        payload: validatedFormData.data,
+        payload: payload,
         pathToRevalidate: ['/dashboard/settings/security'],
     });
 }
 
-export async function generateTwoFactorSecret(): Promise<ApiResponse> {
-    return await makeApiRequest({
+export async function generateTwoFactorSecret(): Promise<ApiResponse<TwoFactorAuthResponseInterface>> {
+    return await makeApiRequest<TwoFactorAuthResponseInterface>({
         endpoint: '/resource/otp/generate_qrcode',
         apiVersion: 'barong',
         method: 'POST',
     });
 } 
+
+export async function generateApiKey(payload: ApiKeyFormInterface): Promise<ApiResponse<ApiKeyResponseInterface>> {
+    return await makeApiRequest<ApiKeyResponseInterface>({
+        endpoint: '/resource/api_keys',
+        apiVersion: 'barong',
+        method: 'POST',
+        payload: {
+            totp_code: payload.totp_code,
+            algorithm: payload.algorithm,
+        },
+        pathToRevalidate: ['/dashboard/settings/api'],
+    });
+}
+
+export async function getApiKeyList(): Promise<ApiResponse<ApiKeyResponseInterface[]>> {
+    return await makeApiRequest<ApiKeyResponseInterface[]>({
+        endpoint: '/resource/api_keys',
+        apiVersion: 'barong',
+    });
+}
+
+export async function deleteApiKey(payload: ApiKeyFormInterface): Promise<ApiResponse> {
+    return await makeApiRequest({
+        endpoint: `/resource/api_keys/${payload.kid}?totp_code=${payload.totp_code}`,
+        apiVersion: 'barong',
+        method: 'DELETE',
+        pathToRevalidate: ['/dashboard/settings/api'],
+    });
+}
+
+export async function updateApiKey(payload: ApiKeyFormInterface): Promise<ApiResponse> {
+    console.log(payload);
+
+    return await makeApiRequest({
+        endpoint: `/resource/api_keys/${payload.kid}`,
+        apiVersion: 'barong',
+        method: 'PATCH',
+        payload: {
+            totp_code: payload.totp_code,
+            state: payload.state,
+        },
+        pathToRevalidate: ['/dashboard/settings/api'],
+    });
+}

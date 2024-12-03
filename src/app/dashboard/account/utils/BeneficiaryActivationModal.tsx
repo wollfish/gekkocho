@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@nextui-org/modal';
+import { Modal, ModalBody, ModalContent, ModalHeader } from '@nextui-org/modal';
 
 import { BeneficiaryActivationForm } from '@/app/dashboard/account/utils';
 
@@ -25,7 +25,6 @@ export const BeneficiaryActivationModal: React.FC<OwnProps> = (props) => {
                 <ModalBody>
                     <BeneficiaryActivationForm beneficiaryId={beneficiaryId} currencies={[]} onClose={onClose}/>
                 </ModalBody>
-                <ModalFooter/>
             </ModalContent>
         </Modal>
     );

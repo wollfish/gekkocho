@@ -3,6 +3,7 @@
 import React from 'react';
 
 import { subtitle } from '@/components/primitives';
+import { PLATFORM_CURRENCY } from '@/config/site';
 import { DonutChart } from '@/termor_components/DonutChart';
 import { cx } from '@/termor_lib/utils';
 
@@ -15,7 +16,7 @@ interface OwnProps {
     }[];
 }
 
-const currencyFormatter = (number: number) => '$' + Intl.NumberFormat('us').format(number).toString();
+const currencyFormatter = (number: number) => Intl.NumberFormat('us').format(number).toString() + ' ' + PLATFORM_CURRENCY;
 
 export const AccountOverviewCharts: React.FC<OwnProps> = React.memo(({ data }) => {
     return (
@@ -64,7 +65,7 @@ export const AccountOverviewCharts: React.FC<OwnProps> = React.memo(({ data }) =
             </div>
             <div className="mt-4">
                 <h3 className={subtitle({ size: 'xs', className: 'text-right text-default-600' })}>
-                    i. Total balance by currency in Dollars($)
+                    i. Total balance by currency in {PLATFORM_CURRENCY}
                 </h3>
             </div>
         </section>

@@ -36,6 +36,8 @@ const data1 = [
     },
 ];
 
+export const dynamic = 'force-dynamic';
+
 export default async function Page() {
     const { loading, data: accounts, error } = await fetchData(getAccountList);
 
@@ -45,20 +47,18 @@ export default async function Page() {
                 <div className="relative mb-4 flex flex-wrap justify-between gap-4">
                     <div className="relative flex flex-col gap-3 pl-2">
                         <span className="absolute left-0 top-1 h-4 w-0.5 bg-default-500"/>
-                        <h3 className={subtitle({ size: 'sm' })}>Portfolio performance</h3>
-                        <div className={subtitle({ size: 'xl' })}>$17,980.00</div>
-                        <div className="flex items-center gap-1 text-sm text-default-400">
-                            <span className="text-success-400">+$430.90 (4.1%)</span>
-                            <span>Past 24 hours</span>
+                        <h3 className={subtitle({ size: 'sm' })}>Total Balance</h3>
+                        <div className={subtitle({ size: 'xl' })}>590,9087,788.00 AED</div>
+                        <div className="flex items-center gap-1 text-sm text-default-500">
+                            ~ 667,689.99 USDT
                         </div>
                     </div>
                     <div className="relative flex flex-col gap-3 pl-2">
                         <span className="absolute left-0 top-1 h-4 w-0.5 bg-default-500"/>
-                        <h3 className={subtitle({ size: 'sm' })}>Avl. Balance</h3>
-                        <div className={subtitle({ size: 'xl' })}>1.8934270 BTC</div>
-                        <div className="flex items-center gap-1 text-sm text-default-400">
-                            <span className="text-success-400">+0.90 (4.1%)</span>
-                            <span>Past 24 hours</span>
+                        <h3 className={subtitle({ size: 'sm' })}>Locked Balance </h3>
+                        <div className={subtitle({ size: 'xl' })}>590,9087,788.00 AED</div>
+                        <div className="flex items-center gap-1 text-sm text-default-500">
+                            ~ 667,689.99 USDT
                         </div>
                     </div>
                     <AccountOverviewCharts data={data1}/>

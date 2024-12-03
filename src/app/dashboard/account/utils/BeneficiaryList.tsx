@@ -232,7 +232,7 @@ export const BeneficiaryList: React.FC<OwnProps> = (props) => {
                         size="sm"
                         onClick={onFormModalOpen}
                     >
-                        Add New
+                        Create New Beneficiary
                     </Button>
                 </div>
             </div>

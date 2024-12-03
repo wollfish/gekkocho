@@ -3,11 +3,13 @@
 import React, { Suspense } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@nextui-org/button';
+import { Divider } from '@nextui-org/divider';
 import { Controller, useForm } from 'react-hook-form';
 
 import { toast } from 'sonner';
 
-import { activateBeneficiary } from '@/actions/dashboard/account';
+import { activateBeneficiary, resendBeneficiaryActivation } from '@/actions/dashboard/account';
+import { ResendOTPCountdown } from '@/app/dashboard/account/utils';
 import { InputOtp } from '@/lib/otpInput';
 import {
     BeneficiaryActivationFormInterface,
@@ -42,6 +44,16 @@ export const BeneficiaryActivationForm: React.FC<OwnProps> = (props) => {
         }
     };
 
+    const resendOTP = async () => {
+        const { error, success } = await resendBeneficiaryActivation({ id: props.beneficiaryId }) || {};
+
+        if (success) {
+            toast.success('OTP Resent');
+        } else {
+            toast.error(error);
+        }
+    };
+
     return (
         <form autoComplete="off" className="grid grid-cols-2 gap-4" method="POST" onSubmit={handleSubmit(onSubmit)}>
             <Controller
@@ -49,28 +61,25 @@ export const BeneficiaryActivationForm: React.FC<OwnProps> = (props) => {
                 name="pin"
                 render={({ field }) => (
                     <InputOtp
-                        classNames={{ segmentWrapper: 'justify-between', base: 'w-full' }}
+                        classNames={{ base: 'w-full col-span-2' }}
                         color={!!formState.errors?.pin?.message ? 'danger' : 'default'}
                         errorMessage={formState.errors?.pin?.message}
+                        label="Enter 6 digit PIN received on your email"
                         otplength={6}
                         radius="lg"
+                        value={field.value}
                         variant="faded"
                         onFill={() => handleSubmit(onSubmit)()}
                         onInput={field.onChange}
                     />
                 )}
             />
-            <div className="col-span-2 flex justify-end gap-4">
+            <div className="col-span-2 flex gap-4">
                 <Suspense>
-                    <Button
-                        variant="bordered"
-                        onClick={() => reset()}
-                    >
-                        Clear All
-                    </Button>
                     <Button
                         color="primary"
                         disabled={formState.isSubmitting}
+                        fullWidth={true}
                         isLoading={formState.isSubmitting}
                         type="submit"
                         onClick={() => handleSubmit(onSubmit)()}
@@ -78,6 +87,12 @@ export const BeneficiaryActivationForm: React.FC<OwnProps> = (props) => {
                         Activate Beneficiary
                     </Button>
                 </Suspense>
+            </div>
+            <div className="col-span-2">
+                <Divider/>
+                <div className="py-4 text-sm">
+                    <ResendOTPCountdown initialCountdown={5} onResend={resendOTP}/>
+                </div>
             </div>
         </form>
     );

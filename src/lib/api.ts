@@ -84,7 +84,7 @@ export async function makeApiRequest<T = any>(params: ApiRequestParams): Promise
         return {
             success: false,
             // @ts-ignore
-            error: responseData?.errors?.[0] || `Error: ${res.status} ${res.statusText}`,
+            error: responseData?.errors?.[0] || responseData?.errors || `Error: ${res.status} ${res.statusText}`,
             data: null,
         };
     } catch (error) {

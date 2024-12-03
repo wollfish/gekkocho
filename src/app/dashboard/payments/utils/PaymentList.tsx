@@ -226,7 +226,7 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
                         size="sm"
                         onClick={onPaymentFormModalOpen}
                     >
-                        Add New
+                        Create New Payment Link
                     </Button>
                 </div>
             </div>
@@ -370,10 +370,9 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
                                 </div>
                                 <div className="p-4">
                                     <p className="flex justify-between">
-                                        <span className="text-xs text-default-400">Currency & Network :</span>
+                                        <span className="text-xs text-default-400">Network :</span>
                                         <span className="uppercase">
-                                            &nbsp;
-                                            {[selectedPayment.pay_currency, selectedPayment.pay_blockchain].filter((v) => v).join(' | ')}
+                                            {selectedPayment.pay_protocol}
                                         </span>
                                     </p>
                                     <p className="flex justify-between">
@@ -389,11 +388,11 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
                             <div
                                 className="col-span-2 divide-y divide-default rounded-xl bg-default-50 shadow-sm backdrop-blur-xl">
                                 <div className="px-4 py-2">
-                                    <h3 className={subtitle({ size: 'sm' })}>Blockchain Data</h3>
+                                    <h3 className={subtitle({ size: 'sm' })}>Blockchain Information</h3>
                                 </div>
                                 <div className="p-4">
                                     <div className="flex justify-between">
-                                        <span className="text-xs text-default-400">To Address :</span>
+                                        <span className="text-xs text-default-400">Receiving Address :</span>
                                         <span className="flex items-center gap-2">
                                             {selectedPayment.address || 'N/A'}
                                             {/*<CopyButton text={selectedPayment.address} title="address"/>*/}
@@ -401,9 +400,8 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
                                         </span>
                                     </div>
                                     <p className="flex justify-between">
-                                        <span className="text-xs text-default-400">TxID :</span>
+                                        <span className="text-xs text-default-400">Transaction ID :</span>
                                         <span className="flex items-center gap-2">
-                                            &nbsp;
                                             {selectedPayment.txid || 'N/A'}
                                             {/*<Icons.clipboard/>*/}
                                         </span>
@@ -433,7 +431,7 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
                                         <span>{String(selectedPayment.expired_at)}</span>
                                     </p>
                                     <div className="flex justify-between">
-                                        <span className="text-xs text-default-400">Page Link :</span>
+                                        <span className="text-xs text-default-400">Payment Link :</span>
                                         <NextLink className={link().base()} href={`/pay/${selectedPayment.id}`}>
                                             https://pay.coinfinacle.com/pay/{selectedPayment.id}
                                         </NextLink>
@@ -458,8 +456,8 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
                                     variant="bordered"
                                     onClick={onDetailModalClose}
                                 >
-                                    View on Payment Page
-                                    <Icons.arrowRight/>
+                                    Copy Payment Link
+                                    <Icons.clipboard/>
                                 </Button>
                             </div>}
                         {selectedPayment.state === 'rejected' &&

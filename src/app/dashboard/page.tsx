@@ -1,105 +1,121 @@
 import React from 'react';
 import { Divider } from '@nextui-org/divider';
 
-import { AccountOverviewCharts } from '@/app/dashboard/account/utils';
-import { PaymentOverviewCharts } from '@/app/dashboard/payments/utils/PaymentOverviewCharts';
+import { getPaymentList } from '@/actions/dashboard/payment';
+import { PaymentOverviewTimeSelector } from '@/app/dashboard/payments/utils';
+import { DashboardPaymentLinkList } from '@/app/dashboard/utils/DashboardPaymentLinkList';
+import { fetchData } from '@/lib/api';
 import { subtitle } from 'src/components/primitives';
 
-const data1 = [
-    {
-        name: 'Bitcoins',
-        amount: 6730,
-        share: '32.1%',
-        color: 'bg-cyan-500 dark:bg-cyan-500',
-    },
-    {
-        name: 'Ethereum',
-        amount: 4120,
-        share: '19.6%',
-        color: 'bg-blue-500 dark:bg-blue-500',
-    },
-    {
-        name: 'Tether',
-        amount: 3920,
-        share: '18.6%',
-        color: 'bg-indigo-500 dark:bg-indigo-500',
-    },
-    {
-        name: 'Others',
-        amount: 3210,
-        share: '29.64%',
-        color: 'bg-violet-500 dark:bg-violet-500',
-    },
-];
+export const dynamic = 'force-dynamic';
 
-const data2 = [
-    {
-        name: 'Litecoin',
-        amount: 2150,
-        share: '10.4%',
-        color: 'bg-cyan-500 dark:bg-cyan-500',
-    },
-    {
-        name: 'Ripple',
-        amount: 1875,
-        share: '9.1%',
-        color: 'bg-blue-500 dark:bg-blue-500',
-    },
-    {
-        name: 'Cardano',
-        amount: 1580,
-        share: '7.6%',
-        color: 'bg-indigo-500 dark:bg-indigo-500',
-    },
-    {
-        name: 'Polkadot',
-        amount: 1250,
-        share: '6.2%',
-        color: 'bg-violet-500 dark:bg-violet-500',
-    },
-];
+export default async function DashboardPage() {
+    const { loading, data: payments, error } = await fetchData(getPaymentList);
 
-const data3 = [
-    {
-        name: 'Binance Coin',
-        amount: 3410,
-        share: '34.5%',
-        color: 'bg-cyan-500 dark:bg-cyan-500',
-    },
-    {
-        name: 'Solana',
-        amount: 2990,
-        share: '30.3%',
-        color: 'bg-blue-500 dark:bg-blue-500',
-    },
-    {
-        name: 'Dogecoin',
-        amount: 1780,
-        share: '18.0%',
-        color: 'bg-indigo-500 dark:bg-indigo-500',
-    },
-    {
-        name: 'Shiba Inu',
-        amount: 1120,
-        share: '17.2%',
-        color: 'bg-violet-500 dark:bg-violet-500',
-    },
-];
-
-export default function DashboardPage() {
     return (
         <section className="flex size-full flex-col overflow-auto pr-16">
-            <p className={subtitle({ size: 'lg', className: 'mr-auto text-default-600 font-bold' })}>
-                This Week’s Overview
-            </p>
-            <div className="relative my-4 flex flex-wrap justify-between gap-4">
-                <AccountOverviewCharts data={data1}/>
-                <AccountOverviewCharts data={data2}/>
-                <AccountOverviewCharts data={data3}/>
+            <h3 className={subtitle({ size: 'lg', className: 'text-default-600' })}>
+                Today’s Overview
+            </h3>
+            <div className="my-6 flex flex-wrap justify-between gap-4">
+                <div className="relative flex flex-col gap-3 pl-2">
+                    <span className="absolute left-0 top-1 h-4 w-0.5 bg-success"/>
+                    <h3 className={subtitle({ size: 'sm' })}>Payment Received</h3>
+                    <div className={subtitle({ size: 'xl' })}>590,788.00 AED</div>
+                    <div className="flex items-center gap-1 text-sm text-default-500">
+                        ~ 667,689.99 USDT
+                    </div>
+                </div>
+                <div className="relative flex flex-col gap-3 pl-2">
+                    <span className="absolute left-0 top-1 h-4 w-0.5 bg-green-600"/>
+                    <h3 className={subtitle({ size: 'sm' })}>Payment Received <small>(yesterday)</small></h3>
+                    <div className={subtitle({ size: 'xl' })}>546,788.00 AED</div>
+                    <div className="flex items-center gap-1 text-sm text-default-500">
+                        ~ 78,667.99 USDT
+                    </div>
+                </div>
+                <div className="relative flex flex-col gap-3 pl-2">
+                    <span className="absolute left-0 top-1 h-4 w-0.5 bg-danger"/>
+                    <h3 className={subtitle({ size: 'sm' })}>Payouts</h3>
+                    <div className={subtitle({ size: 'xl' })}>13,788.00 AED</div>
+                    <div className="flex items-center gap-1 text-sm text-default-500">
+                        ~ 24,667.99 USDT
+                    </div>
+                </div>
+                <div className="relative flex flex-col gap-3 pl-2">
+                    <span className="absolute left-0 top-1 h-4 w-0.5 bg-primary"/>
+                    <h3 className={subtitle({ size: 'sm' })}>Total Balance </h3>
+                    <div className={subtitle({ size: 'xl' })}>98,788.00 AED</div>
+                    <div className="flex items-center gap-1 text-sm text-default-500">
+                        ~ 7,667.99 USDT
+                    </div>
+                </div>
             </div>
             <Divider/>
-            <PaymentOverviewCharts/>
-            <PaymentOverviewCharts/>
+            <section className="flex flex-col py-6">
+                <PaymentOverviewTimeSelector/>
+                <div className="grid grid-cols-6">
+                    <div className="col-span-3 border-b border-r border-dashed border-divider pr-4">
+                        <div className="relative pl-2">
+                            <span className="absolute left-0 top-1 h-4 w-0.5 bg-success"/>
+                            <h3 className={subtitle({ size: 'sm' })}>Payments</h3>
+                        </div>
+                        <div className="overflow-auto">
+                            <DashboardPaymentLinkList data={payments}/>
+                        </div>
+                    </div>
+                    <div className="col-span-3 grid border-b border-dashed border-divider pl-4">
+                        <div className="relative pl-2">
+                            <span className="absolute left-0 top-1 h-4 w-0.5 bg-danger"/>
+                            <h3 className={subtitle({ size: 'sm' })}>Payouts</h3>
+                        </div>
+                        <div className="overflow-auto">
+                            <DashboardPaymentLinkList data={[...payments, ...payments]}/>
+                        </div>
+                    </div>
+                    <div className="col-span-2 border-r border-dashed border-divider py-4 pr-4">
+                        <div className="relative mb-2 pl-2">
+                            <span className="absolute left-0 top-1 h-4 w-0.5 bg-danger"/>
+                            <h3 className={subtitle({ size: 'sm' })}>Payments</h3>
+                        </div>
+                        <div className="">
+                            <div className="relative flex h-4 w-full items-center">
+                                <div className="flex h-full flex-1 items-center gap-0.5 overflow-hidden rounded-full">
+                                    <div className="h-full bg-primary" style={{ width: '65.3945%' }}/>
+                                    <div className="h-full bg-warning" style={{ width: '15.0183%' }}/>
+                                    <div className="h-full bg-secondary" style={{ width: '14.58716%' }}/>
+                                    <div className="h-full bg-danger" style={{ width: '6.58716%' }}/>
+                                </div>
+                            </div>
+                            <div className="flex items-center justify-between">
+                                <ul className="w-full">
+                                    <li className="flex items-center border-b border-dashed border-divider py-2 text-sm">
+                                        <span className="mr-2.5 block size-3 rounded bg-primary"/>
+                                        <span className="text-default-500">Succeeded</span>
+                                        <span className="ml-auto text-xs font-semibold">34,090 AED</span>
+                                    </li>
+                                    <li className="flex items-center border-b border-dashed border-divider py-2 text-sm">
+                                        <span className="mr-2.5 block size-3 rounded bg-warning"/>
+                                        <span className="text-default-500">Uncaptured</span>
+                                        <span className="ml-auto text-xs font-semibold">68,790 AED</span>
+                                    </li>
+                                    <li className="flex items-center border-b border-dashed border-divider py-2 text-sm">
+                                        <span className="mr-2.5 block size-3 rounded bg-secondary"/>
+                                        <span className="text-default-500">Refunded</span>
+                                        <span className="ml-auto text-xs font-semibold">58,674 AED</span>
+                                    </li>
+                                    <li className="flex items-center border-b border-dashed border-divider py-2 text-sm">
+                                        <span className="mr-2.5 block size-3 rounded bg-danger"/>
+                                        <span className="text-default-500">Failed</span>
+                                        <span className="ml-auto text-xs font-semibold">80 AED</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <p className="mt-4 text-xs text-primary">View details</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </section>
     );
 }

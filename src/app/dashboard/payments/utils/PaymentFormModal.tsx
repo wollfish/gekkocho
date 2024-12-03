@@ -16,7 +16,9 @@ export const PaymentFormModal: React.FC<OwnProps> = (props) => {
     return (
         <Modal backdrop="blur" isDismissable={false} isOpen={isOpen} onClose={onClose}>
             <ModalContent>
-                <ModalHeader className="flex flex-col gap-1">Create New Payment</ModalHeader>
+                <ModalHeader className="flex flex-col gap-1">
+                    Create New Payment Link
+                </ModalHeader>
                 <ModalBody>
                     <PaymentForm onClose={onClose}/>
                 </ModalBody>

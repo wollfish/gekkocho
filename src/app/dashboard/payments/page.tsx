@@ -7,6 +7,8 @@ import { PaymentOverviewTimeSelector } from '@/app/dashboard/payments/utils';
 import { PaymentOverviewCharts } from '@/app/dashboard/payments/utils/PaymentOverviewCharts';
 import { subtitle } from '@/components/primitives';
 
+export const dynamic = 'force-dynamic';
+
 export default function Page() {
     return (
         <section className="flex-1 overflow-auto py-4">

@@ -89,6 +89,15 @@ export async function activateBeneficiary(formData: BeneficiaryActivationFormInt
     });
 }
 
+export async function resendBeneficiaryActivation({ id }: { id: string }): Promise<ApiResponse> {
+    return await makeApiRequest({
+        endpoint: `/account/beneficiaries/${id}/resend_pin`,
+        apiVersion: 'peatio',
+        method: 'PATCH',
+        pathToRevalidate: ['/dashboard/account/beneficiaries'],
+    });
+}
+
 export async function deleteBeneficiary(id: string): Promise<ApiResponse<BeneficiaryInterface[]>> {
     return await makeApiRequest<BeneficiaryInterface[]>({
         endpoint: `/account/beneficiaries/${id}`,

@@ -9,7 +9,7 @@ import {
     LuCheck,
     LuCheckCircle,
     LuClipboardCopy,
-    LuCoins,
+    LuCoins, LuCopy,
     LuDices,
     LuFlower,
     LuGamepad,
@@ -34,7 +34,7 @@ import {
     LuSend,
     LuSettings,
     LuShoppingCart,
-    LuStore,
+    LuStore, LuTrash,
     LuUndo2,
     LuUserCircle,
     LuWallet,
@@ -302,6 +302,7 @@ const cryptoIcons = {
 
 export const Icons = {
     arrowRight: LuArrowRight,
+    trash: LuTrash,
     bell: LuBell,
     calendar: LuCalendar,
     cancel: LuX,
@@ -310,6 +311,7 @@ export const Icons = {
     check: LuCheck,
     circle: LuCheckCircle,
     clipboard: LuClipboardCopy,
+    copy: LuCopy,
     coins: LuCoins,
     cursor: LuMousePointerClick,
     dashboard: LuLayoutDashboard,

@@ -1,19 +1,19 @@
 import React from 'react';
 
-import { getWithdrawalList } from '@/actions/dashboard/account';
-import { WithdrawList } from '@/app/dashboard/account/utils';
+import { getApiKeyList } from '@/actions/dashboard/settings';
+import { ApiList } from '@/app/dashboard/settings/api/ApiList';
 import { fetchData } from '@/lib/api';
 import { DataPageTemplate } from '@/lib/misc/DataPageTemplate';
 
 export const dynamic = 'force-dynamic';
 
 export default async function Page() {
-    const { loading, data, error } = await fetchData(getWithdrawalList);
+    const { loading, data: apiKeys, error: apiKeysError } = await fetchData(getApiKeyList);
 
     return (
-        <DataPageTemplate data={data} error={error} loading={loading}>
+        <DataPageTemplate data={apiKeys} error={apiKeysError} loading={loading}>
             <section className="flex grow flex-col overflow-auto py-4">
-                <WithdrawList data={data}/>
+                <ApiList apiKeys={apiKeys} />
             </section>
         </DataPageTemplate>
     );

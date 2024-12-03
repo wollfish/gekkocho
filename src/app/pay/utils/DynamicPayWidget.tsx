@@ -32,6 +32,7 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
     const { data: paymentMethods, isLoading: paymentMethodsLoading } = useQuery({
         queryKey: ['payment_methods'],
         queryFn: () => getPaymentMethods(),
+        enabled: !paymentLoading && payment?.data?.state === 'pending',
     });
 
     const payCurrency = paymentMethods?.data?.find((c) => c.id === payment?.data?.pay_currency);
@@ -64,7 +65,7 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
         reference_id,
     } = payment?.data || {};
 
-    if (!payment.data) {
+    if (!payment?.data) {
         return (
             <section className={cn(WRAPPER_CLASS, 'shadow-none')}>
                 <div className="flex flex-col items-center justify-center p-4 text-sm">
@@ -122,7 +123,7 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
         if (state === 'pending') {
             return (
                 <PaymentMethodForm
-                    methods={paymentMethods.data}
+                    methods={paymentMethods?.data}
                     reqAmount={req_amount} reqCurrency={req_currency}
                     uuid={id}
                 />

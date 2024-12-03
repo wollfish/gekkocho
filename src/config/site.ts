@@ -2,6 +2,8 @@ import { Icons } from '@/components/icons';
 
 export type SiteConfig = typeof siteConfig;
 
+export const PLATFORM_CURRENCY = 'AED';
+
 export const siteConfig = {
     name: 'CoinDhan Pay',
     description: 'Coindhan Pay: A simple and secure crypto payment gateway for your business.',
@@ -57,7 +59,7 @@ export const siteConfig = {
             icon: Icons.dashboard,
         },
         {
-            label: 'Accounts',
+            label: 'Balances',
             href: '/dashboard/account',
             icon: Icons.wallet,
         },
@@ -78,8 +80,13 @@ export const siteConfig = {
         },
         {
             label: 'Settings',
-            href: '/dashboard/settings',
+            href: '/dashboard/settings/general',
             icon: Icons.settings,
+        },
+        {
+            label: 'APIs',
+            href: '/dashboard/settings/api',
+            icon: Icons.gitMerge,
         },
     ],
     dashboardSettingsNavItems: [
@@ -90,6 +97,10 @@ export const siteConfig = {
         {
             label: 'Security',
             path: '/dashboard/settings/security',
+        },
+        {
+            label: 'APIs',
+            path: '/dashboard/settings/api',
         },
         {
             label: 'KYC',
@@ -105,10 +116,14 @@ export const siteConfig = {
             label: 'Payments',
             path: '/dashboard/payments/list',
         },
+        {
+            label: 'Payment Links',
+            path: '/dashboard/payments/links',
+        },
     ],
     dashboardAccountNavItems: [
         {
-            label: 'Accounts',
+            label: 'Balances',
             path: '/dashboard/account',
         },
         {

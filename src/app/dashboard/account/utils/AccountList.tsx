@@ -10,7 +10,7 @@ import { SlotsToClasses, TableSlots } from '@nextui-org/theme';
 
 import { WithdrawFormModal } from '@/app/dashboard/account/utils/WithdrawFormModal';
 import { Icons } from '@/components/icons';
-import { cryptoIcons } from '@/constant';
+import { CryptoIcon } from '@/lib/misc/CryptoIcon';
 import { AccountResponseInterface } from '@/lib/zod';
 
 const columns = [
@@ -18,7 +18,6 @@ const columns = [
     { key: 'currency', label: 'Currency' },
     { key: 'balance', label: 'Available Balance' },
     { key: 'locked', label: 'Locked Balance' },
-    { key: 'escrow', label: 'Escrow Balance' },
     { key: 'total', label: 'Total Balance' },
     { key: 'estimated', label: 'Est. Balance ($)' },
     { key: 'actions', label: 'Actions' },
@@ -69,13 +68,9 @@ export const AccountList: React.FC<OwnProps> = (props) => {
             case 'name':
             case 'role':
             case 'currency':
-            case 'payer_currency':
-                const Icon = cryptoIcons[(cellValue as string).toLowerCase() as keyof typeof cryptoIcons];
-
                 return (
                     <span className="flex items-center gap-2 uppercase">
-                        {Icon && <Icon.icon fill={Icon.fill} size={24}/>}
-                        {cellValue}
+                        <CryptoIcon code={cellValue as string}/> {cellValue}
                     </span>
                 );
             case 'actions':
@@ -104,7 +99,7 @@ export const AccountList: React.FC<OwnProps> = (props) => {
             default:
                 return cellValue;
         }
-    }, []);
+    }, [onTableRowClick]);
 
     return (
         <section aria-label="Account List" className="flex size-full flex-col">

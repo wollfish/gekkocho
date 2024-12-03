@@ -14,14 +14,22 @@ export async function initializePayment(formData: PaymentFormInterface): Promise
         };
     }
 
+    const payload = {
+        ...validatedFormData.data,
+        description: validatedFormData.data.product_name,
+        customer: JSON.stringify({
+            name: validatedFormData.data.customer_name,
+            email: validatedFormData.data.customer_email,
+        }),
+    };
+
     return await makeApiRequest<PaymentResponseInterface>({
         endpoint: '/account/payment_requests',
         apiVersion: 'peatio',
         method: 'POST',
-        payload: validatedFormData.data,
+        payload: payload,
         pathToRevalidate: ['/dashboard/payments/list'],
     });
-
 }
 
 export async function getPaymentList(): Promise<ApiResponse<PaymentResponseInterface[]>> {
