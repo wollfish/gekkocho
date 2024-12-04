@@ -91,7 +91,7 @@ export const BeneficiaryActivationForm: React.FC<OwnProps> = (props) => {
             <div className="col-span-2">
                 <Divider/>
                 <div className="py-4 text-sm">
-                    <ResendOTPCountdown initialCountdown={5} onResend={resendOTP}/>
+                    <ResendOTPCountdown initialCountdown={60} onResend={resendOTP}/>
                 </div>
             </div>
         </form>

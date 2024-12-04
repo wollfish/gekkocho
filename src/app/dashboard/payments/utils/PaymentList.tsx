@@ -30,6 +30,7 @@ const statusColorMap: Record<string, ChipProps['color']> = {
     paused: 'danger',
     failed: 'danger',
     rejected: 'danger',
+    completed: 'success',
 };
 
 const statusOptions = [
@@ -377,7 +378,9 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
                                     </p>
                                     <p className="flex justify-between">
                                         <span className="text-xs text-default-400">Payment Amount :</span>
-                                        <span>&nbsp;{selectedPayment.pay_amount}</span>
+                                        <span className="uppercase">
+                                            &nbsp;{selectedPayment.pay_amount} {selectedPayment.pay_currency}
+                                        </span>
                                     </p>
                                     <p className="flex justify-between">
                                         <span className="text-xs text-default-400">Fee Amount :</span>
@@ -469,7 +472,7 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
                                     <Icons.bell/>
                                 </Button>
                             </div>}
-                        {selectedPayment.state === 'confirmed' &&
+                        {selectedPayment.state === 'completed' &&
                             <div className="flex w-full items-center gap-2 text-sm">
                                 <Icons.flower color="green" size={16}/>
                                 <p className="mr-auto">Transaction Completed</p>

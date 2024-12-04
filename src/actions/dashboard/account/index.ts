@@ -13,10 +13,14 @@ import {
 } from '@/lib/zod';
 
 export async function getAccountList(): Promise<ApiResponse<AccountResponseInterface[]>> {
-    return await makeApiRequest<AccountResponseInterface[]>({
+    const { success, data, error } = await makeApiRequest<AccountResponseInterface[]>({
         endpoint: '/account/balances',
         apiVersion: 'peatio',
     });
+
+    const filteredData = data?.filter((w) => w.wallet_type === 'spot');
+
+    return { success, data: filteredData, error };
 }
 
 export async function getWithdrawalList(): Promise<ApiResponse<AccountResponseInterface[]>> {

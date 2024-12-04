@@ -2,7 +2,8 @@ import { Icons } from '@/components/icons';
 
 export type SiteConfig = typeof siteConfig;
 
-export const PLATFORM_CURRENCY = 'AED';
+export const PLATFORM_USER_CURRENCY = 'AED';
+export const PLATFORM_MAIN_CURRENCY = 'USDT';
 
 export const siteConfig = {
     name: 'CoinDhan Pay',
@@ -76,7 +77,11 @@ export const siteConfig = {
         {
             label: 'Payments',
             href: '/dashboard/payments/list',
-            icon: Icons.calendar,
+            icon: Icons.arrowRightLeft,
+        }, {
+            label: 'Payment Links',
+            href: '/dashboard/payments/links',
+            icon: Icons.qrCode,
         },
         {
             label: 'Settings',
@@ -108,10 +113,6 @@ export const siteConfig = {
         },
     ],
     dashboardPaymentNavItems: [
-        {
-            label: 'Overview',
-            path: '/dashboard/payments',
-        },
         {
             label: 'Payments',
             path: '/dashboard/payments/list',

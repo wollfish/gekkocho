@@ -57,7 +57,7 @@ const InputOtp = forwardRef<'div', InputOtpProps>((props, ref) => {
                         isInputFocused={isInputFocused}
                         otplength={otplength}
                         slots={values.slots}
-                        value={value}
+                        value={String(value)}
                     />
                 ))}
             </div>

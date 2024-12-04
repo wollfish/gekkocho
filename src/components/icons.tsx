@@ -1,11 +1,10 @@
 import * as React from 'react';
 
 import {
-    LuArrowRight,
+    LuArrowRight, LuArrowRightLeft,
     LuBarChart,
     LuBell,
     LuBriefcase,
-    LuCalendar,
     LuCheck,
     LuCheckCircle,
     LuClipboardCopy,
@@ -302,17 +301,15 @@ const cryptoIcons = {
 
 export const Icons = {
     arrowRight: LuArrowRight,
-    trash: LuTrash,
     bell: LuBell,
-    calendar: LuCalendar,
     cancel: LuX,
     cart: LuShoppingCart,
     chart: LuBarChart,
     check: LuCheck,
     circle: LuCheckCircle,
     clipboard: LuClipboardCopy,
-    copy: LuCopy,
     coins: LuCoins,
+    copy: LuCopy,
     cursor: LuMousePointerClick,
     dashboard: LuLayoutDashboard,
     dice: LuDices,
@@ -329,6 +326,7 @@ export const Icons = {
     law: LuScale,
     mail: LuMail,
     map: LuMapPin,
+    arrowRightLeft: LuArrowRightLeft,
     phone: LuPhone,
     plane: LuPlane,
     plus: LuPlus,
@@ -337,6 +335,7 @@ export const Icons = {
     send: LuSend,
     settings: LuSettings,
     shop: LuStore,
+    trash: LuTrash,
     undo: LuUndo2,
     userCog: LuUserCircle,
     video: LuPlay,

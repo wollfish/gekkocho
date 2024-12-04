@@ -371,13 +371,22 @@ export const BeneficiaryList: React.FC<OwnProps> = (props) => {
                         </section>
                     </ModalBody>
                     <ModalFooter>
-                        {selectedBeneficiary.state === 'pending' &&
+                        {['pending'].includes(selectedBeneficiary.state) &&
                             <div className="flex w-full items-center gap-2 text-sm">
                                 <Icons.info color="#F7931A" size={16}/>
                                 <p className="mr-auto">Confirmation pending</p>
                                 <Button size="sm" variant="bordered" onClick={onActivationModalOpen}>
                                     Confirm
                                     <Icons.arrowRight/>
+                                </Button>
+                            </div>}
+                        {['aml_processing'].includes(selectedBeneficiary.state) &&
+                            <div className="flex w-full items-center gap-2 text-sm">
+                                <Icons.info color="#F7931A" size={16}/>
+                                <p className="mr-auto">Beneficiary is under system review</p>
+                                <Button size="sm" variant="bordered" onClick={onDetailModalClose}>
+                                    Issue? Raise a ticket
+                                    <Icons.bell/>
                                 </Button>
                             </div>}
                         {selectedBeneficiary.state === 'inactive' &&

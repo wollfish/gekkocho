@@ -19,12 +19,24 @@ const columns = [
     { key: 'balance', label: 'Available Balance' },
     { key: 'locked', label: 'Locked Balance' },
     { key: 'total', label: 'Total Balance' },
-    { key: 'estimated', label: 'Est. Balance ($)' },
+    { key: 'total_blc_in_platform_currency', label: 'Est. Balance (AED)' },
     { key: 'actions', label: 'Actions' },
 ];
 
+type ExtendedAccountType = AccountResponseInterface & {
+    total_blc: number;
+    main_currency: string,
+    user_currency: string,
+    avl_blc_in_main_currency: number;
+    locked_blc_in_main_currency: number;
+    total_blc_in_main_currency: number;
+    avl_blc_in_platform_currency: number;
+    locked_blc_in_platform_currency: number;
+    total_blc_in_platform_currency: number;
+};
+
 interface OwnProps {
-    accounts: AccountResponseInterface[];
+    accounts: ExtendedAccountType[];
 }
 
 export const AccountList: React.FC<OwnProps> = (props) => {
@@ -43,6 +55,7 @@ export const AccountList: React.FC<OwnProps> = (props) => {
         .map((item, index) => ({
             ...item,
             id: index + 1,
+            total_blc_in_platform_currency: item.total_blc_in_platform_currency.toFixed(2),
             balance: item.balance + ' ' + item.currency.toUpperCase(),
             locked: item.locked + ' ' + item.currency.toUpperCase(),
             escrow: item.escrow + ' ' + item.currency.toUpperCase(),

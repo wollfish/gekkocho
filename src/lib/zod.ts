@@ -172,9 +172,14 @@ export const paymentFormSchema = z.object({
 });
 
 export const paymentMethodFormSchema = z.object({
-    payment_id: z.string({ required_error: 'Payment method is required' }).min(1, 'Payment method is required'),
-    pay_currency: z.string({ required_error: 'Currency is required' }).min(1, 'Currency is required'),
-    pay_blockchain: z.string({ required_error: 'Network is required' }).min(1, 'Network is required'),
+    payment_id: z.string({ required_error: 'Payment method is required' })
+        .min(1, 'Payment method is required'),
+    pay_currency: z.string({ required_error: 'Currency is required' })
+        .min(1, 'Currency is required'),
+    pay_blockchain: z.string({ required_error: 'Network is required' })
+        .min(1, 'Network is required'),
+    customer_name: z.string().optional(),
+    customer_email: z.string().email({ message: 'Invalid email' }),
 });
 
 export const paymentResponseSchemaV1 = z.object({
@@ -205,6 +210,14 @@ export const paymentResponseSchemaV1 = z.object({
     block: z.number(),
 });
 
+const paymentCustomerSchema = z.object({
+    id: z.number(),
+    name: z.string(),
+    email: z.string(),
+    phone: z.string().nullable(),
+    address: z.string().nullable(),
+});
+
 export const paymentResponseSchema = z.object({
     id: z.string(),
     req_currency: z.string(),
@@ -222,6 +235,7 @@ export const paymentResponseSchema = z.object({
     created_at: z.coerce.date(),
     initiated_at: z.coerce.date().nullable(),
     expired_at: z.coerce.date().nullable(),
+    customer: paymentCustomerSchema,
 });
 
 export const accountResponseInterface = z.object({
@@ -280,8 +294,8 @@ export const withdrawalFormSchema = z.object({
         .max(6, 'OTP must be 6 characters'),
     network: z.string({ required_error: 'Network is required' })
         .min(1, 'Network is required'),
-    beneficiary_id: z.string({ required_error: 'Network is required' })
-        .min(1, 'Network is required'),
+    beneficiary_id: z.string({ required_error: 'Beneficiary is required' })
+        .min(1, 'Beneficiary is required'),
     remarks: z.string().optional(),
 }).refine((data) => +data.amount > 0, {
     message: 'Amount must be greater than 0',

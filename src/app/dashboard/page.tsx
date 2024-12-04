@@ -1,16 +1,24 @@
 import React from 'react';
 import { Divider } from '@nextui-org/divider';
 
+import { getWithdrawalList } from '@/actions/dashboard/account';
+import { fetchAnalytics } from '@/actions/dashboard/anylatics';
 import { getPaymentList } from '@/actions/dashboard/payment';
 import { PaymentOverviewTimeSelector } from '@/app/dashboard/payments/utils';
 import { DashboardPaymentLinkList } from '@/app/dashboard/utils/DashboardPaymentLinkList';
+import { DashboardPayoutsList } from '@/app/dashboard/utils/DashboardPayoutsList';
 import { fetchData } from '@/lib/api';
+import { DataPageTemplate } from '@/lib/misc/DataPageTemplate';
 import { subtitle } from 'src/components/primitives';
 
 export const dynamic = 'force-dynamic';
 
 export default async function DashboardPage() {
-    const { loading, data: payments, error } = await fetchData(getPaymentList);
+    const { data: payments, error: paymentError } = await fetchData(getPaymentList);
+    const { data: withdrawals, error: withdrawalError } = await fetchData(getWithdrawalList);
+    const { data: analytics, error: analyticsError } = await fetchData(fetchAnalytics);
+
+    console.log(analytics);
 
     return (
         <section className="flex size-full flex-col overflow-auto pr-16">
@@ -55,22 +63,26 @@ export default async function DashboardPage() {
             <section className="flex flex-col py-6">
                 <PaymentOverviewTimeSelector/>
                 <div className="grid grid-cols-6">
-                    <div className="col-span-3 border-b border-r border-dashed border-divider pr-4">
+                    <div className="col-span-3 flex flex-col border-b border-r border-dashed border-divider pr-4">
                         <div className="relative pl-2">
                             <span className="absolute left-0 top-1 h-4 w-0.5 bg-success"/>
                             <h3 className={subtitle({ size: 'sm' })}>Payments</h3>
                         </div>
-                        <div className="overflow-auto">
-                            <DashboardPaymentLinkList data={payments}/>
+                        <div className="flex flex-1 overflow-auto">
+                            <DataPageTemplate error={paymentError}>
+                                <DashboardPaymentLinkList data={payments?.splice(0, 5) || []}/>
+                            </DataPageTemplate>
                         </div>
                     </div>
-                    <div className="col-span-3 grid border-b border-dashed border-divider pl-4">
+                    <div className="col-span-3 border-b border-dashed border-divider pl-4">
                         <div className="relative pl-2">
                             <span className="absolute left-0 top-1 h-4 w-0.5 bg-danger"/>
                             <h3 className={subtitle({ size: 'sm' })}>Payouts</h3>
                         </div>
                         <div className="overflow-auto">
-                            <DashboardPaymentLinkList data={[...payments, ...payments]}/>
+                            <DataPageTemplate error={withdrawalError}>
+                                <DashboardPayoutsList data={withdrawals}/>
+                            </DataPageTemplate>
                         </div>
                     </div>
                     <div className="col-span-2 border-r border-dashed border-divider py-4 pr-4">
@@ -80,7 +92,8 @@ export default async function DashboardPage() {
                         </div>
                         <div className="">
                             <div className="relative flex h-4 w-full items-center">
-                                <div className="flex h-full flex-1 items-center gap-0.5 overflow-hidden rounded-full">
+                                <div
+                                    className="flex h-full flex-1 items-center gap-0.5 overflow-hidden rounded-full">
                                     <div className="h-full bg-primary" style={{ width: '65.3945%' }}/>
                                     <div className="h-full bg-warning" style={{ width: '15.0183%' }}/>
                                     <div className="h-full bg-secondary" style={{ width: '14.58716%' }}/>

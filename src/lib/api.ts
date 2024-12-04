@@ -58,6 +58,7 @@ export async function makeApiRequest<T = any>(params: ApiRequestParams): Promise
 
     try {
         console.info('Making request', url);
+        console.info('payload', params);
 
         const res = await fetch(url, {
             method,

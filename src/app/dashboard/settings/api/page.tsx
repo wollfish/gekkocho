@@ -11,7 +11,7 @@ export default async function Page() {
     const { loading, data: apiKeys, error: apiKeysError } = await fetchData(getApiKeyList);
 
     return (
-        <DataPageTemplate data={apiKeys} error={apiKeysError} loading={loading}>
+        <DataPageTemplate error={apiKeysError} loading={loading}>
             <section className="flex grow flex-col overflow-auto py-4">
                 <ApiList apiKeys={apiKeys} />
             </section>

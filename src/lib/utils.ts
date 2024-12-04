@@ -1,7 +1,7 @@
 import { ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
-import { PaymentMethodInterface } from '@/lib/zod';
+import { CurrencyResponseInterface, PaymentMethodInterface } from '@/lib/zod';
 
 export const cn = (...inputs: ClassValue[]) => {
     return twMerge(clsx(inputs));
@@ -19,6 +19,17 @@ export const truncateTo32Chars = (input: string): string => {
     const end = input.slice(-10);
 
     return `${start}...${end}`;
+};
+
+export const generateRandomId = () => {
+    const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    let randomId = 'payid-';
+
+    for (let i = 0; i < 10; i++) {
+        randomId += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+
+    return randomId;
 };
 
 const genArrayArg = (key: string, values: any[]): string =>
@@ -48,10 +59,33 @@ export const convertCurrency = (currencies: PaymentMethodInterface[], amount: st
     const toCurrency = currencies.find((currency) => currency.id === toCurrencyId);
 
     if (!fromCurrency || !toCurrency) {
-        throw new Error('Invalid currency IDs');
+        console.error('Currency not found');
+
+        return [0, 0];
     }
 
     const conversionRate = +toCurrency.exchange_rate / +fromCurrency.exchange_rate;
+    const convertedAmount = +amount / conversionRate;
+
+    return [convertedAmount, conversionRate];
+};
+
+export const convertAmountInMainCurrency = (amount: string | number, mainCurrency: CurrencyResponseInterface) => {
+    if (!mainCurrency) {
+        return 0;
+    }
+
+    return +amount * +mainCurrency.price;
+};
+
+export const convertAmount = (amount: string | number, fromCurrency: CurrencyResponseInterface, toCurrency: CurrencyResponseInterface) => {
+    if (!fromCurrency || !toCurrency) {
+        console.error('Currency not found');
+
+        return [0, 0];
+    }
+
+    const conversionRate = +toCurrency.price / +fromCurrency.price;
     const convertedAmount = +amount / conversionRate;
 
     return [convertedAmount, conversionRate];

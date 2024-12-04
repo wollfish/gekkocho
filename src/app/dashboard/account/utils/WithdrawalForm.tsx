@@ -3,9 +3,11 @@
 import React, { Suspense, useEffect, useMemo } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@nextui-org/button';
+import { Chip, ChipProps } from '@nextui-org/chip';
 import { Input } from '@nextui-org/input';
 import { Select, SelectItem } from '@nextui-org/select';
 import { useQuery } from '@tanstack/react-query';
+import NextLink from 'next/link';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
@@ -13,6 +15,17 @@ import { doWithdrawal, getBeneficiaryList, getCurrencyList } from '@/actions/das
 import { CryptoIcon } from '@/lib/misc/CryptoIcon';
 import { InputOtp } from '@/lib/otpInput';
 import { AccountResponseInterface, WithdrawalFormInterface, withdrawalFormSchema } from '@/lib/zod';
+
+const statusColorMap: Record<string, ChipProps['color']> = {
+    active: 'success',
+    confirmed: 'success',
+    pending: 'warning',
+    vacation: 'warning',
+    paused: 'danger',
+    failed: 'danger',
+    inactive: 'danger',
+    aml_processing: 'warning',
+};
 
 interface OwnProps {
     selectedAccount: string;
@@ -52,7 +65,7 @@ export const WithdrawalForm: React.FC<OwnProps> = (props) => {
         if (beneficiariesFetched) {
             setValue('beneficiary_id', '');
         }
-    }, [beneficiariesFetched]);
+    }, [beneficiariesFetched, setValue]);
 
     const availableBalance = useMemo(() => {
         return accounts?.find((acc) => acc.currency === selectedCurrency)?.balance || 0;
@@ -129,7 +142,7 @@ export const WithdrawalForm: React.FC<OwnProps> = (props) => {
                                 <SelectItem
                                     key={network.blockchain_key}
                                     classNames={{ selectedIcon: 'hidden' }}
-                                    textValue={network.blockchain_key}
+                                    textValue={network.protocol || network.blockchain_key}
                                 >
                                     {network.protocol || network.blockchain_key}
                                 </SelectItem>
@@ -170,6 +183,16 @@ export const WithdrawalForm: React.FC<OwnProps> = (props) => {
                 render={({ field, formState }) => (
                     <Select
                         className="col-span-2"
+                        description={beneficiaries?.data?.length ? ''
+                            : <div>
+                                <p className="text-tiny text-default-400">
+                                    You don&apos;t have any beneficiaries for this currency or network.
+                                    <NextLink className="text-primary" href="/dashboard/account/beneficiaries">
+                                        &nbsp; add one
+                                    </NextLink>
+                                </p>
+                            </div>
+                        }
                         disallowEmptySelection={true}
                         errorMessage={formState.errors?.['beneficiary_id']?.message?.toString()}
                         isInvalid={!!formState.errors?.['beneficiary_id']?.message}
@@ -185,13 +208,18 @@ export const WithdrawalForm: React.FC<OwnProps> = (props) => {
                             <SelectItem
                                 key={beneficiary.id}
                                 classNames={{ selectedIcon: 'hidden' }}
+                                isDisabled={beneficiary.state !== 'active'}
                                 textValue={beneficiary.name}
                             >
                                 <div className="flex items-center gap-2">
                                     <CryptoIcon code={beneficiary.currency}/>
-                                    <div className="flex flex-col">
-                                        <span className="text-small">
+                                    <div className="flex flex-1 flex-col">
+                                        <span className="flex justify-between text-small">
                                             {beneficiary.name} | {beneficiary.protocol}
+                                            <Chip className="capitalize" color={statusColorMap[beneficiary.state]}
+                                                size="sm" variant="light">
+                                                {beneficiary.state}
+                                            </Chip>
                                         </span>
                                         <span className="text-tiny text-default-400">
                                             {beneficiary.data?.address}
@@ -225,10 +253,10 @@ export const WithdrawalForm: React.FC<OwnProps> = (props) => {
                 name="otp"
                 render={({ field, formState }) => (
                     <InputOtp
-                        classNames={{ segmentWrapper: 'justify-between', base: 'w-full' }}
+                        classNames={{ base: 'w-full col-span-2' }}
                         color={!!formState.errors?.otp?.message ? 'danger' : 'default'}
-                        errorMessage={formState.errors?.otp?.message}
-                        label="OTP"
+                        description="Enter the code from your authenticator app. If you have not set up 2FA, please do so in the Settings section."
+                        label="2FA Code"
                         otplength={6}
                         radius="lg"
                         variant="faded"

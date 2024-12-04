@@ -14,6 +14,7 @@ import { getCurrencyList } from '@/actions/dashboard/account';
 import { initializePayment } from '@/actions/dashboard/payment';
 import { Icons } from '@/components/icons';
 import { CryptoIcon } from '@/lib/misc/CryptoIcon';
+import { generateRandomId } from '@/lib/utils';
 import { PaymentFormInterface, paymentFormSchema } from '@/lib/zod';
 
 interface OwnProps {
@@ -45,21 +46,14 @@ export const PaymentForm: React.FC<OwnProps> = (props) => {
         const { error, success, data } = await initializePayment(values) || {};
 
         if (success) {
-            onClose();
+            navigator.clipboard.writeText(`https://pay.coinfinacle.com/pay/${data?.id}`).then(() => {
+                toast.success('Payment link Copied to clipboard');
+            }).catch(() => {
+                toast.error('Failed to copy payment link');
+            }).finally(() => onClose());
         } else {
             toast.error(error);
         }
-    };
-
-    const generateRandomId = () => {
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        let randomId = 'rand-';
-
-        for (let i = 0; i < 10; i++) {
-            randomId += characters.charAt(Math.floor(Math.random() * characters.length));
-        }
-
-        return randomId;
     };
 
     const onRandomise = () => setValue('reference_id', generateRandomId());

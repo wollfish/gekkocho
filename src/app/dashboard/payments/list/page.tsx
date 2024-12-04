@@ -11,7 +11,7 @@ export default async function PaymentsPage() {
     const { loading, data: payments, error } = await fetchData(getPaymentList);
 
     return (
-        <DataPageTemplate data={payments} error={error} loading={loading}>
+        <DataPageTemplate error={error} loading={loading}>
             <section className="flex grow flex-col overflow-auto py-4">
                 <PaymentList data={payments}/>
             </section>

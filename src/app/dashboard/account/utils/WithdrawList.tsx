@@ -12,10 +12,11 @@ import { Selection, Table, TableBody, TableCell, TableColumn, TableHeader, Table
 
 import { SlotsToClasses, TableSlots } from '@nextui-org/theme';
 
+import { WithdrawFormModal } from '@/app/dashboard/account/utils/WithdrawFormModal';
 import { Icons, SearchIcon } from '@/components/icons';
 import { cryptoIcons } from '@/constant';
 import { capitalize, cn } from '@/lib/utils';
-import { WithdrawalInterface } from '@/lib/zod';
+import { AccountResponseInterface, WithdrawalInterface } from '@/lib/zod';
 
 const statusColorMap: Record<string, ChipProps['color']> = {
     active: 'success',
@@ -49,7 +50,12 @@ const columns: { key: keyof WithdrawalInterface | 'actions', label: string, opti
 const pages = 10;
 const INITIAL_VISIBLE_COLUMNS = ['tid', 'txid', 'currency', 'amount', 'rid', 'state', 'created_at', 'actions'];
 
-export const WithdrawList: React.FC<{ data: WithdrawalInterface[] }> = (props) => {
+interface OwnProps {
+    withdrawals: WithdrawalInterface[];
+    accounts: AccountResponseInterface[]
+}
+
+export const WithdrawList: React.FC<OwnProps> = (props) => {
 
     const {
         isOpen: isDetailModalOpen,
@@ -81,7 +87,7 @@ export const WithdrawList: React.FC<{ data: WithdrawalInterface[] }> = (props) =
         onDetailModalOpen();
     }, [onDetailModalOpen]);
 
-    const data = useMemo(() => props.data, [props.data]);
+    const data = useMemo(() => props.withdrawals, [props.withdrawals]);
 
     const selectedWithdraw = useMemo(() => data.find((row) => row.tid === selectedRowKey), [data, selectedRowKey]);
 
@@ -214,7 +220,7 @@ export const WithdrawList: React.FC<{ data: WithdrawalInterface[] }> = (props) =
                 </div>
             </div>
         );
-    }, [filterValue, onWithdrawFormModalOpen, statusFilter, visibleColumns]);
+    }, [data?.length, filterValue, onWithdrawFormModalOpen, statusFilter, visibleColumns]);
 
     const bottomContent = React.useMemo(() => {
         return (
@@ -283,11 +289,11 @@ export const WithdrawList: React.FC<{ data: WithdrawalInterface[] }> = (props) =
                 </TableBody>
             </Table>
             {bottomContent}
-            {/*<WithdrawFormModal*/}
-            {/*    accounts={accounts}*/}
-            {/*    isOpen={isWithdrawFormModalOpen}*/}
-            {/*    onClose={onWithdrawFormModalClose}*/}
-            {/*/>*/}
+            <WithdrawFormModal
+                accounts={props.accounts || []}
+                isOpen={isWithdrawFormModalOpen}
+                onClose={onWithdrawFormModalClose}
+            />
         </section>
     );
 };

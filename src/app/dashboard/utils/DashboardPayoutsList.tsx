@@ -1,13 +1,10 @@
 'use client';
 
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Button } from '@nextui-org/button';
 import { Chip, ChipProps } from '@nextui-org/chip';
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@nextui-org/dropdown';
-import { Input } from '@nextui-org/input';
 import { useDisclosure } from '@nextui-org/modal';
-import { Pagination } from '@nextui-org/pagination';
-import { ChevronDownIcon } from '@nextui-org/shared-icons';
 import { Selection, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/table';
 
 import { SlotsToClasses, TableSlots } from '@nextui-org/theme';
@@ -15,20 +12,19 @@ import { SlotsToClasses, TableSlots } from '@nextui-org/theme';
 import { toast } from 'sonner';
 
 import { PaymentFormModal } from '@/app/dashboard/payments/utils/PaymentFormModal';
-import { Icons, SearchIcon } from '@/components/icons';
+import { Icons } from '@/components/icons';
 import { CryptoIcon } from '@/lib/misc/CryptoIcon';
-import { capitalize } from '@/lib/utils';
-import { PaymentResponseInterface } from '@/lib/zod';
+import { WithdrawalInterface } from '@/lib/zod';
 
 const statusColorMap: Record<string, ChipProps['color']> = {
     active: 'success',
+    accepted: 'success',
     confirmed: 'success',
     pending: 'warning',
     processing: 'warning',
     vacation: 'warning',
     paused: 'danger',
     failed: 'danger',
-    completed: 'success',
     rejected: 'danger',
 };
 
@@ -48,26 +44,35 @@ type TableColumns = {
     };
 };
 
+// const columns: { key: keyof WithdrawalInterface | 'actions', label: string, options?: any }[] = [
+//     { key: 'tid', label: 'Reference Id' },
+//     { key: 'txid', label: 'Transaction Id' },
+//     { key: 'currency', label: 'Currency' },
+//     { key: 'amount', label: 'Amount' },
+//     { key: 'rid', label: 'Receiver Address' },
+//     { key: 'confirmations', label: 'Confirmations' },
+//     { key: 'state', label: 'Status' },
+//     { key: 'created_at', label: 'Created At' },
+//     { key: 'actions', label: 'Actions' },
+// ];
+
 const columns: TableColumns[] = [
-    { key: 'description', label: 'Name' },
-    { key: 'req_amount', label: 'Amount', options: { withCurrency: true, linked_column: 'req_currency' } },
-    { key: 'pay_amount', label: 'Payer Amount', options: { withCurrency: true, linked_column: 'pay_currency' } },
+    { key: 'tid', label: 'Reference Id' },
+    { key: 'txid', label: 'Transaction Id' },
+    { key: 'amount', label: 'Amount', options: { withCurrency: true, linked_column: 'currency' } },
     { key: 'state', label: 'State' },
-    { key: 'initiated_at', label: 'Created At' },
-    { key: 'cta', label: '' },
-    { key: 'actions', label: 'Actions' },
+    { key: 'created_at', label: 'Created At' },
+    // { key: 'cta', label: '' },
+    // { key: 'actions', label: 'Actions' },
 ];
 
-const pages = 10;
-
-export const PaymentLinkList: React.FC<{ data: PaymentResponseInterface[] }> = (props) => {
+export const DashboardPayoutsList: React.FC<{ data: WithdrawalInterface[] }> = (props) => {
     const {
         isOpen: isPaymentFormModalOpen,
         onOpen: onPaymentFormModalOpen,
         onClose: onPaymentFormModalClose,
     } = useDisclosure();
 
-    const [page, setPage] = useState(1);
     const [filterValue, setFilterValue] = React.useState('');
     const [statusFilter, setStatusFilter] = React.useState<Selection>('all');
 
@@ -86,26 +91,27 @@ export const PaymentLinkList: React.FC<{ data: PaymentResponseInterface[] }> = (
     }), []);
 
     const data = useMemo(() => {
-        const data: PaymentResponseInterface[] = props.data.map((row) => {
+        const data: WithdrawalInterface[] = props.data.map((row) => {
             return {
                 ...row,
             };
         });
 
         if (filterValue) {
-            return data.filter((row) => row.reference_id.includes(filterValue));
+            return data.filter((row) => row.rid.includes(filterValue));
         }
 
         return data;
     }, [filterValue, props.data]);
 
-    const renderCell = useCallback((data: PaymentResponseInterface, column: TableColumns) => {
+    const renderCell = useCallback((data: WithdrawalInterface, column: TableColumns) => {
         const cellKey = column.key;
-        const cellValue = data[cellKey as keyof PaymentResponseInterface] as string | number | undefined;
+        const cellValue = data[cellKey as keyof WithdrawalInterface] as string | number | undefined;
 
         switch (cellKey) {
             case 'name':
             case 'role':
+            case 'amount':
             case 'req_amount':
             case 'pay_amount':
                 return (
@@ -133,7 +139,7 @@ export const PaymentLinkList: React.FC<{ data: PaymentResponseInterface[] }> = (
                 );
             case 'cta':
                 return (
-                    <Button isIconOnly aria-label="Copy" size="sm" variant="light" onClick={() => onCopy(data.id)}>
+                    <Button isIconOnly aria-label="Copy" size="sm" variant="light" onClick={() => onCopy(data.rid)}>
                         <Icons.copy className="text-default-400" size={16}/>
                     </Button>
                 );
@@ -163,95 +169,8 @@ export const PaymentLinkList: React.FC<{ data: PaymentResponseInterface[] }> = (
         }
     }, []);
 
-    const topContent = React.useMemo(() => {
-        return (
-            <div className="mb-4 flex items-end justify-between gap-4">
-                <Input
-                    isClearable
-                    classNames={{
-                        base: 'w-full sm:max-w-[44%]',
-                        inputWrapper: 'border-1',
-                    }}
-                    placeholder="Search by id..."
-                    size="sm"
-                    startContent={<SearchIcon className="text-default-300"/>}
-                    value={filterValue}
-                    variant="bordered"
-                    onClear={() => setFilterValue('')}
-                    onValueChange={(value) => setFilterValue(value)}
-                />
-                <div className="flex gap-3">
-                    <Dropdown>
-                        <DropdownTrigger className="hidden sm:flex">
-                            <Button
-                                endContent={<ChevronDownIcon className="text-small"/>}
-                                size="sm"
-                                variant="flat"
-                            >
-                                Status
-                            </Button>
-                        </DropdownTrigger>
-                        <DropdownMenu
-                            disallowEmptySelection
-                            aria-label="Table Columns"
-                            closeOnSelect={false}
-                            selectedKeys={statusFilter}
-                            selectionMode="multiple"
-                            onSelectionChange={setStatusFilter}
-                        >
-                            {statusOptions.map((status) => (
-                                <DropdownItem key={status.uid} className="capitalize">
-                                    {capitalize(status.name)}
-                                </DropdownItem>
-                            ))}
-                        </DropdownMenu>
-                    </Dropdown>
-                    <Button
-                        className="bg-foreground text-background"
-                        endContent={<Icons.plus/>}
-                        size="sm"
-                        onClick={onPaymentFormModalOpen}
-                    >
-                        Create New Payment Link
-                    </Button>
-                </div>
-            </div>
-        );
-    }, [filterValue, onPaymentFormModalOpen, statusFilter]);
-
-    const bottomContent = React.useMemo(() => {
-        return (
-            <div
-                className="sticky bottom-0 z-10 flex items-center justify-end border-t border-divider p-2 backdrop-blur-md">
-                <div className="mr-8 flex items-center gap-4 text-small text-default-500">
-                    <label className="flex items-center ">
-                        Rows per page:
-                        <select
-                            className="bg-transparent outline-none"
-                            // onChange={onRowsPerPageChange}
-                        >
-                            <option value="5">5</option>
-                            <option value="10">10</option>
-                            <option value="15">15</option>
-                        </select>
-                    </label>
-                    <span>Total - {data.length}</span>
-                </div>
-                <Pagination
-                    showControls
-                    color="default"
-                    page={page}
-                    total={pages}
-                    variant="light"
-                    onChange={setPage}
-                />
-            </div>
-        );
-    }, [data.length, page]);
-
     return (
         <section aria-label="Payment List" className="flex size-full flex-col">
-            {topContent}
             <Table
                 isHeaderSticky
                 removeWrapper
@@ -269,7 +188,7 @@ export const PaymentLinkList: React.FC<{ data: PaymentResponseInterface[] }> = (
                 </TableHeader>
                 <TableBody emptyContent="No rows to display." items={data}>
                     {(item) => (
-                        <TableRow key={item.reference_id}>
+                        <TableRow key={item.rid}>
                             {columns.map((columnKey) => (
                                 <TableCell
                                     key={columnKey.key}
@@ -281,7 +200,7 @@ export const PaymentLinkList: React.FC<{ data: PaymentResponseInterface[] }> = (
                     )}
                 </TableBody>
             </Table>
-            {bottomContent}
+            {data.length > 5 && <p className="mb-4 text-center text-sm text-default-400 underline">View More</p>}
             <PaymentFormModal isOpen={isPaymentFormModalOpen} onClose={onPaymentFormModalClose}/>
         </section>
     );

@@ -2,8 +2,7 @@
 
 import React from 'react';
 
-import { subtitle } from '@/components/primitives';
-import { PLATFORM_CURRENCY } from '@/config/site';
+import { PLATFORM_USER_CURRENCY } from '@/config/site';
 import { DonutChart } from '@/termor_components/DonutChart';
 import { cx } from '@/termor_lib/utils';
 
@@ -16,7 +15,7 @@ interface OwnProps {
     }[];
 }
 
-const currencyFormatter = (number: number) => Intl.NumberFormat('us').format(number).toString() + ' ' + PLATFORM_CURRENCY;
+const currencyFormatter = (number: number) => Intl.NumberFormat('us').format(number).toString() + ' ' + PLATFORM_USER_CURRENCY;
 
 export const AccountOverviewCharts: React.FC<OwnProps> = React.memo(({ data }) => {
     return (
@@ -51,11 +50,11 @@ export const AccountOverviewCharts: React.FC<OwnProps> = React.memo(({ data }) =
                                 </div>
                                 <p className="flex items-center space-x-2">
                                     <span className="font-medium tabular-nums text-gray-900 dark:text-gray-50">
-                                        {currencyFormatter(item.amount)}
+                                        {currencyFormatter(+item.amount.toFixed(2))}
                                     </span>
                                     <span
                                         className="rounded-md bg-gray-100 px-1.5 py-0.5 text-xs font-medium tabular-nums text-gray-700 dark:bg-gray-800 dark:text-gray-300">
-                                        {item.share}
+                                        {item.share}%
                                     </span>
                                 </p>
                             </li>
@@ -63,11 +62,11 @@ export const AccountOverviewCharts: React.FC<OwnProps> = React.memo(({ data }) =
                     </ul>
                 </div>
             </div>
-            <div className="mt-4">
-                <h3 className={subtitle({ size: 'xs', className: 'text-right text-default-600' })}>
-                    i. Total balance by currency in {PLATFORM_CURRENCY}
-                </h3>
-            </div>
+            {/*<div className="mt-4">*/}
+            {/*    <h3 className={subtitle({ size: 'xs', className: 'text-right text-default-600' })}>*/}
+            {/*        i. Total balance by currency in {PLATFORM_USER_CURRENCY}*/}
+            {/*    </h3>*/}
+            {/*</div>*/}
         </section>
     );
 });

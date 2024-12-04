@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button } from '@nextui-org/button';
 import { Divider } from '@nextui-org/divider';
 import { Snippet } from '@nextui-org/snippet';
@@ -14,19 +14,23 @@ import { getPaymentInfo, getPaymentMethods } from '@/actions/pay';
 import { PaymentMethodForm } from '@/app/pay/utils/PaymentMethodForm';
 import { ReloadBtn } from '@/app/pay/utils/reload';
 import { Icons, Logo } from '@/components/icons';
+import { description } from '@/components/primitives';
 import { QRCodeGenerator } from '@/components/qrCodeGenerator';
 import { CountdownTimer } from '@/components/ui/CountdownTimer';
 import { cn } from '@/lib/utils';
 
-const WRAPPER_CLASS = 'w-full rounded-lg border border-dashed bg-white shadow-lg contain-content dark:border-default dark:bg-default-50 md:max-w-md min-w-[380px]';
+const WRAPPER_CLASS = 'w-full rounded-lg border border-dashed bg-white shadow-lg contain-content dark:border-default dark:bg-default-50 md:max-w-md min-w-[420px]';
 const NETWORK_CLASS = 'mx-auto mb-2 flex w-fit items-center gap-2 rounded border border-dashed px-2 py-1 text-sm dark:border-default';
 
 export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
+    const [enablePaymentDataFetch, setEnablePaymentDataFetch] = React.useState(true);
+
     const { data: payment, isLoading: paymentLoading } = useQuery({
         queryKey: ['payment_info', props.id],
         queryFn: () => getPaymentInfo({ payment_id: props.id }),
         refetchInterval: 5000,
         refetchOnWindowFocus: true,
+        enabled: enablePaymentDataFetch,
     });
 
     const { data: paymentMethods, isLoading: paymentMethodsLoading } = useQuery({
@@ -34,6 +38,12 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
         queryFn: () => getPaymentMethods(),
         enabled: !paymentLoading && payment?.data?.state === 'pending',
     });
+
+    useEffect(() => {
+        if (['completed', 'rejected'].includes(payment?.data?.state)) {
+            setEnablePaymentDataFetch(false);
+        }
+    }, [payment]);
 
     const payCurrency = paymentMethods?.data?.find((c) => c.id === payment?.data?.pay_currency);
 
@@ -80,8 +90,25 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
         );
     }
 
+    const renderQR = () => {
+        if (state === 'accepted') {
+            return (
+                <div className="m-auto flex h-[160px] flex-col items-center justify-center p-4 text-center">
+                    <Spinner className="m-auto" color="default"/>
+                    <p className={description({ size: 'xs' })}>
+                        Generating Payment Address...
+                    </p>
+                </div>
+            );
+        }
+
+        return (
+            <QRCodeGenerator icon={payCurrency?.currency_icon} value={address}/>
+        );
+    };
+
     const renderData = () => {
-        if (state === 'success') {
+        if (state === 'completed') {
             return (
                 <div className="flex flex-col items-center justify-center gap-4 p-4 text-sm">
                     <Icons.check className="text-green-500" size={32}/>
@@ -91,7 +118,7 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
                     <Button
                         as={NextLink}
                         color="primary"
-                        href={redirect_url}
+                        href={redirect_url || '/'}
                         radius="full" startContent={<Icons.home/>}
                         variant="flat"
                     >
@@ -110,7 +137,7 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
                     <p>Received Amount: {0} {pay_currency?.toUpperCase()}</p>
                     <Button
                         as={NextLink} color="primary"
-                        href={redirect_url}
+                        href={redirect_url || '/'}
                         radius="full"
                         startContent={<Icons.home/>}
                         variant="flat"
@@ -124,7 +151,7 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
             return (
                 <PaymentMethodForm
                     methods={paymentMethods?.data}
-                    reqAmount={req_amount} reqCurrency={req_currency}
+                    payment={payment?.data}
                     uuid={id}
                 />
             );
@@ -145,7 +172,7 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
                             </Tooltip>
                         </span>
                     </div>
-                    <QRCodeGenerator icon={payCurrency?.currency_icon} value={address}/>
+                    {renderQR()}
                     <div className="mb-4">
                         <div className="mb-1 text-sm font-semibold">Pay amount:</div>
                         <Snippet
@@ -159,7 +186,7 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
                         </Snippet>
                         <p className="mt-1 text-xs text-default-400">
                             <span>Exchange Rate: </span>
-                            <span className="uppercase">1 {pay_currency} = {exchange_rate} {req_currency}</span>
+                            <span className="uppercase">1 {pay_currency} = {Number(exchange_rate)?.toFixed(2)} {req_currency}</span>
                         </p>
                     </div>
                     <div className="mb-4">

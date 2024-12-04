@@ -22,6 +22,7 @@ import { PaymentResponseInterface } from '@/lib/zod';
 const statusColorMap: Record<string, ChipProps['color']> = {
     active: 'success',
     confirmed: 'success',
+    completed: 'success',
     pending: 'warning',
     processing: 'warning',
     vacation: 'warning',
@@ -49,11 +50,11 @@ type TableColumns = {
 const columns: TableColumns[] = [
     { key: 'description', label: 'Name' },
     { key: 'req_amount', label: 'Amount', options: { withCurrency: true, linked_column: 'req_currency' } },
-    { key: 'pay_amount', label: 'Payer Amount', options: { withCurrency: true, linked_column: 'pay_currency' } },
+    // { key: 'pay_amount', label: 'Payer Amount', options: { withCurrency: true, linked_column: 'pay_currency' } },
     { key: 'state', label: 'State' },
     { key: 'initiated_at', label: 'Created At' },
-    { key: 'cta', label: '' },
-    { key: 'actions', label: 'Actions' },
+    // { key: 'cta', label: '' },
+    // { key: 'actions', label: 'Actions' },
 ];
 
 export const DashboardPaymentLinkList: React.FC<{ data: PaymentResponseInterface[] }> = (props) => {
@@ -68,7 +69,7 @@ export const DashboardPaymentLinkList: React.FC<{ data: PaymentResponseInterface
 
     const onCopy = (value: string) => {
         navigator.clipboard.writeText(`https://pay.coinfinacle.com/pay/${value}`).then(() => {
-            toast.success('Copied to clipboard');
+            toast.success('Payment link Copied to clipboard');
         }).catch(() => {
             toast.error('Failed to copy to clipboard');
         });

@@ -25,7 +25,6 @@ const columns = [
     { key: 'kid', label: 'Key ID' },
     { key: 'algorithm', label: 'Algorithm' },
     { key: 'state', label: 'State' },
-    { key: 'switch', label: '' },
     { key: 'created_at', label: 'Created At' },
     { key: 'updated_at', label: 'Updated At' },
     { key: 'actions', label: 'Actions' },
@@ -115,9 +114,12 @@ export const ApiList: React.FC<OwnProps> = (props) => {
                 );
             case 'actions':
                 return (
-                    <Button isIconOnly size="sm" variant="light" onClick={() => onDeleteKey(data.kid)}>
-                        <Icons.trash className="text-danger" size={16}/>
-                    </Button>
+                    <div>
+                        <Switch isSelected={data?.state === 'active'} size="sm" onChange={() => onUpdateKey(data.kid)}/>
+                        <Button isIconOnly size="sm" variant="light" onClick={() => onDeleteKey(data.kid)}>
+                            <Icons.trash className="text-danger" size={16}/>
+                        </Button>
+                    </div>
                 );
             default:
                 return cellValue;

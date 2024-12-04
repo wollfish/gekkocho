@@ -9,6 +9,7 @@ export async function getPaymentInfo(payload: { payment_id: string }): Promise<A
         endpoint: `/public/payment_requests/${payload.payment_id}`,
         apiVersion: 'peatio',
         cache: false,
+        method: 'GET',
     });
 }
 
@@ -29,11 +30,18 @@ export async function getPaymentMethods(): Promise<ApiResponse<PaymentMethodInte
 }
 
 export async function setPaymentMethod(payload: PaymentMethodFormInterface) : Promise<ApiResponse<PaymentResponseInterface>> {
+    const payload_data = {
+        ...payload,
+        customer: JSON.stringify({
+            name: payload.customer_name,
+            email: payload.customer_email,
+        }),
+    };
+
     return await makeApiRequest<PaymentResponseInterface>({
         endpoint: `/public/payment_requests/${payload.payment_id}`,
         apiVersion: 'peatio',
         method: 'PUT',
-        payload,
-        pathToRevalidate: ['/pay/[id]'],
+        payload: payload_data,
     });
 }

@@ -12,7 +12,7 @@ export default async function Page() {
     const { data: currencies, error: currencyError } = await fetchData(getCurrencyList);
 
     return (
-        <DataPageTemplate data={beneficiaries} error={beneficiaryError || currencyError} loading={loading}>
+        <DataPageTemplate error={beneficiaryError || currencyError} loading={loading}>
             <section className="flex grow flex-col overflow-auto py-4">
                 <BeneficiaryList beneficiaries={beneficiaries} currencies={currencies}/>
             </section>
