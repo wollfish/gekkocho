@@ -74,7 +74,7 @@ export const AccountList: React.FC<OwnProps> = (props) => {
     const ctaEle = useCallback((data: AccountResponseInterface) => {
         return (
             <Button size="sm" variant="bordered" onClick={() => onTableRowClick(data.currency)}>
-                Withdraw
+                <span>Payout</span>
                 <Icons.wallet/>
             </Button>
         );
@@ -93,7 +93,7 @@ export const AccountList: React.FC<OwnProps> = (props) => {
     }, [accounts, ctaEle]);
 
     return (
-        <React.Fragment aria-label="Account List">
+        <React.Fragment>
             <YukiTable
                 columns={columns}
                 tableData={tableData}

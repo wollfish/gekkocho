@@ -16,11 +16,9 @@ export default async function Page({ params }: { params: { id: string } }) {
 
     return (
         <Suspense fallback={<Loading/>}>
-            <div className="m-auto">
-                <HydrationBoundary state={dehydrate(queryClient)}>
-                    <DynamicPayWidget id={params.id}/>
-                </HydrationBoundary>
-            </div>
+            <HydrationBoundary state={dehydrate(queryClient)}>
+                <DynamicPayWidget id={params.id}/>
+            </HydrationBoundary>
         </Suspense>
     );
 }

@@ -17,7 +17,7 @@ let chartData = [
     { currency: 'btc', name: 'Bitcoins', amount: 0, color: 'bg-cyan-500 dark:bg-cyan-500', share: '0' },
     { currency: 'eth', name: 'Ethereum', amount: 0, color: 'bg-blue-500 dark:bg-blue-500', share: '0' },
     { currency: 'usdt', name: 'Tether', amount: 0, color: 'bg-indigo-500 dark:bg-indigo-500', share: '0' },
-    { currency: 'OTHER', name: 'Others', amount: 0, color: 'bg-violet-500 dark:bg-violet-500', share: '0' },
+    { currency: 'other', name: 'Others', amount: 0, color: 'bg-violet-500 dark:bg-violet-500', share: '0' },
 ];
 
 export default async function Page() {
@@ -74,7 +74,7 @@ export default async function Page() {
     });
 
     const updateChartDataOfOthers = updatedChartData.map((item) => {
-        if (item.currency === 'OTHER') {
+        if (item.currency === 'other') {
             item.amount = totalBlainPlatformCurrency - updatedChartData.reduce((acc, item) => acc + item.amount, 0);
             item.share = ((item.amount / totalBlainPlatformCurrency) * 100).toFixed(2);
         }

@@ -71,7 +71,7 @@ export const siteConfig = {
         },
         {
             label: 'Beneficiaries',
-            href: '/dashboard/account/beneficiaries',
+            href: '/dashboard/account/crypto-beneficiaries',
             icon: Icons.dice,
         },
         {
@@ -79,7 +79,7 @@ export const siteConfig = {
             href: '/dashboard/payments/list',
             icon: Icons.arrowRightLeft,
         }, {
-            label: 'Payment Links',
+            label: 'Active Payments',
             href: '/dashboard/payments/links',
             icon: Icons.qrCode,
         },
@@ -107,10 +107,6 @@ export const siteConfig = {
             label: 'APIs',
             path: '/dashboard/settings/api',
         },
-        {
-            label: 'KYC',
-            path: '/dashboard/settings/kyc',
-        },
     ],
     dashboardPaymentNavItems: [
         {
@@ -122,18 +118,13 @@ export const siteConfig = {
             path: '/dashboard/payments/links',
         },
     ],
-    dashboardAccountNavItems: [
+    dashboardBeneficiaryNavItems: [
         {
-            label: 'Balances',
-            path: '/dashboard/account',
-        },
-        {
-            label: 'Withdrawals',
-            path: '/dashboard/account/withdrawals',
-        },
-        {
-            label: 'Beneficiaries',
-            path: '/dashboard/account/beneficiaries',
+            label: 'Crypto Accounts',
+            path: '/dashboard/beneficiaries/crypto',
+        }, {
+            label: 'Bank Accounts',
+            path: '/dashboard/beneficiaries/fiat',
         },
     ],
     links: {

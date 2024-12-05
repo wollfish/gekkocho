@@ -15,7 +15,7 @@ export const YukiCopyButton: React.FC<OwnProps> = (props) => {
             radius="sm"
             size="sm"
         >
-            {`${window.origin}/pay/${props.text}`}
+            {`https://pay.coinfinacle.com/pay/${props.text}`}
         </Snippet>
     );
 

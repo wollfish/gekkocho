@@ -60,13 +60,14 @@ export default async function Page({ params }: { params: { id: string } }) {
     const paymentColumns: TableColumnInterface[] = [
         { key: 'id', type: 'id', label: 'Payment ID' },
         { key: 'pay_currency', type: 'currency', label: 'Payer Currency' },
-        { key: 'pay_protocol', type: 'text', label: 'Payer Protocol' },
+        { key: 'pay_protocol', type: 'text', label: 'Payer Network' },
         {
             key: 'address',
             type: 'address',
             label: 'Payment Address',
-            options: { linked_column: 'explorer_address', searchValue: '#{address}' },
+            options: { linked_column: 'pay_explorer_address', searchValue: '#{address}' },
         },
+        { key: 'expired_at', type: 'datetime', label: 'Expiration' },
     ];
 
     const customerColumns: TableColumnInterface[] = [

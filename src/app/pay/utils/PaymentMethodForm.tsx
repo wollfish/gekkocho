@@ -1,6 +1,6 @@
 'use client';
 
-import React, { Suspense, useMemo } from 'react';
+import React, { Suspense, useEffect, useMemo } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@nextui-org/button';
 import { Divider } from '@nextui-org/divider';
@@ -11,6 +11,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
 import { setPaymentMethod } from '@/actions/dashboard/payment';
+import { subtitle } from '@/components/primitives';
 import { CryptoIcon } from '@/lib/misc/CryptoIcon';
 import { convertCurrency } from '@/lib/utils';
 import {
@@ -29,7 +30,7 @@ interface OwnProps {
 export const PaymentMethodForm: React.FC<OwnProps> = (props) => {
     const { uuid, payment, methods } = props;
 
-    const { handleSubmit, formState, control, watch } = useForm<PaymentMethodFormInterface>({
+    const { handleSubmit, formState, control, setValue, watch } = useForm<PaymentMethodFormInterface>({
         resolver: zodResolver(paymentMethodFormSchema),
         defaultValues: {
             payment_id: String(uuid),
@@ -39,6 +40,12 @@ export const PaymentMethodForm: React.FC<OwnProps> = (props) => {
             customer_email: payment.customer?.email || '',
         },
     });
+
+    const watchCurrency = watch('pay_currency');
+
+    useEffect(() => {
+        setValue('pay_blockchain', '');
+    },[setValue, watchCurrency]);
 
     const onSubmit = async (values: PaymentMethodFormInterface) => {
         const { error, success } = await setPaymentMethod(values) || {};
@@ -59,7 +66,8 @@ export const PaymentMethodForm: React.FC<OwnProps> = (props) => {
     }, [selectedCurrency, methods, payment.req_amount, payment.req_currency]);
 
     return (
-        <form autoComplete="off" className="grid grid-cols-12 gap-4" onSubmit={handleSubmit(onSubmit)}>
+        <form autoComplete="off" className="grid w-full grid-cols-12 gap-4" onSubmit={handleSubmit(onSubmit)}>
+            <h3 className={subtitle({ className: 'col-span-12' })}>Your Information</h3>
             <Controller
                 control={control}
                 name="customer_name"
@@ -94,61 +102,65 @@ export const PaymentMethodForm: React.FC<OwnProps> = (props) => {
                     />
                 )}
             />
-            <Divider className="col-span-12"/>
-            <Controller
-                control={control}
-                name="pay_currency"
-                render={({ field, formState }) => (
-                    <Select
-                        className="col-span-7"
-                        errorMessage={formState.errors?.['pay_currency']?.message?.toString()}
-                        isInvalid={!!formState.errors?.['pay_currency']?.message}
-                        items={methods.filter((m) => m.currency_type === 'coin')}
-                        label="Select Currency"
-                        labelPlacement="outside"
-                        placeholder="Pick a currency"
-                        selectedKeys={[field.value]}
-                        onChange={field.onChange}
-                    >
-                        {(method) => (
-                            <SelectItem
-                                key={method.id}
-                                startContent={<CryptoIcon code={method.id}/>}
-                                textValue={method.currency_name}
-                            >
-                                {method.currency_name}
-                            </SelectItem>
-                        )}
-                    </Select>
-                )}
-            />
-            <Controller
-                control={control}
-                name="pay_blockchain"
-                render={({ field, formState }) => (
-                    <Select
-                        className="col-span-5"
-                        disallowEmptySelection={true}
-                        errorMessage={formState.errors?.['pay_blockchain']?.message?.toString()}
-                        isInvalid={!!formState.errors?.['pay_blockchain']?.message}
-                        items={selectedCurrency?.networks || []}
-                        label="Select Network"
-                        labelPlacement="outside"
-                        placeholder=" "
-                        selectedKeys={[field.value]}
-                        onChange={field.onChange}
-                    >
-                        {(network) => (
-                            <SelectItem
-                                key={network.blockchain_key}
-                                textValue={network.protocol || network.blockchain_key}
-                            >
-                                {network.protocol || network.blockchain_key}
-                            </SelectItem>
-                        )}
-                    </Select>
-                )}
-            />
+            <Divider className="col-span-12 mt-4"/>
+            <h3 className={subtitle({ className: 'col-span-12' })}>Payment Method</h3>
+            <div className="col-span-12 grid grid-cols-12 items-start gap-4">
+                <Controller
+                    control={control}
+                    name="pay_currency"
+                    render={({ field, formState }) => (
+                        <Select
+                            className="col-span-7"
+                            disallowEmptySelection={true}
+                            errorMessage={formState.errors?.['pay_currency']?.message?.toString()}
+                            isInvalid={!!formState.errors?.['pay_currency']?.message}
+                            items={methods.filter((m) => m.currency_type === 'coin')}
+                            label="Select Currency"
+                            labelPlacement="outside"
+                            placeholder="Pick a currency"
+                            selectedKeys={[field.value]}
+                            onChange={field.onChange}
+                        >
+                            {(method) => (
+                                <SelectItem
+                                    key={method.id}
+                                    startContent={<CryptoIcon code={method.id}/>}
+                                    textValue={method.currency_name}
+                                >
+                                    {method.currency_name}
+                                </SelectItem>
+                            )}
+                        </Select>
+                    )}
+                />
+                <Controller
+                    control={control}
+                    name="pay_blockchain"
+                    render={({ field, formState }) => (
+                        <Select
+                            className="col-span-5"
+                            disallowEmptySelection={true}
+                            errorMessage={formState.errors?.['pay_blockchain']?.message?.toString()}
+                            isInvalid={!!formState.errors?.['pay_blockchain']?.message}
+                            items={selectedCurrency?.networks || []}
+                            label="Select Network"
+                            labelPlacement="outside"
+                            placeholder="Select Network"
+                            selectedKeys={[field.value]}
+                            onChange={field.onChange}
+                        >
+                            {(network) => (
+                                <SelectItem
+                                    key={network.blockchain_key}
+                                    textValue={network.protocol || network.blockchain_key}
+                                >
+                                    {network.protocol || network.blockchain_key}
+                                </SelectItem>
+                            )}
+                        </Select>
+                    )}
+                />
+            </div>
             <Input
                 className="col-span-12"
                 description={

@@ -29,7 +29,6 @@ const columns: TableColumnInterface[] = [
     { key: 'pay_protocol', type: 'text', label: 'Network', options: { capitalize: true } },
     { key: 'state', type: 'status', label: 'Status' },
     { key: 'initiated_at', type: 'datetime', label: 'Created At' },
-    { key: 'actions', type: 'action', label: 'Actions' },
 ];
 
 export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (props) => {

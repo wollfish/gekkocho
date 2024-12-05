@@ -98,3 +98,13 @@ export const convertAmount = (amount: string | number, fromCurrency: CurrencyRes
 
     return [convertedAmount, conversionRate];
 };
+
+export const formatNumber = (number: string | number) => {
+    if (!+number) {
+        return number;
+    }
+
+    const formatter = new Intl.NumberFormat('en-US');
+
+    return formatter.format(+number);
+};
