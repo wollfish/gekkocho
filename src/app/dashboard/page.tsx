@@ -1,17 +1,47 @@
 import React from 'react';
 import { Divider } from '@nextui-org/divider';
 
+import NextLink from 'next/link';
+
 import { getWithdrawalList } from '@/actions/dashboard/account';
 import { fetchAnalytics } from '@/actions/dashboard/anylatics';
 import { getPaymentList } from '@/actions/dashboard/payment';
 import { PaymentOverviewTimeSelector } from '@/app/dashboard/payments/utils';
-import { DashboardPaymentLinkList } from '@/app/dashboard/utils/DashboardPaymentLinkList';
-import { DashboardPayoutsList } from '@/app/dashboard/utils/DashboardPayoutsList';
+import { TableColumnInterface, YukiTable } from '@/components/ui/YukiTable';
 import { fetchData } from '@/lib/api';
 import { DataPageTemplate } from '@/lib/misc/DataPageTemplate';
 import { subtitle } from 'src/components/primitives';
 
 export const dynamic = 'force-dynamic';
+
+const withdrawalColumns: TableColumnInterface[] = [
+    { key: 'tid', type: 'id', label: 'Reference Id' },
+    {
+        key: 'txid',
+        type: 'address',
+        label: 'Transaction Id',
+        options: {
+            linked_column: 'explorer_transaction',
+            searchValue: '#{txid}',
+            truncate: { length: 24, direction: 'middle' },
+        },
+    },
+    { key: 'amount', type: 'number', label: 'Amount', options: { withCurrency: true, linked_column: 'currency' } },
+    { key: 'state', type: 'status', label: 'Status' },
+    { key: 'created_at', type: 'datetime', label: 'Created At' },
+];
+
+const paymentColumns: TableColumnInterface[] = [
+    { key: 'description', type: 'text', label: 'Name', options: { truncate: { length: 24, direction: 'end' } } },
+    {
+        key: 'req_amount',
+        type: 'number',
+        label: 'Amount',
+        options: { withCurrency: true, linked_column: 'req_currency' },
+    },
+    { key: 'state', type: 'status', label: 'State' },
+    { key: 'initiated_at', type: 'datetime', label: 'Created At' },
+];
 
 export default async function DashboardPage() {
     const { data: payments, error: paymentError } = await fetchData(getPaymentList);
@@ -19,6 +49,8 @@ export default async function DashboardPage() {
     const { data: analytics, error: analyticsError } = await fetchData(fetchAnalytics);
 
     console.log(analytics);
+    const cryptoWithdrawals = withdrawals.filter((withdrawal) => withdrawal.type === 'coin');
+    const fiatWithdrawals = withdrawals.filter((withdrawal) => withdrawal.type === 'fiat');
 
     return (
         <section className="flex size-full flex-col overflow-auto pr-16">
@@ -29,33 +61,33 @@ export default async function DashboardPage() {
                 <div className="relative flex flex-col gap-3 pl-2">
                     <span className="absolute left-0 top-1 h-4 w-0.5 bg-success"/>
                     <h3 className={subtitle({ size: 'sm' })}>Payment Received</h3>
-                    <div className={subtitle({ size: 'xl' })}>590,788.00 AED</div>
+                    <div className={subtitle({ size: 'xl' })}>00.00 AED</div>
                     <div className="flex items-center gap-1 text-sm text-default-500">
-                        ~ 667,689.99 USDT
+                        ~ 00 USDT
                     </div>
                 </div>
                 <div className="relative flex flex-col gap-3 pl-2">
                     <span className="absolute left-0 top-1 h-4 w-0.5 bg-green-600"/>
                     <h3 className={subtitle({ size: 'sm' })}>Payment Received <small>(yesterday)</small></h3>
-                    <div className={subtitle({ size: 'xl' })}>546,788.00 AED</div>
+                    <div className={subtitle({ size: 'xl' })}>00.00 AED</div>
                     <div className="flex items-center gap-1 text-sm text-default-500">
-                        ~ 78,667.99 USDT
+                        ~ 00 USDT
                     </div>
                 </div>
                 <div className="relative flex flex-col gap-3 pl-2">
                     <span className="absolute left-0 top-1 h-4 w-0.5 bg-danger"/>
                     <h3 className={subtitle({ size: 'sm' })}>Payouts</h3>
-                    <div className={subtitle({ size: 'xl' })}>13,788.00 AED</div>
+                    <div className={subtitle({ size: 'xl' })}>00.00 AED</div>
                     <div className="flex items-center gap-1 text-sm text-default-500">
-                        ~ 24,667.99 USDT
+                        ~ 00 USDT
                     </div>
                 </div>
                 <div className="relative flex flex-col gap-3 pl-2">
                     <span className="absolute left-0 top-1 h-4 w-0.5 bg-primary"/>
-                    <h3 className={subtitle({ size: 'sm' })}>Total Balance </h3>
-                    <div className={subtitle({ size: 'xl' })}>98,788.00 AED</div>
+                    <h3 className={subtitle({ size: 'sm' })}>Available Balance </h3>
+                    <div className={subtitle({ size: 'xl' })}>00.00 AED</div>
                     <div className="flex items-center gap-1 text-sm text-default-500">
-                        ~ 7,667.99 USDT
+                        ~ 00 USDT
                     </div>
                 </div>
             </div>
@@ -65,27 +97,45 @@ export default async function DashboardPage() {
                 <div className="grid grid-cols-6">
                     <div className="col-span-3 flex flex-col border-b border-r border-dashed border-divider pr-4">
                         <div className="relative pl-2">
-                            <span className="absolute left-0 top-1 h-4 w-0.5 bg-success"/>
-                            <h3 className={subtitle({ size: 'sm' })}>Payments</h3>
+                            <span className="absolute left-0 top-1 h-4 w-0.5 bg-danger"/>
+                            <h3 className={subtitle({ size: 'sm' })}>Fiat Payouts</h3>
                         </div>
-                        <div className="flex flex-1 overflow-auto">
-                            <DataPageTemplate error={paymentError}>
-                                <DashboardPaymentLinkList data={payments?.splice(0, 5) || []}/>
+                        <div className="overflow-auto">
+                            <DataPageTemplate error={withdrawalError}>
+                                <YukiTable columns={withdrawalColumns} tableData={fiatWithdrawals}/>
                             </DataPageTemplate>
                         </div>
                     </div>
                     <div className="col-span-3 border-b border-dashed border-divider pl-4">
                         <div className="relative pl-2">
                             <span className="absolute left-0 top-1 h-4 w-0.5 bg-danger"/>
-                            <h3 className={subtitle({ size: 'sm' })}>Payouts</h3>
+                            <h3 className={subtitle({ size: 'sm' })}>Crypto Payouts</h3>
                         </div>
                         <div className="overflow-auto">
                             <DataPageTemplate error={withdrawalError}>
-                                <DashboardPayoutsList data={withdrawals}/>
+                                <YukiTable columns={withdrawalColumns} tableData={cryptoWithdrawals}/>
                             </DataPageTemplate>
                         </div>
                     </div>
-                    <div className="col-span-2 border-r border-dashed border-divider py-4 pr-4">
+                    <div className="col-span-4 border-r border-dashed border-divider py-4 pr-4">
+                        <div className="relative pl-2">
+                            <span className="absolute left-0 top-1 h-4 w-0.5 bg-success"/>
+                            <h3 className={subtitle({ size: 'sm' })}>Payments</h3>
+                        </div>
+                        <div className="flex flex-1 flex-col overflow-auto">
+                            <DataPageTemplate error={paymentError}>
+                                <YukiTable columns={paymentColumns} tableData={payments?.splice(0, 5) || []}/>
+                                <NextLink
+                                    className="my-4 text-center text-sm text-default-400 underline"
+                                    href="/dashboard/payments/list"
+                                >
+                                    View More
+                                </NextLink>
+                            </DataPageTemplate>
+                        </div>
+
+                    </div>
+                    <div className="col-span-2 border-dashed border-divider py-4 pl-4">
                         <div className="relative mb-2 pl-2">
                             <span className="absolute left-0 top-1 h-4 w-0.5 bg-danger"/>
                             <h3 className={subtitle({ size: 'sm' })}>Payments</h3>

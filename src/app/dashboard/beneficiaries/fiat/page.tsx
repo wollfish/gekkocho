@@ -11,14 +11,14 @@ export default async function Page() {
     const { loading, data: beneficiaries, error: beneficiaryError } = await fetchData(getBeneficiaryList);
     const { data: currencies, error: currencyError } = await fetchData(getCurrencyList);
 
-    const coinCurrencies = currencies.filter((currency) => currency.type === 'coin');
-    const coinCurrenciesIds = coinCurrencies.map((currency) => currency.id);
-    const coinBeneficiaries = beneficiaries.filter((beneficiary) => coinCurrenciesIds.includes(beneficiary.currency));
-    
+    const fiatCurrencies = currencies.filter((currency) => currency.type === 'fiat');
+    const fiatCurrenciesIds = fiatCurrencies.map((currency) => currency.id);
+    const fiatBeneficiaries = beneficiaries.filter((beneficiary) => fiatCurrenciesIds.includes(beneficiary.currency));
+
     return (
         <DataPageTemplate error={beneficiaryError || currencyError} loading={loading}>
             <section className="flex grow flex-col overflow-auto py-4">
-                <BeneficiaryList beneficiaries={coinBeneficiaries} currencies={coinCurrencies} type="coin"/>
+                <BeneficiaryList beneficiaries={fiatBeneficiaries} currencies={fiatCurrencies} type="fiat"/>
             </section>
         </DataPageTemplate>
     );

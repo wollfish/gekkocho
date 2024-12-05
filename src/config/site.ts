@@ -57,40 +57,55 @@ export const siteConfig = {
         {
             label: 'Dashboard',
             href: '/dashboard',
+            parent: '/dashboard',
+            exact: true,
             icon: Icons.dashboard,
         },
         {
             label: 'Balances',
             href: '/dashboard/account',
+            parent: '/dashboard/account',
             icon: Icons.wallet,
         },
         {
-            label: 'Withdrawals',
-            href: '/dashboard/account/withdrawals',
+            label: 'Payouts',
+            href: '/dashboard/withdrawals/fiat',
+            parent: '/dashboard/withdrawals',
             icon: Icons.send,
         },
         {
-            label: 'Beneficiaries',
-            href: '/dashboard/account/crypto-beneficiaries',
+            label: 'Bank Accounts',
+            href: '/dashboard/beneficiaries/fiat',
+            parent: '/dashboard/beneficiaries/fiat',
+            icon: Icons.bank,
+        },
+        {
+            label: 'Crypto Accounts',
+            href: '/dashboard/beneficiaries/crypto',
+            parent: '/dashboard/beneficiaries/crypto',
             icon: Icons.dice,
         },
         {
             label: 'Payments',
             href: '/dashboard/payments/list',
+            parent: '/dashboard/payments/list',
             icon: Icons.arrowRightLeft,
         }, {
             label: 'Active Payments',
             href: '/dashboard/payments/links',
+            parent: '/dashboard/payments/links',
             icon: Icons.qrCode,
         },
         {
             label: 'Settings',
             href: '/dashboard/settings/general',
+            parent: '/dashboard/settings',
             icon: Icons.settings,
         },
         {
             label: 'APIs',
-            href: '/dashboard/settings/api',
+            href: '/dashboard/api',
+            parent: '/dashboard/api',
             icon: Icons.gitMerge,
         },
     ],
@@ -102,10 +117,6 @@ export const siteConfig = {
         {
             label: 'Security',
             path: '/dashboard/settings/security',
-        },
-        {
-            label: 'APIs',
-            path: '/dashboard/settings/api',
         },
     ],
     dashboardPaymentNavItems: [
@@ -120,11 +131,22 @@ export const siteConfig = {
     ],
     dashboardBeneficiaryNavItems: [
         {
-            label: 'Crypto Accounts',
-            path: '/dashboard/beneficiaries/crypto',
-        }, {
             label: 'Bank Accounts',
             path: '/dashboard/beneficiaries/fiat',
+        },
+        {
+            label: 'Crypto Accounts',
+            path: '/dashboard/beneficiaries/crypto',
+        },
+    ],
+    dashboardWithdrawalsNavItems: [
+        {
+            label: 'Fiat/Bank Payouts',
+            path: '/dashboard/withdrawals/fiat',
+        },
+        {
+            label: 'Crypto Payouts',
+            path: '/dashboard/withdrawals/crypto',
         },
     ],
     links: {

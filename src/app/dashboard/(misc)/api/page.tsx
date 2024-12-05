@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { getApiKeyList } from '@/actions/dashboard/settings';
-import { ApiList } from '@/app/dashboard/settings/api/ApiList';
+import { ApiList } from '@/app/dashboard/(misc)/api/ApiList';
 import { fetchData } from '@/lib/api';
 import { DataPageTemplate } from '@/lib/misc/DataPageTemplate';
 

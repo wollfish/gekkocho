@@ -12,7 +12,7 @@ export default async function Page() {
         loading: withdrawalLoading,
         data: withdrawals,
         error: withdrawalError,
-    } = await fetchData(getWithdrawalList);
+    } = await fetchData(() => getWithdrawalList({ type: 'coin' }));
 
     const {
         loading: accountLoading,
@@ -20,13 +20,16 @@ export default async function Page() {
         error: accountError,
     } = await fetchData(getAccountList);
 
+    // TODO: remove this after backend fix
+    const cryptoWithdrawals = withdrawals.filter((withdrawal) => withdrawal.type === 'coin');
+
     return (
         <DataPageTemplate
             error={withdrawalError || accountError}
             loading={withdrawalLoading || accountLoading}
         >
             <section className="flex grow flex-col overflow-auto py-4">
-                <WithdrawList accounts={accounts} withdrawals={withdrawals}/>
+                <WithdrawList accounts={accounts} type="coin" withdrawals={cryptoWithdrawals}/>
             </section>
         </DataPageTemplate>
     );

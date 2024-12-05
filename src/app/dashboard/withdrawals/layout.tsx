@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function Layout({ children }: { children: React.ReactNode }) {
     return (
         <section aria-label="Beneficiary Layout" className="flex size-full flex-col pr-16">
-            <DashboardTabs tabs={siteConfig.dashboardBeneficiaryNavItems}/>
+            <DashboardTabs tabs={siteConfig.dashboardWithdrawalsNavItems}/>
             <Suspense>
                 {children}
             </Suspense>

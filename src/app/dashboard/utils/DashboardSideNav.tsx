@@ -27,18 +27,22 @@ export const DashboardSideNav: React.FC = React.memo(() => {
             </div>
             <div className="no-scrollbar flex grow flex-col overflow-y-auto duration-300 ease-linear">
                 <ul className="flex w-full flex-col gap-2 p-2 text-sm">
-                    {siteConfig.dashboardSideNavItems.map((item) => (
-                        <li key={item.href}>
-                            <NextLink className={cn(itemClasses, {
-                                'bg-default-100/50 backdrop-blur-sm': path === item.href,
-                            })} href={item.href}>
-                                {item.icon && <item.icon className={cn(iconClasses, {
-                                    'text-primary': path === item.href,
-                                })}/>}
-                                <span>{item.label}</span>
-                            </NextLink>
-                        </li>
-                    ))}
+                    {siteConfig.dashboardSideNavItems.map((item) => {
+                        const isActive = item.exact ? item.href === path : path.includes(item.parent);
+
+                        return (
+                            <li key={item.href}>
+                                <NextLink className={cn(itemClasses, {
+                                    'bg-default-100/50 backdrop-blur-sm': isActive,
+                                })} href={item.href}>
+                                    {item.icon && <item.icon className={cn(iconClasses, {
+                                        'text-primary': isActive,
+                                    })}/>}
+                                    <span>{item.label}</span>
+                                </NextLink>
+                            </li>
+                        );
+                    })}
                 </ul>
                 <div className="mt-auto flex w-full flex-col gap-2 p-2 text-sm">
                     <form action={doLogout} className="text-danger">

@@ -9,7 +9,8 @@ import {
     BeneficiaryInterface,
     CurrencyResponseInterface,
     WithdrawalFormInterface,
-    withdrawalFormSchema, WithdrawalInterface,
+    withdrawalFormSchema,
+    WithdrawalInterface,
 } from '@/lib/zod';
 
 export async function getAccountList(): Promise<ApiResponse<AccountResponseInterface[]>> {
@@ -23,10 +24,11 @@ export async function getAccountList(): Promise<ApiResponse<AccountResponseInter
     return { success, data: filteredData, error };
 }
 
-export async function getWithdrawalList(): Promise<ApiResponse<AccountResponseInterface[]>> {
-    return await makeApiRequest<AccountResponseInterface[]>({
+export async function getWithdrawalList(payload?: { type: string }): Promise<ApiResponse<WithdrawalInterface[]>> {
+    return await makeApiRequest<WithdrawalInterface[]>({
         endpoint: '/account/withdraws',
         apiVersion: 'peatio',
+        payload,
     });
 }
 
@@ -34,6 +36,7 @@ type GetBeneficiaryListParams = {
     currency_id: string;
     blockchain_key: string;
 };
+
 export async function getBeneficiaryList(payload?: GetBeneficiaryListParams): Promise<ApiResponse<BeneficiaryInterface[]>> {
     return await makeApiRequest<BeneficiaryInterface[]>({
         endpoint: '/account/beneficiaries',

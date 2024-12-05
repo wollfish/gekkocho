@@ -6,8 +6,9 @@ import { useDisclosure } from '@nextui-org/modal';
 
 import { Switch } from '@nextui-org/switch';
 
-import { ApiKeyFormModal } from '@/app/dashboard/settings/api/ApiKeyFormModal';
+import { ApiKeyFormModal } from '@/app/dashboard/(misc)/api/ApiKeyFormModal';
 import { Icons } from '@/components/icons';
+import { subtitle } from '@/components/primitives';
 import { TableColumnInterface, YukiTable } from '@/components/ui/YukiTable';
 import { ApiKeyResponseInterface } from '@/lib/zod';
 
@@ -65,7 +66,7 @@ export const ApiList: React.FC<OwnProps> = (props) => {
     const topContent = React.useMemo(() => {
         return (
             <div className="mb-4 flex items-end justify-between gap-4">
-                <div/>
+                <h1 className={subtitle({ className: 'ml-2' })}>Api Keys</h1>
                 <div className="flex gap-3">
                     <Button
                         className="bg-foreground text-background"

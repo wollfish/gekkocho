@@ -43,6 +43,7 @@ const columns: TableColumnInterface[] = [
 ];
 
 interface OwnProps {
+    type: 'fiat' | 'coin';
     withdrawals: WithdrawalInterface[];
     accounts: AccountResponseInterface[]
 }
@@ -80,7 +81,7 @@ export const WithdrawList: React.FC<OwnProps> = (props) => {
                         size="sm"
                         onClick={onWithdrawFormModalOpen}
                     >
-                        Create New Withdrawal
+                        Create New Payout
                     </Button>
                 </div>
             </div>

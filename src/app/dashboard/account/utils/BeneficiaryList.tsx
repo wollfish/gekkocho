@@ -46,6 +46,7 @@ const columns: TableColumnInterface[] = [
 ];
 
 interface OwnProps {
+    type: 'coin' | 'fiat';
     beneficiaries: BeneficiaryInterface[];
     currencies: CurrencyResponseInterface[];
 }
@@ -110,7 +111,7 @@ export const BeneficiaryList: React.FC<OwnProps> = (props) => {
                         size="sm"
                         onClick={onFormModalOpen}
                     >
-                        Add New Beneficiary
+                        {props.type === 'coin' ? 'Add New Crypto Account' : 'Add New Bank Account'}
                     </Button>
                 </div>
             </div>
@@ -241,6 +242,7 @@ export const BeneficiaryList: React.FC<OwnProps> = (props) => {
             <BeneficiaryFormModal
                 currencies={props.currencies}
                 isOpen={isFormModalOpen}
+                type={props.type}
                 onClose={onFormModalClose}
             />
         </React.Fragment>
