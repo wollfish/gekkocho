@@ -3,7 +3,7 @@ import React from 'react';
 interface DataPageTemplateProps {
     error: string | null;
     loading?: boolean;
-    children: React.ReactNode;
+    children?: React.ReactNode;
 }
 
 export const DataPageTemplate: React.FC<DataPageTemplateProps> = (props) => {

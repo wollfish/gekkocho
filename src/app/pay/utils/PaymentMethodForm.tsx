@@ -10,7 +10,7 @@ import { Controller, useForm } from 'react-hook-form';
 
 import { toast } from 'sonner';
 
-import { setPaymentMethod } from '@/actions/pay';
+import { setPaymentMethod } from '@/actions/dashboard/payment';
 import { CryptoIcon } from '@/lib/misc/CryptoIcon';
 import { convertCurrency } from '@/lib/utils';
 import {
@@ -41,9 +41,11 @@ export const PaymentMethodForm: React.FC<OwnProps> = (props) => {
     });
 
     const onSubmit = async (values: PaymentMethodFormInterface) => {
-        const { error } = await setPaymentMethod(values) || {};
+        const { error, success } = await setPaymentMethod(values) || {};
 
-        if (error) {
+        if (success) {
+            toast.success('Payment method set');
+        } else {
             toast.error(error);
         }
     };
@@ -60,24 +62,6 @@ export const PaymentMethodForm: React.FC<OwnProps> = (props) => {
         <form autoComplete="off" className="grid grid-cols-12 gap-4" onSubmit={handleSubmit(onSubmit)}>
             <Controller
                 control={control}
-                name="customer_email"
-                render={({ field, formState }) => (
-                    <Input
-                        autoComplete="off"
-                        className="col-span-12"
-                        errorMessage={formState.errors?.['customer_email']?.message?.toString()}
-                        isInvalid={!!formState.errors?.['customer_email']?.message}
-                        label="Email"
-                        labelPlacement="outside"
-                        placeholder="Enter your email"
-                        type="email"
-                        value={field.value}
-                        onChange={field.onChange}
-                    />
-                )}
-            />
-            <Controller
-                control={control}
                 name="customer_name"
                 render={({ field, formState }) => (
                     <Input
@@ -88,6 +72,23 @@ export const PaymentMethodForm: React.FC<OwnProps> = (props) => {
                         label="Name"
                         labelPlacement="outside"
                         placeholder="Enter your name"
+                        value={field.value}
+                        onChange={field.onChange}
+                    />
+                )}
+            />
+            <Controller
+                control={control}
+                name="customer_email"
+                render={({ field, formState }) => (
+                    <Input
+                        autoComplete="off"
+                        className="col-span-12"
+                        errorMessage={formState.errors?.['customer_email']?.message?.toString()}
+                        isInvalid={!!formState.errors?.['customer_email']?.message}
+                        label="Email"
+                        labelPlacement="outside"
+                        placeholder="Enter your email"
                         value={field.value}
                         onChange={field.onChange}
                     />
@@ -150,8 +151,15 @@ export const PaymentMethodForm: React.FC<OwnProps> = (props) => {
             />
             <Input
                 className="col-span-12"
-                description={`Conversion Rate: 1 ${selectedCurrency?.id?.toUpperCase()} = ${(convertedAmount?.[1])?.toFixed(2) || 0} ${payment?.req_currency.toUpperCase()}`}
-                disabled={true}
+                description={
+                    <p className="font-medium">
+                        <span>Conversion Rate: &nbsp;</span>
+                        {selectedCurrency?.id && <span className="font-semibold uppercase text-secondary">
+                            {`1 ${selectedCurrency?.id} = ${(convertedAmount?.[1])?.toFixed(2) || 0} ${payment?.req_currency}`}
+                        </span>}
+                    </p>
+                }
+                isReadOnly={true}
                 label="Converted Amount"
                 labelPlacement="outside"
                 placeholder="Converted Amount..."

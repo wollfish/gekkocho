@@ -57,8 +57,7 @@ export async function makeApiRequest<T = any>(params: ApiRequestParams): Promise
     }
 
     try {
-        console.info('Making request', url);
-        console.info('payload', params);
+        console.info('Making request :-', url);
 
         const res = await fetch(url, {
             method,
@@ -73,14 +72,14 @@ export async function makeApiRequest<T = any>(params: ApiRequestParams): Promise
         if (isSuccessful) {
             if (pathToRevalidate?.length > 0) {
                 for (const path of pathToRevalidate) {
-                    revalidatePath(path);
+                    revalidatePath(path, 'page');
                 }
             }
 
             return { success: true, error: null, data: responseData };
         }
 
-        console.info(responseData);
+        console.info('API request failed', responseData);
 
         return {
             success: false,
@@ -117,7 +116,7 @@ async function parseResponse<T>(res: Response): Promise<T | null> {
 export async function fetchData<T>(
     fetchFn: () => Promise<{ success: boolean; data: T | null; error: string | null }>
 ): Promise<{ loading: boolean; data: T | null; error: string | null }> {
-    let loading: boolean;
+    let loading = true;
 
     try {
         const response = await fetchFn();

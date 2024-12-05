@@ -210,6 +210,25 @@ export const paymentResponseSchemaV1 = z.object({
     block: z.number(),
 });
 
+const paymentDepositSchema = z.object({
+    id: z.number(),
+    currency: z.string(),
+    blockchain_key: z.string(),
+    explorer_address: z.string(),
+    explorer_transaction: z.string(),
+    protocol: z.string(),
+    amount: z.string(),
+    fee: z.string(),
+    address: z.string(),
+    confirmations: z.number(),
+    state: z.string(),
+    type: z.string(),
+    tid: z.string(),
+    txid: z.string().nullable(),
+    completed_at: z.coerce.date().nullable(),
+    created_at: z.coerce.date(),
+});
+
 const paymentCustomerSchema = z.object({
     id: z.number(),
     name: z.string(),
@@ -229,13 +248,14 @@ export const paymentResponseSchema = z.object({
     pay_amount: z.string().nullable(),
     address: z.string().nullable(),
     txid: z.string().nullable(),
+    received_amount: z.string().nullable(),
     reference_id: z.string(),
     redirect_url: z.string().nullable(),
     state: z.string(),
-    created_at: z.coerce.date(),
     initiated_at: z.coerce.date().nullable(),
     expired_at: z.coerce.date().nullable(),
     customer: paymentCustomerSchema,
+    deposits: z.array(paymentDepositSchema).nullable(),
 });
 
 export const accountResponseInterface = z.object({
@@ -405,3 +425,17 @@ export type TwoFactorAuthResponseInterface = z.infer<typeof twoFactorAuthRespons
 
 export type ApiKeyFormInterface = z.infer<typeof apiKeyFormSchema>;
 export type ApiKeyResponseInterface = z.infer<typeof apiKeyResponseSchema>;
+
+export const statusColorMap: Record<string, any> = {
+    active: 'success',
+    confirmed: 'success',
+    accepted: 'success',
+    completed: 'success',
+    pending: 'warning',
+    processing: 'warning',
+    paused: 'danger',
+    failed: 'danger',
+    rejected: 'danger',
+    inactive: 'danger',
+    disabled: 'danger',
+};

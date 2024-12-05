@@ -10,7 +10,9 @@ import { useQuery } from '@tanstack/react-query';
 
 import NextLink from 'next/link';
 
-import { getPaymentInfo, getPaymentMethods } from '@/actions/pay';
+import { getCurrencyList } from '@/actions/dashboard/account';
+
+import { getPaymentInfoPublic, getPaymentMethods } from '@/actions/dashboard/payment';
 import { PaymentMethodForm } from '@/app/pay/utils/PaymentMethodForm';
 import { ReloadBtn } from '@/app/pay/utils/reload';
 import { Icons, Logo } from '@/components/icons';
@@ -19,7 +21,7 @@ import { QRCodeGenerator } from '@/components/qrCodeGenerator';
 import { CountdownTimer } from '@/components/ui/CountdownTimer';
 import { cn } from '@/lib/utils';
 
-const WRAPPER_CLASS = 'w-full rounded-lg border border-dashed bg-white shadow-lg contain-content dark:border-default dark:bg-default-50 md:max-w-md min-w-[420px]';
+const WRAPPER_CLASS = 'w-full border border-dashed bg-white contain-content dark:border-default dark:bg-default-50 md:max-w-md min-w-[420px]';
 const NETWORK_CLASS = 'mx-auto mb-2 flex w-fit items-center gap-2 rounded border border-dashed px-2 py-1 text-sm dark:border-default';
 
 export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
@@ -27,7 +29,7 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
 
     const { data: payment, isLoading: paymentLoading } = useQuery({
         queryKey: ['payment_info', props.id],
-        queryFn: () => getPaymentInfo({ payment_id: props.id }),
+        queryFn: () => getPaymentInfoPublic({ id: props.id }),
         refetchInterval: 5000,
         refetchOnWindowFocus: true,
         enabled: enablePaymentDataFetch,
@@ -39,13 +41,18 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
         enabled: !paymentLoading && payment?.data?.state === 'pending',
     });
 
+    const { data: currencies, isLoading: currenciesLoading } = useQuery({
+        queryKey: ['currencies'],
+        queryFn: () => getCurrencyList(),
+    });
+
     useEffect(() => {
         if (['completed', 'rejected'].includes(payment?.data?.state)) {
             setEnablePaymentDataFetch(false);
         }
     }, [payment]);
 
-    const payCurrency = paymentMethods?.data?.find((c) => c.id === payment?.data?.pay_currency);
+    const payCurrency = currencies?.data?.find((c) => c.id === payment?.data?.pay_currency);
 
     if (paymentLoading || paymentMethodsLoading) {
         return (
@@ -55,15 +62,12 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
         );
     }
 
-    console.log(payment);
-
     const {
         id,
         initiated_at,
         address,
         pay_blockchain,
         pay_amount,
-        created_at,
 
         expired_at,
         pay_currency,
@@ -103,7 +107,7 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
         }
 
         return (
-            <QRCodeGenerator icon={payCurrency?.currency_icon} value={address}/>
+            <QRCodeGenerator icon={payCurrency?.icon_url} value={address}/>
         );
     };
 
@@ -184,9 +188,12 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
                         >
                             {[pay_amount, pay_currency?.toUpperCase()].join(' ')}
                         </Snippet>
-                        <p className="mt-1 text-xs text-default-400">
+                        <p className="mt-1 text-xs font-semibold text-default-500">
                             <span>Exchange Rate: </span>
-                            <span className="uppercase">1 {pay_currency} = {Number(exchange_rate)?.toFixed(2)} {req_currency}</span>
+                            <span className="uppercase">
+                                {`1 ${pay_currency} = ${Number(exchange_rate)?.toFixed(2)} ${req_currency}`}
+                            </span>
+
                         </p>
                     </div>
                     <div className="mb-4">
@@ -213,7 +220,7 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
                         <Logo size={32}/>
                         <p className="font-bold">CoinDhan Pay</p>
                     </div>
-                    <div>Ref Id: <span className="text-sm font-semibold">#{reference_id}</span></div>
+                    <div>Order Id: <span className="text-sm font-semibold">#{reference_id}</span></div>
                 </div>
                 <div className="capitalize">
                     <span>Amount: </span>

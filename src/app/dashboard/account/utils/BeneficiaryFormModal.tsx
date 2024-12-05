@@ -18,7 +18,7 @@ export const BeneficiaryFormModal: React.FC<OwnProps> = (props) => {
     return (
         <Modal backdrop="blur" isDismissable={false} isOpen={isOpen} onClose={onClose}>
             <ModalContent>
-                <ModalHeader className="flex flex-col gap-1">Create New Beneficiary</ModalHeader>
+                <ModalHeader className="flex flex-col gap-1">Add New Beneficiary</ModalHeader>
                 <ModalBody>
                     <BeneficiaryForm currencies={currencies} onClose={onClose}/>
                 </ModalBody>

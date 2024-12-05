@@ -118,7 +118,7 @@ export const siteConfig = {
             path: '/dashboard/payments/list',
         },
         {
-            label: 'Payment Links',
+            label: 'Active Payment Links',
             path: '/dashboard/payments/links',
         },
     ],

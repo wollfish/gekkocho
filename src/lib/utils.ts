@@ -10,15 +10,23 @@ export const cn = (...inputs: ClassValue[]) => {
 export const capitalize = (str: string) => {
     return str.charAt(0).toUpperCase() + str.slice(1);
 };
-
-export const truncateTo32Chars = (input: string): string => {
-    if (input.length <= 32) {
-        return input;
+export const truncateText = (text: string, length: number = 24, direction: 'end' | 'middle' = 'end'): string => {
+    if (text.length <= length) {
+        return text;
     }
-    const start = input.slice(0, 10);
-    const end = input.slice(-10);
 
-    return `${start}...${end}`;
+    const ellipsis = '...';
+    const ellipsisLength = ellipsis.length;
+
+    if (direction === 'end') {
+        return text.slice(0, length - ellipsisLength) + ellipsis;
+    } else if (direction === 'middle') {
+        const halfLength = (length - ellipsisLength) / 2;
+        const start = text.slice(0, Math.ceil(halfLength));
+        const end = text.slice(-Math.floor(halfLength));
+
+        return `${start}${ellipsis}${end}`;
+    }
 };
 
 export const generateRandomId = () => {

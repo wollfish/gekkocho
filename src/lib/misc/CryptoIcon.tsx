@@ -3,7 +3,7 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 
 const AvailableIcon = [
-    'ada', 'algo', 'atom', 'avax',
+    'ada', 'aed', 'algo', 'atom', 'avax',
     'bch', 'bnb', 'btc', 'busd',
     'doge', 'dot',
     'eth',

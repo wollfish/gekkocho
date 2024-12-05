@@ -79,7 +79,7 @@ export const WithdrawalForm: React.FC<OwnProps> = (props) => {
         const { error, success } = await doWithdrawal(values) || {};
 
         if (success) {
-            toast.success('Withdrawal successful');
+            toast.success('Withdrawal request placed successfully');
             reset();
             props.onClose();
         } else {

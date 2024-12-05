@@ -2,7 +2,7 @@ import React, { Suspense } from 'react';
 
 import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
 
-import { getPaymentInfo } from '@/actions/pay';
+import { getPaymentInfoPublic } from '@/actions/dashboard/payment';
 import Loading from '@/app/pay/[id]/loading';
 import { DynamicPayWidget } from '@/app/pay/utils';
 
@@ -11,7 +11,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 
     await queryClient.prefetchQuery({
         queryKey: ['payment_info', params.id],
-        queryFn: () => getPaymentInfo({ payment_id: params.id }),
+        queryFn: () => getPaymentInfoPublic({ id: params.id }),
     });
 
     return (

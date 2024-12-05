@@ -80,24 +80,6 @@ export const PaymentForm: React.FC<OwnProps> = (props) => {
             <div className="col-span-2 grid grid-cols-6 items-start gap-4">
                 <Controller
                     control={control}
-                    name="req_amount"
-                    render={({ field, formState }) => (
-                        <Input
-                            autoComplete="off"
-                            className="col-span-4"
-                            errorMessage={formState.errors?.['req_amount']?.message?.toString()}
-                            isInvalid={!!formState.errors?.['req_amount']?.message}
-                            label="Request Amount"
-                            labelPlacement="outside"
-                            placeholder=" "
-                            type="number"
-                            value={String(field.value)}
-                            onChange={field.onChange}
-                        />
-                    )}
-                />
-                <Controller
-                    control={control}
                     name="req_currency"
                     render={({ field, formState }) => (
                         <Select
@@ -123,6 +105,24 @@ export const PaymentForm: React.FC<OwnProps> = (props) => {
                                 </SelectItem>
                             )}
                         </Select>
+                    )}
+                />
+                <Controller
+                    control={control}
+                    name="req_amount"
+                    render={({ field, formState }) => (
+                        <Input
+                            autoComplete="off"
+                            className="col-span-4"
+                            errorMessage={formState.errors?.['req_amount']?.message?.toString()}
+                            isInvalid={!!formState.errors?.['req_amount']?.message}
+                            label="Request Amount"
+                            labelPlacement="outside"
+                            placeholder=" "
+                            type="number"
+                            value={String(field.value)}
+                            onChange={field.onChange}
+                        />
                     )}
                 />
             </div>

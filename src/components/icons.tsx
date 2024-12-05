@@ -1,15 +1,16 @@
 import * as React from 'react';
 
 import {
-    LuArrowRight, LuArrowRightLeft,
+    LuArrowLeft,
+    LuArrowRight, LuArrowRightLeft, LuBanknote,
     LuBarChart,
     LuBell,
-    LuBriefcase,
+    LuBriefcase, LuCalendar,
     LuCheck,
     LuCheckCircle,
     LuClipboardCopy,
     LuCoins, LuCopy,
-    LuDices,
+    LuDices, LuExternalLink,
     LuFlower,
     LuGamepad,
     LuGitMerge,
@@ -301,6 +302,7 @@ const cryptoIcons = {
 
 export const Icons = {
     arrowRight: LuArrowRight,
+    arrowLeft: LuArrowLeft,
     bell: LuBell,
     cancel: LuX,
     cart: LuShoppingCart,
@@ -315,6 +317,7 @@ export const Icons = {
     dice: LuDices,
     ellipseH: LuMoreHorizontal,
     flower: LuFlower,
+    calendar: LuCalendar,
     fund: LuBriefcase,
     gamepad: LuGamepad,
     gitMerge: LuGitMerge,
@@ -324,6 +327,7 @@ export const Icons = {
     infinity: LuInfinity,
     info: LuInfo,
     law: LuScale,
+    link: LuExternalLink,
     mail: LuMail,
     map: LuMapPin,
     arrowRightLeft: LuArrowRightLeft,
@@ -340,6 +344,7 @@ export const Icons = {
     userCog: LuUserCircle,
     video: LuPlay,
     wallet: LuWallet,
+    bankNote: LuBanknote,
     zap: LuZap,
 
     ...cryptoIcons,
