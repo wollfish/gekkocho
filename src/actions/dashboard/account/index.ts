@@ -4,8 +4,8 @@ import { ApiResponse, makeApiRequest } from '@/lib/api';
 import {
     AccountResponseInterface,
     BeneficiaryActivationFormInterface,
-    BeneficiaryFormInterface,
-    beneficiaryFormSchema,
+    BeneficiaryFormCryptoInterface,
+    BeneficiaryFormFiatInterface,
     BeneficiaryInterface,
     CurrencyResponseInterface,
     WithdrawalFormInterface,
@@ -53,24 +53,9 @@ export async function getCurrencyList(): Promise<ApiResponse<CurrencyResponseInt
     });
 }
 
-export async function addNewBeneficiary(formData: BeneficiaryFormInterface): Promise<ApiResponse<BeneficiaryInterface[]>> {
-    const validatedFormData = beneficiaryFormSchema.safeParse(formData);
-
-    if (!validatedFormData.success) {
-        return {
-            success: false,
-            error: validatedFormData.error.message,
-            data: null,
-        };
-    }
-
+export async function addNewCryptoBeneficiary(formData: BeneficiaryFormCryptoInterface): Promise<ApiResponse<BeneficiaryInterface[]>> {
     const payload = {
-        name: formData.name,
-        currency: formData.currency,
-        description: formData.description,
-
-        address: formData.address,
-        network: formData.network,
+        ...formData,
 
         // TODO: remove after migration
         data: JSON.stringify({ address: formData.address }),
@@ -82,7 +67,30 @@ export async function addNewBeneficiary(formData: BeneficiaryFormInterface): Pro
         apiVersion: 'peatio',
         method: 'POST',
         payload: payload,
-        pathToRevalidate: ['/dashboard/account/beneficiaries'],
+        pathToRevalidate: ['/dashboard/beneficiaries/fiat', '/dashboard/beneficiaries/coin'],
+    });
+}
+
+export async function addNewFiatBeneficiary(formData: BeneficiaryFormFiatInterface): Promise<ApiResponse<BeneficiaryInterface[]>> {
+    const payload = {
+        currency: formData.currency,
+        name: formData.nick_name,
+        blockchain_key: formData.blockchain_key,
+        data: JSON.stringify({
+            nick_name: formData.nick_name.trim(),
+            full_name: formData.full_name.trim().slice(0, 35),
+            account_type: formData.account_type.trim(),
+            account_number: formData.account_number.trim(),
+            bank_ifsc_code: formData.bank_ifsc_code.toUpperCase().trim(),
+        }),
+    };
+
+    return await makeApiRequest<BeneficiaryInterface[]>({
+        endpoint: '/account/beneficiaries',
+        apiVersion: 'peatio',
+        method: 'POST',
+        payload: payload,
+        pathToRevalidate: ['/dashboard/beneficiaries/fiat', '/dashboard/beneficiaries/crypto'],
     });
 }
 
@@ -92,7 +100,7 @@ export async function activateBeneficiary(formData: BeneficiaryActivationFormInt
         apiVersion: 'peatio',
         method: 'PATCH',
         payload: formData,
-        pathToRevalidate: ['/dashboard/account/beneficiaries'],
+        pathToRevalidate: ['/dashboard/beneficiaries/fiat', '/dashboard/beneficiaries/crypto'],
     });
 }
 
@@ -101,7 +109,7 @@ export async function resendBeneficiaryActivation({ id }: { id: string }): Promi
         endpoint: `/account/beneficiaries/${id}/resend_pin`,
         apiVersion: 'peatio',
         method: 'PATCH',
-        pathToRevalidate: ['/dashboard/account/beneficiaries'],
+        pathToRevalidate: ['/dashboard/beneficiaries/fiat', '/dashboard/beneficiaries/crypto'],
     });
 }
 
@@ -137,6 +145,6 @@ export async function doWithdrawal(formData: WithdrawalFormInterface): Promise<A
         apiVersion: 'peatio',
         method: 'POST',
         payload: payload,
-        pathToRevalidate: ['/dashboard/account', '/dashboard/account/withdrawals'],
+        pathToRevalidate: ['/dashboard/withdrawals/crypto', '/dashboard/withdrawals/fiat'],
     });
 }

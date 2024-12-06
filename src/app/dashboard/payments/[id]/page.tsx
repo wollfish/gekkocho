@@ -15,6 +15,51 @@ import { DataPageTemplate } from '@/lib/misc/DataPageTemplate';
 import { YukiDateFormat } from '@/lib/misc/DateFormat';
 import { statusColorMap } from '@/lib/zod';
 
+const summaryColumns: TableColumnInterface[] = [
+    { key: 'reference_id', type: 'id', label: 'Order ID' },
+    { key: 'customer_name', type: 'text', label: 'Customer Name' },
+    { key: 'description', type: 'text', label: 'Product Name' },
+    {
+        key: 'req_amount',
+        type: 'number',
+        label: 'Order Amount',
+        options: { withCurrency: true, linked_column: 'req_currency' },
+    },
+    {
+        key: 'pay_amount',
+        type: 'number',
+        label: 'Payer Amount',
+        options: { withCurrency: true, linked_column: 'pay_currency' },
+    },
+    {
+        key: 'received_amount',
+        type: 'number',
+        label: 'Received Amount',
+        options: { withCurrency: true, linked_column: 'pay_currency' },
+    },
+    { key: 'exchange_rate', type: 'text', label: 'Order Exchange Rate' },
+];
+
+const paymentColumns: TableColumnInterface[] = [
+    { key: 'id', type: 'id', label: 'Payment ID' },
+    { key: 'pay_currency', type: 'currency', label: 'Payer Currency' },
+    { key: 'pay_protocol', type: 'text', label: 'Payer Network' },
+    {
+        key: 'address',
+        type: 'address',
+        label: 'Payment Address',
+        options: { linked_column: 'pay_explorer_address', searchValue: '#{address}' },
+    },
+    { key: 'expired_at', type: 'datetime', label: 'Expiration' },
+];
+
+const customerColumns: TableColumnInterface[] = [
+    { key: 'name', type: 'text', label: 'Name' },
+    { key: 'email', type: 'text', label: 'Email' },
+    { key: 'phone', type: 'text', label: 'Phone' },
+    { key: 'address', type: 'text', label: 'Address' },
+];
+
 export default async function Page({ params }: { params: { id: string } }) {
     let { data: responseData, error } = await fetchData(() => getPaymentInfoPrivate({ id: params.id }));
 
@@ -32,57 +77,12 @@ export default async function Page({ params }: { params: { id: string } }) {
 
     };
 
-    const summaryColumns: TableColumnInterface[] = [
-        { key: 'reference_id', type: 'id', label: 'Order ID' },
-        { key: 'customer_name', type: 'text', label: 'Customer Name' },
-        { key: 'description', type: 'text', label: 'Product Name' },
-        {
-            key: 'req_amount',
-            type: 'number',
-            label: 'Order Amount',
-            options: { withCurrency: true, linked_column: 'req_currency' },
-        },
-        {
-            key: 'pay_amount',
-            type: 'number',
-            label: 'Payer Amount',
-            options: { withCurrency: true, linked_column: 'pay_currency' },
-        },
-        {
-            key: 'received_amount',
-            type: 'number',
-            label: 'Received Amount',
-            options: { withCurrency: true, linked_column: 'pay_currency' },
-        },
-        { key: 'exchange_rate', type: 'text', label: 'Order Exchange Rate' },
-    ];
-
-    const paymentColumns: TableColumnInterface[] = [
-        { key: 'id', type: 'id', label: 'Payment ID' },
-        { key: 'pay_currency', type: 'currency', label: 'Payer Currency' },
-        { key: 'pay_protocol', type: 'text', label: 'Payer Network' },
-        {
-            key: 'address',
-            type: 'address',
-            label: 'Payment Address',
-            options: { linked_column: 'pay_explorer_address', searchValue: '#{address}' },
-        },
-        { key: 'expired_at', type: 'datetime', label: 'Expiration' },
-    ];
-
-    const customerColumns: TableColumnInterface[] = [
-        { key: 'name', type: 'text', label: 'Name' },
-        { key: 'email', type: 'text', label: 'Email' },
-        { key: 'phone', type: 'text', label: 'Phone' },
-        { key: 'address', type: 'text', label: 'Address' },
-    ];
-
     return (
         <section className="flex grow flex-col overflow-auto">
             <section aria-label="Header">
                 <Button
                     as={NextLink}
-                    className="mb-2 -translate-x-2 text-sm"
+                    className="mb-2 text-sm"
                     href="/dashboard/payments/list"
                     radius="sm"
                     size="sm"

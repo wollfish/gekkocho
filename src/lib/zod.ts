@@ -268,7 +268,7 @@ export const accountResponseInterface = z.object({
     wallet_type: z.string(),
 });
 
-export const beneficiaryFormSchema = z.object({
+export const beneficiaryCryptoFormSchema = z.object({
     name: z.string({ required_error: 'Name is required' })
         .min(1, 'Nickname is required')
         .max(30, 'Nickname must be less than 30 characters'),
@@ -279,6 +279,37 @@ export const beneficiaryFormSchema = z.object({
     network: z.string({ required_error: 'Network is required' })
         .min(1, 'Network is required'),
     description: z.string().optional(),
+});
+
+//   currency: currency_id,
+//             name: fiatDetails.nick_name,
+//             blockchain_key: fiatDetails.blockchain_key,
+//             data: JSON.stringify({
+//                 nick_name: fiatDetails.nick_name.trim(),
+//                 full_name: fiatDetails.full_name.trim().slice(0, 35),
+//                 account_type: fiatDetails.account_type.trim(),
+//                 account_number: fiatDetails.account_number.trim(),
+//                 bank_ifsc_code: fiatDetails.bank_ifsc_code.toUpperCase().trim(),
+//             }),
+
+export const beneficiaryFiatFormSchema = z.object({
+    currency: z.string({ required_error: 'Currency is required' })
+        .min(1, 'Currency is required'),
+    blockchain_key: z.string({ required_error: 'Blockchain key is required' }),
+    nick_name: z.string({ required_error: 'Nickname is required' })
+        .min(1, 'Nickname is required')
+        .max(30, 'Nickname must be less than 30 characters'),
+    full_name: z.string({ required_error: 'Account holder name is required' })
+        .min(1, 'Account holder is required')
+        .max(50, 'Account holder must be less than 50 characters'),
+    account_type: z.string({ required_error: 'Account type is required' })
+        .min(1, 'Account type is required'),
+    account_number: z.string({ required_error: 'Account number is required' })
+        .min(1, 'Account number is required')
+        .max(30, 'Account number must be less than 30 characters'),
+    bank_ifsc_code: z.string({ required_error: 'Bank IFSC code is required' })
+        .min(1, 'Bank IFSC code is required')
+        .max(15, 'Bank IFSC code must be less than 15 characters'),
 });
 
 export const beneficiaryActivationFromSchema = z.object({
@@ -401,7 +432,8 @@ export const apiKeyResponseSchema = z.object({
 
 export type PaymentFormInterface = z.infer<typeof paymentFormSchema>;
 export type PaymentMethodFormInterface = z.infer<typeof paymentMethodFormSchema>;
-export type BeneficiaryFormInterface = z.infer<typeof beneficiaryFormSchema>;
+export type BeneficiaryFormCryptoInterface = z.infer<typeof beneficiaryCryptoFormSchema>;
+export type BeneficiaryFormFiatInterface = z.infer<typeof beneficiaryFiatFormSchema>;
 export type BeneficiaryInterface = z.infer<typeof beneficiarySchema>;
 export type BeneficiaryActivationFormInterface = z.infer<typeof beneficiaryActivationFromSchema>;
 export type WithdrawalInterface = z.infer<typeof withdrawalSchema>;

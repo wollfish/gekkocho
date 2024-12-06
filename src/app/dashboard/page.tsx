@@ -6,7 +6,6 @@ import NextLink from 'next/link';
 import { getWithdrawalList } from '@/actions/dashboard/account';
 import { fetchAnalytics } from '@/actions/dashboard/anylatics';
 import { getPaymentList } from '@/actions/dashboard/payment';
-import { PaymentOverviewTimeSelector } from '@/app/dashboard/payments/utils';
 import { TableColumnInterface, YukiTable } from '@/components/ui/YukiTable';
 import { fetchData } from '@/lib/api';
 import { DataPageTemplate } from '@/lib/misc/DataPageTemplate';
@@ -48,7 +47,6 @@ export default async function DashboardPage() {
     const { data: withdrawals, error: withdrawalError } = await fetchData(getWithdrawalList);
     const { data: analytics, error: analyticsError } = await fetchData(fetchAnalytics);
 
-    console.log(analytics);
     const cryptoWithdrawals = withdrawals.filter((withdrawal) => withdrawal.type === 'coin');
     const fiatWithdrawals = withdrawals.filter((withdrawal) => withdrawal.type === 'fiat');
 
@@ -93,7 +91,7 @@ export default async function DashboardPage() {
             </div>
             <Divider/>
             <section className="flex flex-col py-6">
-                <PaymentOverviewTimeSelector/>
+                {/*<PaymentOverviewTimeSelector/>*/}
                 <div className="grid grid-cols-6">
                     <div className="col-span-3 flex flex-col border-b border-r border-dashed border-divider pr-4">
                         <div className="relative pl-2">

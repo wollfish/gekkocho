@@ -9,18 +9,18 @@ import { Controller, useForm } from 'react-hook-form';
 
 import { toast } from 'sonner';
 
-import { addNewBeneficiary } from '@/actions/dashboard/account';
+import { addNewCryptoBeneficiary } from '@/actions/dashboard/account';
 import { CryptoIcon } from '@/lib/misc/CryptoIcon';
-import { BeneficiaryFormInterface, beneficiaryFormSchema, CurrencyResponseInterface } from '@/lib/zod';
+import { BeneficiaryFormCryptoInterface, beneficiaryCryptoFormSchema, CurrencyResponseInterface } from '@/lib/zod';
 
 interface OwnProps {
     onClose: () => void;
     currencies: CurrencyResponseInterface[];
 }
 
-export const BeneficiaryForm: React.FC<OwnProps> = (props) => {
-    const { handleSubmit, formState, control, reset, watch } = useForm<BeneficiaryFormInterface>({
-        resolver: zodResolver(beneficiaryFormSchema),
+export const BeneficiaryCryptoForm: React.FC<OwnProps> = (props) => {
+    const { handleSubmit, formState, control, reset, watch } = useForm<BeneficiaryFormCryptoInterface>({
+        resolver: zodResolver(beneficiaryCryptoFormSchema),
         defaultValues: {
             address: '',
             currency: '',
@@ -30,11 +30,11 @@ export const BeneficiaryForm: React.FC<OwnProps> = (props) => {
         },
     });
 
-    const onSubmit = async (values: BeneficiaryFormInterface) => {
-        const { error, success } = await addNewBeneficiary(values) || {};
+    const onSubmit = async (values: BeneficiaryFormCryptoInterface) => {
+        const { error, success } = await addNewCryptoBeneficiary(values) || {};
 
         if (success) {
-            toast.success('Beneficiary added');
+            toast.success('Crypto account added, please verify through email');
             reset();
             props.onClose();
         } else {
@@ -53,9 +53,9 @@ export const BeneficiaryForm: React.FC<OwnProps> = (props) => {
                         className="col-span-2"
                         errorMessage={formState.errors?.['name']?.message?.toString()}
                         isInvalid={!!formState.errors?.['name']?.message}
-                        label="Name"
+                        label="Nick Name"
                         labelPlacement="outside"
-                        placeholder=" "
+                        placeholder="Nick name to identify the account"
                         type="text"
                         value={String(field.value)}
                         onChange={field.onChange}
