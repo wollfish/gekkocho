@@ -8,7 +8,7 @@ import { DataPageTemplate } from '@/lib/misc/DataPageTemplate';
 export const dynamic = 'force-dynamic';
 
 export default async function PaymentsPage() {
-    const { loading, data: payments, error } = await fetchData(getPaymentList);
+    const { loading, data: payments = [], error } = await fetchData(getPaymentList);
 
     return (
         <DataPageTemplate error={error} loading={loading}>

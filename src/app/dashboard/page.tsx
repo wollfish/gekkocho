@@ -47,6 +47,10 @@ export default async function DashboardPage() {
     const { data: withdrawals, error: withdrawalError } = await fetchData(getWithdrawalList);
     const { data: analytics, error: analyticsError } = await fetchData(fetchAnalytics);
 
+    if (paymentError || withdrawalError || analyticsError) {
+        return <DataPageTemplate error={paymentError || withdrawalError || analyticsError} />;
+    }
+
     const cryptoWithdrawals = withdrawals.filter((withdrawal) => withdrawal.type === 'coin');
     const fiatWithdrawals = withdrawals.filter((withdrawal) => withdrawal.type === 'fiat');
 

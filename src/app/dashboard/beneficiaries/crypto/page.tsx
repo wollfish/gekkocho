@@ -8,8 +8,8 @@ import { DataPageTemplate } from '@/lib/misc/DataPageTemplate';
 export const dynamic = 'force-dynamic';
 
 export default async function Page() {
-    const { loading, data: beneficiaries, error: beneficiaryError } = await fetchData(getBeneficiaryList);
-    const { data: currencies, error: currencyError } = await fetchData(getCurrencyList);
+    const { loading, data: beneficiaries = [], error: beneficiaryError } = await fetchData(getBeneficiaryList);
+    const { data: currencies = [], error: currencyError } = await fetchData(getCurrencyList);
 
     const coinCurrencies = currencies.filter((currency) => currency.type === 'coin');
     const coinCurrenciesIds = coinCurrencies.map((currency) => currency.id);

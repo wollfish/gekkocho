@@ -8,7 +8,7 @@ import { DataPageTemplate } from '@/lib/misc/DataPageTemplate';
 export const dynamic = 'force-dynamic';
 
 export default async function Page() {
-    const { loading, data: apiKeys, error: apiKeysError } = await fetchData(getApiKeyList);
+    const { loading, data: apiKeys = [], error: apiKeysError } = await fetchData(getApiKeyList);
 
     return (
         <DataPageTemplate error={apiKeysError} loading={loading}>

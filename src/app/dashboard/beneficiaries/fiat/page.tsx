@@ -8,15 +8,15 @@ import { DataPageTemplate } from '@/lib/misc/DataPageTemplate';
 export const dynamic = 'force-dynamic';
 
 export default async function Page() {
-    const { loading, data: beneficiaries, error: beneficiaryError } = await fetchData(getBeneficiaryList);
-    const { data: currencies, error: currencyError } = await fetchData(getCurrencyList);
+    const { loading, data: beneficiaries = [], error: beneficiaryError } = await fetchData(getBeneficiaryList);
+    const { data: currencies = [], error: currencyError } = await fetchData(getCurrencyList);
 
     const fiatCurrencies = currencies.filter((currency) => currency.type === 'fiat');
     const fiatCurrenciesIds = fiatCurrencies.map((currency) => currency.id);
-    const fiatBeneficiaries = beneficiaries.filter((beneficiary) => fiatCurrenciesIds.includes(beneficiary.currency));
+    const fiatBeneficiaries = beneficiaries.filter((beneficiary) => fiatCurrenciesIds.includes(beneficiary?.currency));
     const data = fiatBeneficiaries.map((beneficiary) => ({
         ...beneficiary,
-        ...beneficiary.data,
+        ...beneficiary?.data,
     }));
 
     return (

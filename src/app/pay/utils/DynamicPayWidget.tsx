@@ -234,10 +234,6 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
 
     console.log(payment);
 
-    // id,
-    // company name,
-    // amount, product name, inforamtion
-
     return (
         <section className="flex size-full border-y border-divider bg-default-100/50">
             <div

@@ -28,6 +28,10 @@ export default async function Page() {
         error: currencyError,
     } = await fetchData(getCurrencyList);
 
+    if (error || currencyError) {
+        return <DataPageTemplate error={error || currencyError} />;
+    }
+
     const findCurrency = (currencyId: string) => currency_list.find((currency) => currency.id === currencyId.toLowerCase());
 
     const mainCurrency = findCurrency(PLATFORM_MAIN_CURRENCY);
