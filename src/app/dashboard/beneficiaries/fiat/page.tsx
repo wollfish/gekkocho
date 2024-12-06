@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { getBeneficiaryList, getCurrencyList } from '@/actions/dashboard/account';
-import { BeneficiaryList } from '@/app/dashboard/account/utils/BeneficiaryList';
+import { BeneficiaryFiatList } from '@/app/dashboard/account/utils/BeneficiaryFiatList';
 import { fetchData } from '@/lib/api';
 import { DataPageTemplate } from '@/lib/misc/DataPageTemplate';
 
@@ -14,11 +14,15 @@ export default async function Page() {
     const fiatCurrencies = currencies.filter((currency) => currency.type === 'fiat');
     const fiatCurrenciesIds = fiatCurrencies.map((currency) => currency.id);
     const fiatBeneficiaries = beneficiaries.filter((beneficiary) => fiatCurrenciesIds.includes(beneficiary.currency));
+    const data = fiatBeneficiaries.map((beneficiary) => ({
+        ...beneficiary,
+        ...beneficiary.data,
+    }));
 
     return (
         <DataPageTemplate error={beneficiaryError || currencyError} loading={loading}>
             <section className="flex grow flex-col overflow-auto py-4">
-                <BeneficiaryList beneficiaries={fiatBeneficiaries} currencies={fiatCurrencies} type="fiat"/>
+                <BeneficiaryFiatList beneficiaries={data} currencies={fiatCurrencies} type="fiat"/>
             </section>
         </DataPageTemplate>
     );

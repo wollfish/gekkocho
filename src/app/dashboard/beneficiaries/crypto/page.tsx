@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { getBeneficiaryList, getCurrencyList } from '@/actions/dashboard/account';
-import { BeneficiaryList } from '@/app/dashboard/account/utils/BeneficiaryList';
+import { BeneficiaryCryptoList } from '@/app/dashboard/account/utils/BeneficiaryCryptoList';
 import { fetchData } from '@/lib/api';
 import { DataPageTemplate } from '@/lib/misc/DataPageTemplate';
 
@@ -18,7 +18,7 @@ export default async function Page() {
     return (
         <DataPageTemplate error={beneficiaryError || currencyError} loading={loading}>
             <section className="flex grow flex-col overflow-auto py-4">
-                <BeneficiaryList beneficiaries={coinBeneficiaries} currencies={coinCurrencies} type="coin"/>
+                <BeneficiaryCryptoList beneficiaries={coinBeneficiaries} currencies={coinCurrencies} type="coin"/>
             </section>
         </DataPageTemplate>
     );

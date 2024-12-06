@@ -47,9 +47,6 @@ export const PaymentLinkList: React.FC<{ data: PaymentResponseInterface[] }> = (
             toast.error('Failed to copy to payment link');
         });
     };
-    const onLinkOpen = (value: PaymentResponseInterface) => {
-        window.open(`${window.location.origin}/pay/${value.id}`, '_blank');
-    };
 
     const data = useMemo(() => {
         return props.data.filter((row) => ['processing', 'pending'].includes(row.state)).filter((row) => row.reference_id.includes(filterValue));
@@ -93,7 +90,6 @@ export const PaymentLinkList: React.FC<{ data: PaymentResponseInterface[] }> = (
                 tableData={data}
                 topComponent={topContent}
                 onCopyClick={onCopy}
-                onLinkClick={onLinkOpen}
             />
 
             {/*<section aria-label="Payment List" className="flex size-full flex-col">*/}

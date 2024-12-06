@@ -51,7 +51,7 @@ interface OwnProps {
     currencies: CurrencyResponseInterface[];
 }
 
-export const BeneficiaryList: React.FC<OwnProps> = (props) => {
+export const BeneficiaryCryptoList: React.FC<OwnProps> = (props) => {
     const {
         isOpen: isDetailModalOpen,
         onOpen: onDetailModalOpen,

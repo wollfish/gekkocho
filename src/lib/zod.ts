@@ -331,10 +331,15 @@ export const beneficiarySchema = z.object({
     currency: z.string(),
     data: z.object({
         address: z.string(),
+        full_name: z.string(),
+        account_type: z.string(),
+        account_number: z.string(),
+        bank_ifsc_code: z.string(),
     }),
     blockchain_key: z.string(),
     protocol: z.string(),
     description: z.string(),
+    created_at: z.coerce.date(),
 });
 
 export const withdrawalFormSchema = z.object({
@@ -467,6 +472,8 @@ export const statusColorMap: Record<string, any> = {
     completed: 'success',
     pending: 'warning',
     processing: 'warning',
+    aml_processing: 'warning',
+    on_hold: 'warning',
     paused: 'danger',
     failed: 'danger',
     rejected: 'danger',

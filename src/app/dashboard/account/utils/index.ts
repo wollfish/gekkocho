@@ -6,7 +6,7 @@ export * from './BeneficiaryActivationModal';
 export * from './BeneficiaryCryptoForm';
 export * from './BeneficiaryFiatForm';
 export * from './BeneficiaryFormModal';
-export * from './BeneficiaryList';
+export * from './BeneficiaryCryptoList';
 export * from './ResendOTPCountdown';
 export * from './WithdrawFormModal';
 export * from './WithdrawList';

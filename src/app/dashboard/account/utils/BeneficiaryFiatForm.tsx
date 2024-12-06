@@ -24,7 +24,7 @@ export const BeneficiaryFiatForm: React.FC<OwnProps> = (props) => {
         defaultValues: {
             currency: '',
             nick_name: '',
-            blockchain_key: 'fiat',
+            blockchain_key: 'lightning-blockchain',
             full_name: '',
             account_type: 'savings',
             account_number: '',
