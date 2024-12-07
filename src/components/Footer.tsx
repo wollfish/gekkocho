@@ -20,8 +20,10 @@ export const Footer: React.FC = async () => {
                             <span>Locate us</span>
                         </h3>
                         <p className={description({ size: 'xs' })}>
-                            Wollfish Labs Private Limited, PLOT 76-D, UDYOG VIHAR PHASE 4,
-                            GURUGRAM, Gurgaon, Haryana, 122001
+                            Dubai Silicon Oasis,
+                            DDP, <br/>
+                            Building A1, Dubai, <br/>
+                            United Arab Emirates
                         </p>
                     </div>
                     <div className="relative col-span-2 px-4 md:col-span-1">

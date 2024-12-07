@@ -5,6 +5,7 @@ import { isRedirectError } from 'next/dist/client/components/redirect';
 import { AuthError } from 'next-auth';
 
 import { signIn, signOut } from '@/auth';
+import { ApiResponse, makeApiRequest } from '@/lib/api';
 import {
     AccountVerificationError,
     CustomError,
@@ -12,6 +13,7 @@ import {
     InvalidCredentialsError,
     OtpInvalidError,
     OtpRequiredError,
+    ServerError,
 } from '@/lib/errors';
 import { SignInSchema, signInSchema, signUpSchema, SignUpSchema, UserInterface } from '@/lib/zod';
 import { DEFAULT_LOGIN_REDIRECT } from '@/routes';
@@ -42,15 +44,17 @@ export async function doLogin(formData: SignInSchema, callbackUrl = DEFAULT_LOGI
         const nextError = e as AuthError;
         const error = nextError.cause?.err as CustomError;
 
-        if (error && (error instanceof InvalidCredentialsError
+        if (error && (
+            error instanceof InvalidCredentialsError
             || error instanceof OtpRequiredError
             || error instanceof AccountVerificationError
             || error instanceof OtpInvalidError
+            || error instanceof ServerError
         )) {
             return { success: false, error: { message: error.message, code: error.code } };
         }
 
-        return { success: false, error: { message: 'An unexpected error occurred.' } };
+        return { success: false, error: { message: error.errors[0] || 'An unexpected error occurred.' } };
     }
 }
 
@@ -127,4 +131,14 @@ export async function doLogout() {
 
         return { success: false, error: { message: 'An unexpected error occurred.' } };
     }
+}
+
+export async function verifyEmailToken(payload: { token: string }): Promise<ApiResponse> {
+    return await makeApiRequest({
+        endpoint: '/identity/users/email/confirm_code',
+        apiVersion: 'barong',
+        method: 'POST',
+        payload,
+        pathToRevalidate: ['/account/confirmation'],
+    });
 }

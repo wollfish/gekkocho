@@ -63,6 +63,8 @@ interface Props extends HTMLNextUIProps<'div'> {
      * ```
      */
     classNames?: SlotsToClasses<InputOtpSlots>;
+    label?: string;
+    value?: string | number;
 }
 
 export type ValueTypes = {

@@ -1,109 +1,183 @@
 'use client';
 
-import React, { Suspense, useMemo } from 'react';
+import React, { Suspense, useEffect, useMemo } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Avatar } from '@nextui-org/avatar';
 import { Button } from '@nextui-org/button';
+import { Divider } from '@nextui-org/divider';
 import { Input } from '@nextui-org/input';
 import { Select, SelectItem } from '@nextui-org/select';
-import { useRouter } from 'next/navigation';
 import { Controller, useForm } from 'react-hook-form';
 
 import { toast } from 'sonner';
 
-import { setPaymentMethod } from '@/actions/pay';
-import { PaymentMethodFormInterface, paymentMethodFormSchema, PaymentMethodInterface } from '@/lib/zod';
+import { setPaymentMethod } from '@/actions/dashboard/payment';
+import { subtitle } from '@/components/primitives';
+import { CryptoIcon } from '@/lib/misc/CryptoIcon';
+import { convertCurrency } from '@/lib/utils';
+import {
+    PaymentMethodFormInterface,
+    paymentMethodFormSchema,
+    PaymentMethodInterface,
+    PaymentResponseInterface,
+} from '@/lib/zod';
 
 interface OwnProps {
     uuid: string;
+    payment: PaymentResponseInterface;
     methods: PaymentMethodInterface[];
 }
 
 export const PaymentMethodForm: React.FC<OwnProps> = (props) => {
-    const { uuid, methods } = props;
+    const { uuid, payment, methods } = props;
 
-    const router = useRouter();
-
-    const { handleSubmit, formState, control, reset, watch } = useForm<PaymentMethodFormInterface>({
+    const { handleSubmit, formState, control, setValue, watch } = useForm<PaymentMethodFormInterface>({
         resolver: zodResolver(paymentMethodFormSchema),
         defaultValues: {
-            uuid: uuid,
-            currency: '',
-            network: '',
+            payment_id: String(uuid),
+            pay_currency: '',
+            pay_blockchain: '',
+            customer_name: payment.customer?.name || '',
+            customer_email: payment.customer?.email || '',
         },
     });
 
+    const watchCurrency = watch('pay_currency');
+
+    useEffect(() => {
+        setValue('pay_blockchain', '');
+    },[setValue, watchCurrency]);
+
     const onSubmit = async (values: PaymentMethodFormInterface) => {
-        const { error, success, data } = await setPaymentMethod(values) || {};
+        const { error, success } = await setPaymentMethod(values) || {};
 
         if (success) {
-            router.push(`/pay/${values.uuid}`);
+            toast.success('Payment method set');
         } else {
-            toast.error(error?.message);
+            toast.error(error);
         }
     };
 
-    const selectedCurrency = useMemo(() => methods.find((m) => m.currency === watch().currency), [methods, watch().currency]);
+    const selectedCurrencyId = watch('pay_currency');
+    const selectedCurrency = useMemo(() => methods.find((m) => m.id === selectedCurrencyId), [methods, selectedCurrencyId]);
+    const convertedAmount = useMemo(() => {
+        if (selectedCurrency) {
+            return convertCurrency(methods, payment.req_amount, payment.req_currency, selectedCurrency.id);
+        }
+    }, [selectedCurrency, methods, payment.req_amount, payment.req_currency]);
 
     return (
-        <form autoComplete="off" className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
+        <form autoComplete="off" className="grid w-full grid-cols-12 gap-4" onSubmit={handleSubmit(onSubmit)}>
+            <h3 className={subtitle({ className: 'col-span-12' })}>Your Information</h3>
             <Controller
                 control={control}
-                name="currency"
+                name="customer_name"
                 render={({ field, formState }) => (
-                    <Select
-                        errorMessage={formState.errors?.['currency']?.message?.toString()}
-                        isInvalid={!!formState.errors?.['currency']?.message}
-                        label="Select Currency"
+                    <Input
+                        autoComplete="off"
+                        className="col-span-12"
+                        errorMessage={formState.errors?.['customer_name']?.message?.toString()}
+                        isInvalid={!!formState.errors?.['customer_name']?.message}
+                        label="Name"
                         labelPlacement="outside"
-                        placeholder=" "
+                        placeholder="Enter your name"
                         value={field.value}
                         onChange={field.onChange}
-                    >
-                        {methods.map((method) => (
-                            <SelectItem
-                                key={method.currency}
-                                startContent={<Avatar className="!size-6" src={method.currency_icon}/>}
-                                value={method.currency}
-                            >
-                                {method.currency}
-                            </SelectItem>
-                        ))}
-                    </Select>
+                    />
                 )}
             />
             <Controller
                 control={control}
-                name="network"
+                name="customer_email"
                 render={({ field, formState }) => (
-                    <Select
-                        errorMessage={formState.errors?.['network']?.message?.toString()}
-                        isInvalid={!!formState.errors?.['network']?.message}
-                        label="Select Network"
+                    <Input
+                        autoComplete="off"
+                        className="col-span-12"
+                        errorMessage={formState.errors?.['customer_email']?.message?.toString()}
+                        isInvalid={!!formState.errors?.['customer_email']?.message}
+                        label="Email"
                         labelPlacement="outside"
-                        placeholder=" "
+                        placeholder="Enter your email"
                         value={field.value}
                         onChange={field.onChange}
-                    >
-                        {methods.filter((m) => m.currency === watch().currency).map((method) => (
-                            <SelectItem
-                                key={method.network}
-                                value={method.network}
-                            >
-                                {method.network?.toUpperCase()}
-                            </SelectItem>
-                        ))}
-                    </Select>
+                    />
                 )}
             />
+            <Divider className="col-span-12 mt-4"/>
+            <h3 className={subtitle({ className: 'col-span-12' })}>Payment Method</h3>
+            <div className="col-span-12 grid grid-cols-12 items-start gap-4">
+                <Controller
+                    control={control}
+                    name="pay_currency"
+                    render={({ field, formState }) => (
+                        <Select
+                            className="col-span-7"
+                            disallowEmptySelection={true}
+                            errorMessage={formState.errors?.['pay_currency']?.message?.toString()}
+                            isInvalid={!!formState.errors?.['pay_currency']?.message}
+                            items={methods.filter((m) => m.currency_type === 'coin')}
+                            label="Select Currency"
+                            labelPlacement="outside"
+                            placeholder="Pick a currency"
+                            selectedKeys={[field.value]}
+                            onChange={field.onChange}
+                        >
+                            {(method) => (
+                                <SelectItem
+                                    key={method.id}
+                                    startContent={<CryptoIcon code={method.id}/>}
+                                    textValue={method.currency_name}
+                                >
+                                    {method.currency_name}
+                                </SelectItem>
+                            )}
+                        </Select>
+                    )}
+                />
+                <Controller
+                    control={control}
+                    name="pay_blockchain"
+                    render={({ field, formState }) => (
+                        <Select
+                            className="col-span-5"
+                            disallowEmptySelection={true}
+                            errorMessage={formState.errors?.['pay_blockchain']?.message?.toString()}
+                            isInvalid={!!formState.errors?.['pay_blockchain']?.message}
+                            items={selectedCurrency?.networks || []}
+                            label="Select Network"
+                            labelPlacement="outside"
+                            placeholder="Select Network"
+                            selectedKeys={[field.value]}
+                            onChange={field.onChange}
+                        >
+                            {(network) => (
+                                <SelectItem
+                                    key={network.blockchain_key}
+                                    textValue={network.protocol || network.blockchain_key}
+                                >
+                                    {network.protocol || network.blockchain_key}
+                                </SelectItem>
+                            )}
+                        </Select>
+                    )}
+                />
+            </div>
             <Input
-                description={`Conversion Rate: ${selectedCurrency?.exchange_rate || 0}`}
+                className="col-span-12"
+                description={
+                    <p className="font-medium">
+                        <span>Conversion Rate: &nbsp;</span>
+                        {selectedCurrency?.id && <span className="font-semibold uppercase text-secondary">
+                            {`1 ${selectedCurrency?.id} = ${(convertedAmount?.[1])?.toFixed(2) || 0} ${payment?.req_currency}`}
+                        </span>}
+                    </p>
+                }
+                isReadOnly={true}
                 label="Converted Amount"
                 labelPlacement="outside"
-                placeholder=" "
-                value={selectedCurrency?.real_amount || ''}
+                placeholder="Converted Amount..."
+                value={(convertedAmount?.[0] || '') as string}
             />
-            <div className="flex justify-end gap-4">
+            <div className="col-span-12 flex justify-end gap-4">
                 <Suspense>
                     <Button
                         color="primary"

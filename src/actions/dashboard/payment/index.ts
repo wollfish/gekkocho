@@ -1,69 +1,105 @@
 'use server';
 
-import { isRedirectError } from 'next/dist/client/components/redirect';
+import { getCurrencyList } from '@/actions/dashboard/account';
+import { ApiResponse, makeApiRequest } from '@/lib/api';
+import {
+    PaymentFormInterface,
+    paymentFormSchema,
+    PaymentMethodFormInterface,
+    PaymentMethodInterface,
+    PaymentResponseInterface,
+} from '@/lib/zod';
 
-import { PaymentFormInterface, paymentFormSchema } from '@/lib/zod';
+export async function initializePayment(formData: PaymentFormInterface): Promise<ApiResponse<PaymentResponseInterface>> {
+    const validatedFormData = paymentFormSchema.safeParse(formData);
 
-// create random UUID
-function generateRandomUUID(): string {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+    if (!validatedFormData.success) {
+        return {
+            success: false,
+            error: validatedFormData.error.message,
+            data: null,
+        };
+    }
 
-        return v.toString(16);
+    const payload = {
+        ...validatedFormData.data,
+        description: validatedFormData.data.product_name,
+        customer: JSON.stringify({
+            name: validatedFormData.data.customer_name,
+            email: validatedFormData.data.customer_email,
+        }),
+    };
+
+    return await makeApiRequest<PaymentResponseInterface>({
+        endpoint: '/account/payment_requests',
+        apiVersion: 'peatio',
+        method: 'POST',
+        payload: payload,
+        pathToRevalidate: ['/dashboard/payments/list'],
     });
 }
 
-export async function initializePayment(formData: PaymentFormInterface) {
-    try {
-        const validatedFormData = paymentFormSchema.safeParse(formData);
-
-        if (!validatedFormData.success) {
-            return {
-                success: false,
-                error: {
-                    message: validatedFormData.error.message,
-                    details: JSON.stringify(validatedFormData.error.errors),
-                },
-            };
-        }
-
-        const paymentId = generateRandomUUID();
-
-        const data = {
-            ...validatedFormData.data,
-            payment_link: `/pay/${paymentId}`,
-        };
-
-        return { success: true, error: null, data };
-
-    } catch (e) {
-        if (isRedirectError(e)) throw e;
-        throw e;
-    }
+export async function getPaymentList(): Promise<ApiResponse<PaymentResponseInterface[]>> {
+    return await makeApiRequest<PaymentResponseInterface[]>({
+        endpoint: '/account/payment_requests',
+        apiVersion: 'peatio',
+    });
 }
 
-export async function getPaymentList() {
-    try {
-        const data = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/payment/list`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            cache: 'no-store',
-        });
+export async function getPaymentInfoPrivate(payload: { id: string }): Promise<ApiResponse<PaymentResponseInterface>> {
+    const response = await makeApiRequest<PaymentResponseInterface[]>({
+        endpoint: '/account/payment_requests',
+        apiVersion: 'peatio',
+        payload: { id: payload.id },
+    });
 
-        const res = await data.json();
+    return {
+        ...response,
+        data: response?.data?.[0] || null,
+    };
+}
 
-        if (!data.ok) {
-            console.warn('getPaymentList - data', res);
+export async function getPaymentInfoPublic(payload: { id: string }): Promise<ApiResponse<PaymentResponseInterface>> {
+    return await makeApiRequest<PaymentResponseInterface>({
+        endpoint: `/public/payment_requests/${payload.id}`,
+        apiVersion: 'peatio',
+        cache: false,
+        method: 'GET',
+        isPublic: true,
+    });
+}
 
-            return { success: false, error: res?.error, data: null };
-        }
+export async function getPaymentMethods(): Promise<ApiResponse<PaymentMethodInterface[]>> {
+    const { success, error, data } = await getCurrencyList();
 
-        return { success: true, error: null, data: res };
+    const res_data = data?.map((c) => ({
+        id: c.id,
+        currency_name: c.name,
+        networks: c.networks,
+        status: c.status,
+        exchange_rate: c.price,
+        currency_icon: c.icon_url,
+        currency_type: c.type,
+    }));
 
-    } catch (e) {
-        console.error('getPaymentList - error', e);
-        throw e;
-    }
+    return { success, error, data: res_data };
+}
+
+export async function setPaymentMethod(payload: PaymentMethodFormInterface): Promise<ApiResponse<PaymentResponseInterface>> {
+    const payload_data = {
+        ...payload,
+        customer: JSON.stringify({
+            name: payload.customer_name,
+            email: payload.customer_email,
+        }),
+    };
+
+    return await makeApiRequest<PaymentResponseInterface>({
+        endpoint: `/public/payment_requests/${payload.payment_id}`,
+        apiVersion: 'peatio',
+        isPublic: true,
+        method: 'PUT',
+        payload: payload_data,
+        pathToRevalidate: ['/pay/[id]'],
+    });
 }

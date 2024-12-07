@@ -1,48 +1,78 @@
 'use server';
 
-import { isRedirectError } from 'next/dist/client/components/redirect';
+import { ApiResponse, makeApiRequest } from '@/lib/api';
+import {
+    ApiKeyFormInterface,
+    ApiKeyResponseInterface,
+    TwoFactorAuthFormInterface,
+    TwoFactorAuthResponseInterface,
+    UserInterface,
+} from '@/lib/zod';
 
-import { doLogout } from '@/actions/auth';
-import { auth } from '@/auth';
-import { createServerAction, ServerActionError } from '@/lib/server-utils';
-import { UserInterface } from '@/lib/zod';
+export async function getProfile(): Promise<ApiResponse<UserInterface>> {
+    return await makeApiRequest<UserInterface>({
+        endpoint: '/resource/users/me',
+        apiVersion: 'barong',
+        cache: true,
+    });
+}
 
-export const getProfile = createServerAction<UserInterface>(async () => {
-    const session = await auth();
+export async function toggleTwoFactor(payload: TwoFactorAuthFormInterface): Promise<ApiResponse> {
+    return await makeApiRequest({
+        endpoint: `/resource/otp/${payload.status}`,
+        apiVersion: 'barong',
+        method: 'POST',
+        payload: payload,
+        pathToRevalidate: ['/dashboard/settings/security'],
+    });
+}
 
-    try {
+export async function generateTwoFactorSecret(): Promise<ApiResponse<TwoFactorAuthResponseInterface>> {
+    return await makeApiRequest<TwoFactorAuthResponseInterface>({
+        endpoint: '/resource/otp/generate_qrcode',
+        apiVersion: 'barong',
+        method: 'POST',
+    });
+}
 
-        //Todo: Remove temporary token
-        const barongSession = 'temp_token';
+export async function generateApiKey(payload: ApiKeyFormInterface): Promise<ApiResponse<ApiKeyResponseInterface>> {
+    return await makeApiRequest<ApiKeyResponseInterface>({
+        endpoint: '/resource/api_keys',
+        apiVersion: 'barong',
+        method: 'POST',
+        payload: {
+            totp_code: payload.totp_code,
+            algorithm: payload.algorithm,
+        },
+        pathToRevalidate: ['/dashboard/settings/api'],
+    });
+}
 
-        // const barongSession = await decryptToken(session.user?.access_token);
+export async function getApiKeyList(): Promise<ApiResponse<ApiKeyResponseInterface[]>> {
+    return await makeApiRequest<ApiKeyResponseInterface[]>({
+        endpoint: '/resource/api_keys',
+        apiVersion: 'barong',
+    });
+}
 
-        if (!session?.user || !barongSession) {
-            await doLogout();
-            throw new ServerActionError('User is not authenticated.');
-        }
+export async function deleteApiKey(payload: ApiKeyFormInterface): Promise<ApiResponse> {
+    return await makeApiRequest({
+        endpoint: `/resource/api_keys/${payload.kid}?totp_code=${payload.totp_code}`,
+        apiVersion: 'barong',
+        method: 'DELETE',
+        pathToRevalidate: ['/dashboard/settings/api'],
+    });
+}
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/barong/resource/users/me`, {
-            headers: {
-                'Cookie': `_barong_session=${barongSession}`,
-            },
-            cache: 'no-store',
-        });
-
-        const data = await response.json();
-
-        console.warn('profile - data', data);
-
-        if (!response.ok) {
-            throw new ServerActionError('Unable to fetch profile.');
-        }
-
-        return data;
-    } catch (e) {
-        if (isRedirectError(e)) throw e;
-        if (e instanceof ServerActionError) throw e;
-
-        console.warn('An error occurred in getProfile:', e);
-        throw new ServerActionError('Unknown error occurred.');
-    }
-});
+export async function updateApiKey(payload: ApiKeyFormInterface): Promise<ApiResponse> {
+    return await makeApiRequest({
+        endpoint: `/resource/api_keys/${payload.kid}`,
+        apiVersion: 'barong',
+        method: 'PATCH',
+        payload: {
+            totp_code: payload.totp_code,
+            state: payload.state,
+        },
+        pathToRevalidate: ['/dashboard/settings/api'],
+    });
+}

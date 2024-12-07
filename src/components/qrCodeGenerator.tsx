@@ -4,10 +4,10 @@ import React, { useEffect } from 'react';
 import * as qr from '@bitjson/qr-code';
 import { Spinner } from '@nextui-org/spinner';
 import { useEventListener } from 'ahooks';
-import Image from 'next/image';
 
 interface OwnProps {
     value: string;
+    icon?: string;
     size?: 'small' | 'medium' | 'large';
 }
 
@@ -18,7 +18,7 @@ const sizes = {
 };
 
 export const QRCodeGenerator: React.FC<OwnProps> = (props) => {
-    const { value, size = 'small' } = props;
+    const { value, icon, size = 'small' } = props;
 
     const qrRef = React.useRef(null);
     const logoRef = React.useRef(null);
@@ -54,13 +54,13 @@ export const QRCodeGenerator: React.FC<OwnProps> = (props) => {
                 position-center-color="#ff8e5a"
                 position-ring-color="#bf6331"
             >
-                <Image
+                <img
                     ref={logoRef}
                     alt=""
                     className="hidden"
                     height="64"
                     slot="icon"
-                    src="/images/logo.svg"
+                    src={icon ? icon : '/images/logo.svg'}
                     width="64"
                 />
             </qr-code>

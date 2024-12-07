@@ -2,30 +2,43 @@
 
 import React, { Suspense } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Avatar } from '@nextui-org/avatar';
 import { Button } from '@nextui-org/button';
 import { Input } from '@nextui-org/input';
 import { Select, SelectItem } from '@nextui-org/select';
-import { useRouter } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
 import { Controller, useForm } from 'react-hook-form';
 
 import { toast } from 'sonner';
 
+import { getCurrencyList } from '@/actions/dashboard/account';
 import { initializePayment } from '@/actions/dashboard/payment';
+import { Icons } from '@/components/icons';
+import { CryptoIcon } from '@/lib/misc/CryptoIcon';
+import { generateRandomId } from '@/lib/utils';
 import { PaymentFormInterface, paymentFormSchema } from '@/lib/zod';
 
-export const PaymentForm: React.FC = () => {
-    const router = useRouter();
+interface OwnProps {
+    onClose: () => void
+}
 
-    const { handleSubmit, formState, control, reset } = useForm<PaymentFormInterface>({
+export const PaymentForm: React.FC<OwnProps> = (props) => {
+
+    const { onClose } = props;
+
+    const { data: currencies, isLoading: currenciesLoading } = useQuery({
+        queryKey: ['currencies'],
+        queryFn: () => getCurrencyList(),
+    });
+
+    const { handleSubmit, formState, control, reset, setValue } = useForm<PaymentFormInterface>({
         resolver: zodResolver(paymentFormSchema),
         defaultValues: {
-            order_id: '',
-            order_amount: null,
-            order_currency: '',
-            order_currency_type: 'fiat',
-            order_description: '',
-            redirect_url: '',
+            product_name: '',
+            req_amount: null,
+            req_currency: '',
+            customer_email: '',
+            customer_name: '',
+            reference_id: '',
         },
     });
 
@@ -33,25 +46,77 @@ export const PaymentForm: React.FC = () => {
         const { error, success, data } = await initializePayment(values) || {};
 
         if (success) {
-            router.push(data.payment_link);
+            navigator.clipboard.writeText(`https://pay.coinfinacle.com/pay/${data?.id}`).then(() => {
+                toast.success('Payment link Copied to clipboard');
+            }).catch(() => {
+                toast.error('Failed to copy payment link');
+            }).finally(() => onClose());
         } else {
-            toast.error(error?.message);
+            toast.error(error);
         }
     };
 
+    const onRandomise = () => setValue('reference_id', generateRandomId());
+
     return (
         <form autoComplete="off" className="grid grid-cols-2 gap-4" method="POST" onSubmit={handleSubmit(onSubmit)}>
+            <Controller
+                control={control}
+                name="product_name"
+                render={({ field, formState }) => (
+                    <Input
+                        autoComplete="off"
+                        className="col-span-2"
+                        errorMessage={formState.errors?.['product_name']?.message?.toString()}
+                        isInvalid={!!formState.errors?.['product_name']?.message}
+                        label="Product Name"
+                        labelPlacement="outside"
+                        placeholder=" "
+                        value={field.value}
+                        onChange={field.onChange}
+                    />
+                )}
+            />
             <div className="col-span-2 grid grid-cols-6 items-start gap-4">
                 <Controller
                     control={control}
-                    name="order_amount"
+                    name="req_currency"
+                    render={({ field, formState }) => (
+                        <Select
+                            className="col-span-2"
+                            errorMessage={formState.errors?.['req_currency']?.message?.toString()}
+                            isInvalid={!!formState.errors?.['req_currency']?.message}
+                            isLoading={currenciesLoading}
+                            items={currencies?.data || []}
+                            label="Currency"
+                            labelPlacement="outside"
+                            placeholder=" "
+                            selectedKeys={[field.value]}
+                            onChange={field.onChange}
+                        >
+                            {(currency) => (
+                                <SelectItem
+                                    key={currency.id}
+                                    classNames={{ selectedIcon: 'hidden' }}
+                                    startContent={<CryptoIcon code={currency.id}/>}
+                                    textValue={currency.id?.toUpperCase()}
+                                >
+                                    {currency.id?.toUpperCase()}
+                                </SelectItem>
+                            )}
+                        </Select>
+                    )}
+                />
+                <Controller
+                    control={control}
+                    name="req_amount"
                     render={({ field, formState }) => (
                         <Input
                             autoComplete="off"
                             className="col-span-4"
-                            errorMessage={formState.errors?.['order_amount']?.message?.toString()}
-                            isInvalid={!!formState.errors?.['order_amount']?.message}
-                            label="Order Amount"
+                            errorMessage={formState.errors?.['req_amount']?.message?.toString()}
+                            isInvalid={!!formState.errors?.['req_amount']?.message}
+                            label="Request Amount"
                             labelPlacement="outside"
                             placeholder=" "
                             type="number"
@@ -60,87 +125,56 @@ export const PaymentForm: React.FC = () => {
                         />
                     )}
                 />
-                <Controller
-                    control={control}
-                    name="order_currency"
-                    render={({ field, formState }) => (
-                        <Select
-                            className="col-span-2"
-                            errorMessage={formState.errors?.['order_currency']?.message?.toString()}
-                            isInvalid={!!formState.errors?.['order_currency']?.message}
-                            label="Currency"
-                            labelPlacement="outside"
-                            placeholder=" "
-                            value={field.value}
-                            onChange={field.onChange}
-                        >
-                            <SelectItem
-                                key="usd"
-                                classNames={{ selectedIcon: 'hidden' }}
-                                startContent={<Avatar className="!size-6" src="https://flagcdn.com/us.svg"/>}
-                            >
-                                USD
-                            </SelectItem>
-                            <SelectItem
-                                key="inr"
-                                classNames={{ selectedIcon: 'hidden' }}
-                                startContent={<Avatar className="!size-6" src="https://flagcdn.com/in.svg"/>}
-                            >
-                                INR
-                            </SelectItem>
-                            <SelectItem
-                                key="pound"
-                                classNames={{ selectedIcon: 'hidden' }}
-                                startContent={<Avatar className="!size-6" src="https://flagcdn.com/fr.svg"/>}
-                            >
-                                POUND
-                            </SelectItem>
-                        </Select>
-                    )}
-                />
             </div>
             <Controller
                 control={control}
-                name="order_id"
-                render={({ field, formState }) => (
-                    <Input
-                        autoComplete="off"
-                        errorMessage={formState.errors?.['order_id']?.message?.toString()}
-                        isInvalid={!!formState.errors?.['order_id']?.message}
-                        label="Order Id (Optional)"
-                        labelPlacement="outside"
-                        placeholder=" "
-                        value={field.value}
-                        onChange={field.onChange}
-                    />
-                )}
-            />
-            <Controller
-                control={control}
-                name="order_description"
-                render={({ field, formState }) => (
-                    <Input
-                        autoComplete="off"
-                        errorMessage={formState.errors?.['order_description']?.message?.toString()}
-                        isInvalid={!!formState.errors?.['order_description']?.message}
-                        label="Order Desc (Optional)"
-                        labelPlacement="outside"
-                        placeholder=" "
-                        value={field.value}
-                        onChange={field.onChange}
-                    />
-                )}
-            />
-            <Controller
-                control={control}
-                name="redirect_url"
+                name="reference_id"
                 render={({ field, formState }) => (
                     <Input
                         autoComplete="off"
                         className="col-span-2"
-                        errorMessage={formState.errors?.['redirect_url']?.message?.toString()}
-                        isInvalid={!!formState.errors?.['redirect_url']?.message}
-                        label="Redirect URL (Optional)"
+                        endContent={
+                            <Button isIconOnly={true} radius="full" size="sm" type="button" onClick={onRandomise}>
+                                <Icons.dice className="size-4"/>
+                            </Button>
+                        }
+                        errorMessage={formState.errors?.['reference_id']?.message?.toString()}
+                        isInvalid={!!formState.errors?.['reference_id']?.message}
+                        label="Order Id"
+                        labelPlacement="outside"
+                        placeholder=" "
+                        value={field.value}
+                        onChange={field.onChange}
+                    />
+                )}
+            />
+            <Controller
+                control={control}
+                name="customer_name"
+                render={({ field, formState }) => (
+                    <Input
+                        autoComplete="off"
+                        className="col-span-2"
+                        errorMessage={formState.errors?.['customer_name']?.message?.toString()}
+                        isInvalid={!!formState.errors?.['customer_name']?.message}
+                        label="Customer Name (Optional)"
+                        labelPlacement="outside"
+                        placeholder=" "
+                        value={field.value}
+                        onChange={field.onChange}
+                    />
+                )}
+            />
+            <Controller
+                control={control}
+                name="customer_email"
+                render={({ field, formState }) => (
+                    <Input
+                        autoComplete="off"
+                        className="col-span-2"
+                        errorMessage={formState.errors?.['customer_email']?.message?.toString()}
+                        isInvalid={!!formState.errors?.['customer_email']?.message}
+                        label="Customer Email (Optional)"
                         labelPlacement="outside"
                         placeholder=" "
                         value={field.value}

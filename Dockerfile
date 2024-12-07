@@ -1,6 +1,9 @@
 # First stage: Build the application
 FROM node:20-alpine AS web-builder
 
+# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
+RUN apk add --no-cache libc6-compat
+
 # Set the working directory in the container
 WORKDIR /home/node
 
@@ -29,17 +32,21 @@ FROM node:20-alpine
 # Set the working directory in the container for the runtime image
 WORKDIR /home/node
 
-# Switch to the application user for Node.js to improve security
-USER node
+# Set production environment for better performance
+ENV NODE_ENV=development
+ENV PORT=6969
+ENV HOSTNAME="0.0.0.0"
 
 # Copy the built application and necessary files from the build stage
-COPY --from=web-builder /home/node/.next /home/node/.next
-COPY --from=web-builder /home/node/public /home/node/public
-COPY --from=web-builder /home/node/node_modules /home/node/node_modules
-COPY --from=web-builder /home/node/package.json /home/node/
+COPY --from=web-builder /home/node/.next/standalone ./
+COPY --from=web-builder /home/node/.next/static ./.next/static
+COPY --from=web-builder /home/node/public ./public
+
+# Switch to the new application-specific user
+USER node
 
 # Expose port 3000 to allow traffic to the application
-EXPOSE 3000
+EXPOSE 6969
 
 # Command to start the Next.js application
-CMD ["npm", "start"]
+CMD ["node", "server.js"]

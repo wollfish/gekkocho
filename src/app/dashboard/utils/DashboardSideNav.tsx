@@ -1,14 +1,19 @@
+'use client';
+
 import React from 'react';
 
 import NextLink from 'next/link';
+
+import { usePathname } from 'next/navigation';
 
 import { doLogout } from '@/actions/auth';
 import { Icons, Logo } from '@/components/icons';
 import { siteConfig } from '@/config/site';
 import { cn } from '@/lib/utils';
 
-export const DashboardSideNav: React.FC = async () => {
-    const items = siteConfig.dashboardSideNavItems;
+export const DashboardSideNav: React.FC = React.memo(() => {
+    const path = usePathname();
+
     const iconClasses = 'text-xl text-default-500 pointer-events-none flex-shrink-0';
     const itemClasses = 'flex cursor-pointer w-full items-center gap-2 rounded-small p-2 transition-background hover:bg-default-100/50 hover:backdrop-blur-sm';
 
@@ -22,14 +27,22 @@ export const DashboardSideNav: React.FC = async () => {
             </div>
             <div className="no-scrollbar flex grow flex-col overflow-y-auto duration-300 ease-linear">
                 <ul className="flex w-full flex-col gap-2 p-2 text-sm">
-                    {items.map((item) => (
-                        <li key={item.href}>
-                            <NextLink className={itemClasses} href={item.href}>
-                                {item.icon && <item.icon className={iconClasses}/>}
-                                <span>{item.label}</span>
-                            </NextLink>
-                        </li>
-                    ))}
+                    {siteConfig.dashboardSideNavItems.map((item) => {
+                        const isActive = item.exact ? item.href === path : path.includes(item.parent);
+
+                        return (
+                            <li key={item.href}>
+                                <NextLink className={cn(itemClasses, {
+                                    'bg-default-100/50 backdrop-blur-sm': isActive,
+                                })} href={item.href}>
+                                    {item.icon && <item.icon className={cn(iconClasses, {
+                                        'text-primary': isActive,
+                                    })}/>}
+                                    <span>{item.label}</span>
+                                </NextLink>
+                            </li>
+                        );
+                    })}
                 </ul>
                 <div className="mt-auto flex w-full flex-col gap-2 p-2 text-sm">
                     <form action={doLogout} className="text-danger">
@@ -42,4 +55,4 @@ export const DashboardSideNav: React.FC = async () => {
             </div>
         </aside>
     );
-};
+});

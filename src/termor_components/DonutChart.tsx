@@ -237,7 +237,7 @@ const DonutChart = React.forwardRef<HTMLDivElement, DonutChartProps>(
                     >
                         {showLabel && isDonut && (
                             <text
-                                className="fill-gray-700 dark:fill-gray-300"
+                                className="fill-gray-700 text-tiny dark:fill-gray-300"
                                 dominantBaseline="middle"
                                 textAnchor="middle"
                                 x="50%"

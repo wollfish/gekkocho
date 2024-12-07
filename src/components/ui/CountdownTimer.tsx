@@ -5,8 +5,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
 
 interface OwnProps {
-    startTime?: string | Date;
-    endTime: string | Date;
+    startTime?: string | number | Date;
+    endTime: string | number | Date;
 }
 
 export const CountdownTimer: React.FC<OwnProps> = (props) => {

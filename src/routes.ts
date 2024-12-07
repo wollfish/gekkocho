@@ -19,3 +19,4 @@ export const privateRoutes: string[] = [
 export const apiAuthPrefix: string = '/api/auth';
 
 export const DEFAULT_LOGIN_REDIRECT: string = '/dashboard';
+export const DEFAULT_PRIVATE_ROUTE: string = '/dashboard';

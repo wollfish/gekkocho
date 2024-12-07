@@ -2,8 +2,7 @@ import React, { ReactNode } from 'react';
 import { Metadata } from 'next';
 import NextLink from 'next/link';
 
-import { Icons, Logo } from '@/components/icons';
-import { description, linkStyles } from '@/components/primitives';
+import { Logo } from '@/components/icons';
 import { ThemeSwitch } from '@/components/theme-switch';
 
 export const metadata: Metadata = {
@@ -12,22 +11,11 @@ export const metadata: Metadata = {
 export default function Layout({ children }: { children: ReactNode }) {
     return (
         <section className="flex size-full flex-col">
-            <header className="flex justify-end">
+            <header className="flex min-h-12 justify-end px-4">
                 <ThemeSwitch/>
             </header>
-            <div className="m-auto">
-                {children}
-                <div className="mt-4 flex flex-col items-center text-sm">
-                    <NextLink className={linkStyles().base({ type: 'underline', color: 'default', className: 'px-1' })} href="/aml-policy">
-                        AML Policy
-                    </NextLink>
-                    <p className={description({ size: 'xs', className: 'text-center' })}>
-                        Contact us if you have any questions
-                    </p>
-                    <div className="flex gap-2"><Icons.send/><Icons.headphone/></div>
-                </div>
-            </div>
-            <footer className="flex justify-center">
+            {children}
+            <footer className="flex min-h-12 justify-center">
                 <NextLink className="flex items-center justify-start gap-1" href="/">
                     <Logo/>
                     <span className="font-bold text-inherit">Powered by CoinDhan Pay</span>

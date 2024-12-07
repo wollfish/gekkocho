@@ -11,7 +11,7 @@ import { OverviewData } from '@/termor_data/schema';
 const overviewsDates = overviews.map((item) => toDate(item.date).getTime());
 const maxDate = toDate(Math.max(...overviewsDates));
 
-type  DateRange = {
+type DateRange = {
     from?: Date;
     to?: Date;
 };

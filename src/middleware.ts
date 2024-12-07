@@ -1,5 +1,11 @@
 import { auth } from '@/auth';
-import { apiAuthPrefix, authRoutes, DEFAULT_LOGIN_REDIRECT, privateRoutes, publicRoutes } from '@/routes';
+import {
+    apiAuthPrefix,
+    authRoutes,
+    DEFAULT_LOGIN_REDIRECT,
+    DEFAULT_PRIVATE_ROUTE,
+    publicRoutes,
+} from '@/routes';
 
 export default auth((req) => {
     const { nextUrl } = req;
@@ -8,7 +14,7 @@ export default auth((req) => {
 
     const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
     const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
-    const isPrivateRoute = privateRoutes.includes(nextUrl.pathname);
+    const isPrivateRoute = nextUrl.pathname.startsWith(DEFAULT_PRIVATE_ROUTE);
     const isAuthRoute = authRoutes.includes(nextUrl.pathname);
 
     if (isApiAuthRoute || isPublicRoute) {

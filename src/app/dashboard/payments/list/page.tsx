@@ -2,13 +2,20 @@ import React from 'react';
 
 import { getPaymentList } from '@/actions/dashboard/payment';
 import { PaymentList } from '@/app/dashboard/payments/utils';
+import { DataPageTemplate } from '@/lib/misc/DataPageTemplate';
+
+export const dynamic = 'force-dynamic';
 
 export default async function PaymentsPage() {
-    const { data } = await getPaymentList();
+    let { data: paymentList, error: paymentListError } = await getPaymentList();
+
+    paymentList ||= [];
 
     return (
-        <section className="flex grow flex-col overflow-auto py-4">
-            <PaymentList data={data}/>
-        </section>
+        <DataPageTemplate error={paymentListError}>
+            <section className="flex grow flex-col overflow-auto py-4">
+                <PaymentList data={paymentList}/>
+            </section>
+        </DataPageTemplate>
     );
 }

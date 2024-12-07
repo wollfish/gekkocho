@@ -1,12 +1,12 @@
 import React from 'react';
+import { Button } from '@nextui-org/button';
 import NextLink from 'next/link';
 
 import { Icons } from '@/components/icons';
 import { Navbar } from '@/components/navbar';
-import { description, link } from '@/components/primitives';
+import { description } from '@/components/primitives';
 import { BackgroundGradient } from '@/components/ui/BackgroundGradient';
-import { GoBackBtn } from "@/lib/misc/goBackBtn";
-import { Button } from "@nextui-org/button";
+import { GoBackBtn } from '@/lib/misc/goBackBtn';
 
 export default async function NotFound() {
     return (
@@ -24,10 +24,10 @@ export default async function NotFound() {
                                 as={NextLink}
                                 className="text-sm"
                                 color="primary"
-                                radius="full"
-                                variant="bordered"
-                                size="lg"
                                 href="/"
+                                radius="full"
+                                size="lg"
+                                variant="bordered"
                             >
                                 <Icons.home/>
                                 <span>Homepage</span>

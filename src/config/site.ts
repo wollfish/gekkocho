@@ -2,6 +2,9 @@ import { Icons } from '@/components/icons';
 
 export type SiteConfig = typeof siteConfig;
 
+export const PLATFORM_USER_CURRENCY = 'AED';
+export const PLATFORM_MAIN_CURRENCY = 'USDT';
+
 export const siteConfig = {
     name: 'CoinDhan Pay',
     description: 'Coindhan Pay: A simple and secure crypto payment gateway for your business.',
@@ -14,14 +17,14 @@ export const siteConfig = {
             label: 'Contact Us',
             href: '/contact-us',
         },
-        {
-            label: 'Pricing',
-            href: '/pricing',
-        },
-        {
-            label: 'Blog',
-            href: '/blog',
-        },
+        // {
+        //     label: 'Pricing',
+        //     href: '/pricing',
+        // },
+        // {
+        //     label: 'Blog',
+        //     href: '/blog',
+        // },
         {
             label: 'About',
             href: '/about',
@@ -29,32 +32,16 @@ export const siteConfig = {
     ],
     navMenuItems: [
         {
-            label: 'Profile',
-            href: '/profile',
+            label: 'Home',
+            href: '/',
         },
         {
-            label: 'Dashboard',
-            href: '/dashboard',
+            label: 'Contact Us',
+            href: '/contact-us',
         },
         {
-            label: 'Projects',
-            href: '/projects',
-        },
-        {
-            label: 'Team',
-            href: '/team',
-        },
-        {
-            label: 'Calendar',
-            href: '/calendar',
-        },
-        {
-            label: 'Settings',
-            href: '/settings',
-        },
-        {
-            label: 'Help & Feedback',
-            href: '/help-feedback',
+            label: 'Login',
+            href: '/login',
         },
         {
             label: 'Logout',
@@ -62,40 +49,64 @@ export const siteConfig = {
         },
     ],
     dashboardSideNavItems: [
-        {
-            label: 'Home',
-            href: '/',
-            icon: Icons.home,
-        },
+        // {
+        //     label: 'Home',
+        //     href: '/',
+        //     icon: Icons.home,
+        // },
         {
             label: 'Dashboard',
             href: '/dashboard',
+            parent: '/dashboard',
+            exact: true,
             icon: Icons.dashboard,
         },
         {
-            label: 'Wallet',
-            href: '/dashboard/wallet',
+            label: 'Balances',
+            href: '/dashboard/account',
+            parent: '/dashboard/account',
             icon: Icons.wallet,
         },
         {
-            label: 'Withdrawals',
-            href: '/dashboard/wallet/withdrawals',
+            label: 'Payouts',
+            href: '/dashboard/withdrawals/fiat',
+            parent: '/dashboard/withdrawals',
             icon: Icons.send,
         },
         {
-            label: 'Beneficiaries',
-            href: '/dashboard/wallet/beneficiaries',
+            label: 'Bank Accounts',
+            href: '/dashboard/beneficiaries/fiat',
+            parent: '/dashboard/beneficiaries/fiat',
+            icon: Icons.bank,
+        },
+        {
+            label: 'Crypto Accounts',
+            href: '/dashboard/beneficiaries/crypto',
+            parent: '/dashboard/beneficiaries/crypto',
             icon: Icons.dice,
         },
         {
             label: 'Payments',
-            href: '/dashboard/payments',
-            icon: Icons.calendar,
+            href: '/dashboard/payments/list',
+            parent: '/dashboard/payments/list',
+            icon: Icons.arrowRightLeft,
+        }, {
+            label: 'Active Payments',
+            href: '/dashboard/payments/links',
+            parent: '/dashboard/payments/links',
+            icon: Icons.qrCode,
         },
         {
             label: 'Settings',
-            href: '/dashboard/settings',
+            href: '/dashboard/settings/general',
+            parent: '/dashboard/settings',
             icon: Icons.settings,
+        },
+        {
+            label: 'APIs',
+            href: '/dashboard/api',
+            parent: '/dashboard/api',
+            icon: Icons.gitMerge,
         },
     ],
     dashboardSettingsNavItems: [
@@ -107,33 +118,35 @@ export const siteConfig = {
             label: 'Security',
             path: '/dashboard/settings/security',
         },
-        {
-            label: 'KYC',
-            path: '/dashboard/settings/kyc',
-        },
     ],
     dashboardPaymentNavItems: [
-        {
-            label: 'Overview',
-            path: '/dashboard/payments',
-        },
         {
             label: 'Payments',
             path: '/dashboard/payments/list',
         },
+        {
+            label: 'Active Payment Links',
+            path: '/dashboard/payments/links',
+        },
     ],
-    dashboardWalletNavItems: [
+    dashboardBeneficiaryNavItems: [
         {
-            label: 'Overview',
-            path: '/dashboard/wallet',
+            label: 'Bank Accounts',
+            path: '/dashboard/beneficiaries/fiat',
         },
         {
-            label: 'Withdrawals',
-            path: '/dashboard/wallet/withdrawals',
+            label: 'Crypto Accounts',
+            path: '/dashboard/beneficiaries/crypto',
+        },
+    ],
+    dashboardWithdrawalsNavItems: [
+        {
+            label: 'Fiat/Bank Payouts',
+            path: '/dashboard/withdrawals/fiat',
         },
         {
-            label: 'Beneficiaries',
-            path: '/dashboard/wallet/beneficiaries',
+            label: 'Crypto Payouts',
+            path: '/dashboard/withdrawals/crypto',
         },
     ],
     links: {
@@ -162,7 +175,7 @@ export const contactUsOptions = {
         { label: 'Social Media / Streaming', value: 'social_media_streaming' },
         { label: 'Trading / Exchanges', value: 'trading_exchanges' },
         { label: 'Travel & Tourism', value: 'travel_tourism' },
-        { label: 'Wallet / Neobank / EMI', value: 'wallet_neobank_emi' },
+        { label: 'Account / Neobank / EMI', value: 'account_neobank_emi' },
         { label: 'Web3', value: 'web3' },
         { label: 'Other', value: 'other' },
     ],

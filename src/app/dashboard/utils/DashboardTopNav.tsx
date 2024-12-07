@@ -3,7 +3,6 @@
 import React from 'react';
 
 import { Avatar } from '@nextui-org/avatar';
-import { Badge } from '@nextui-org/badge';
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@nextui-org/dropdown';
 import { Input } from '@nextui-org/input';
 import { Kbd } from '@nextui-org/kbd';
@@ -11,7 +10,7 @@ import { Kbd } from '@nextui-org/kbd';
 import { useSession } from 'next-auth/react';
 
 import { doLogout } from '@/actions/auth';
-import { Icons, SearchIcon } from '@/components/icons';
+import { SearchIcon } from '@/components/icons';
 import { ThemeSwitch } from '@/components/theme-switch';
 
 export const DashboardTopNav: React.FC = () => {
@@ -49,9 +48,9 @@ export const DashboardTopNav: React.FC = () => {
                     {searchInput}
                 </div>
                 <div className="flex items-center gap-4">
-                    <Badge isDot color="primary" content="" shape="circle" size="sm">
-                        <Icons.bell fill="currentColor" size={20}/>
-                    </Badge>
+                    {/*<Badge isDot color="primary" content="" shape="circle" size="sm">*/}
+                    {/*    <Icons.bell fill="currentColor" size={20}/>*/}
+                    {/*</Badge>*/}
                     <ThemeSwitch/>
                     <Dropdown
                         classNames={{
@@ -65,9 +64,8 @@ export const DashboardTopNav: React.FC = () => {
                                 as="button"
                                 className="transition-transform"
                                 color="primary"
-                                name="Jason Hughes"
+                                name="R"
                                 size="sm"
-                                src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
                             />
                         </DropdownTrigger>
                         <DropdownMenu aria-label="Profile Actions" variant="flat">

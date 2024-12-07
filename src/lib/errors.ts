@@ -35,6 +35,12 @@ export class InvalidCredentialsError extends CustomError {
     }
 }
 
+export class ServerError extends CustomError {
+    constructor(errors: string[] = []) {
+        super('ServerError', 'Server error.', ERROR_CODE_SERVER_ERROR, errors);
+    }
+}
+
 export class CommonAuthError extends CustomError {
     constructor(errors: string[] = []) {
         super('CommonAuthError', errors.length > 0 ? errors[0] : 'Invalid credentials.', ERROR_CODE_COMMON_AUTH_ERROR, errors);
@@ -45,11 +51,13 @@ export const ERROR_CODE_COMMON_AUTH_ERROR: string = '1000' as const;
 export const ERROR_CODE_INVALID_CREDENTIALS: string = '1003' as const;
 export const ERROR_CODE_OTP_REQUIRED: string = '1005' as const;
 export const ERROR_CODE_ACCOUNT_VERIFICATION_PENDING: string = '1010' as const;
+export const ERROR_CODE_SERVER_ERROR: string = '1011' as const;
 
 export const errorMap = {
     'identity.session.invalid_otp': OtpInvalidError,
     'identity.session.invalid_params': InvalidCredentialsError,
     'identity.session.missing_otp': OtpRequiredError,
     'identity.session.not_active': AccountVerificationError,
+    'identity.captcha.required': ServerError,
     'totp.error': OtpInvalidError,
 };
