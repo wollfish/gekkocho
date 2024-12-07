@@ -50,6 +50,7 @@ export async function getCurrencyList(): Promise<ApiResponse<CurrencyResponseInt
         endpoint: '/public/currencies',
         apiVersion: 'peatio',
         cache: true,
+        isPublic: true,
     });
 }
 
@@ -104,18 +105,18 @@ export async function activateBeneficiary(formData: BeneficiaryActivationFormInt
     });
 }
 
-export async function resendBeneficiaryActivation({ id }: { id: string }): Promise<ApiResponse> {
+export async function resendBeneficiaryActivation(fromData: { id: string }): Promise<ApiResponse> {
     return await makeApiRequest({
-        endpoint: `/account/beneficiaries/${id}/resend_pin`,
+        endpoint: `/account/beneficiaries/${fromData.id}/resend_pin`,
         apiVersion: 'peatio',
         method: 'PATCH',
         pathToRevalidate: ['/dashboard/beneficiaries/fiat', '/dashboard/beneficiaries/crypto'],
     });
 }
 
-export async function deleteBeneficiary(id: string): Promise<ApiResponse<BeneficiaryInterface[]>> {
-    return await makeApiRequest<BeneficiaryInterface[]>({
-        endpoint: `/account/beneficiaries/${id}`,
+export async function deleteBeneficiary(fromData: { id: string }): Promise<ApiResponse> {
+    return await makeApiRequest({
+        endpoint: `/account/beneficiaries/${fromData.id}`,
         apiVersion: 'peatio',
         method: 'DELETE',
     });

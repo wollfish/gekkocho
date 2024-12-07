@@ -1,4 +1,4 @@
-import { ContactUsForm } from '@/app/(main)/contact-us/utils';
+import { ContactUsForm } from '@/app/(public)/contact-us/utils';
 import { Icons } from '@/components/icons';
 import { description, title } from '@/components/primitives';
 

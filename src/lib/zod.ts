@@ -281,17 +281,6 @@ export const beneficiaryCryptoFormSchema = z.object({
     description: z.string().optional(),
 });
 
-//   currency: currency_id,
-//             name: fiatDetails.nick_name,
-//             blockchain_key: fiatDetails.blockchain_key,
-//             data: JSON.stringify({
-//                 nick_name: fiatDetails.nick_name.trim(),
-//                 full_name: fiatDetails.full_name.trim().slice(0, 35),
-//                 account_type: fiatDetails.account_type.trim(),
-//                 account_number: fiatDetails.account_number.trim(),
-//                 bank_ifsc_code: fiatDetails.bank_ifsc_code.toUpperCase().trim(),
-//             }),
-
 export const beneficiaryFiatFormSchema = z.object({
     currency: z.string({ required_error: 'Currency is required' })
         .min(1, 'Currency is required'),

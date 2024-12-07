@@ -7,10 +7,10 @@ import { BeneficiaryCryptoForm, BeneficiaryFiatForm } from '@/app/dashboard/acco
 import { CurrencyResponseInterface } from '@/lib/zod';
 
 interface OwnProps {
-    isOpen: boolean,
-    type: 'coin' | 'fiat',
-    currencies: CurrencyResponseInterface[],
-    onClose: () => void
+    isOpen: boolean;
+    type: 'coin' | 'fiat';
+    currencies: CurrencyResponseInterface[];
+    onClose: () => void;
 }
 
 export const BeneficiaryFormModal: React.FC<OwnProps> = (props) => {

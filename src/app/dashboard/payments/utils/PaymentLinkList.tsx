@@ -91,40 +91,6 @@ export const PaymentLinkList: React.FC<{ data: PaymentResponseInterface[] }> = (
                 topComponent={topContent}
                 onCopyClick={onCopy}
             />
-
-            {/*<section aria-label="Payment List" className="flex size-full flex-col">*/}
-            {/*    {topContent}*/}
-            {/*    <Table*/}
-            {/*        isHeaderSticky*/}
-            {/*        removeWrapper*/}
-            {/*        aria-label="Example static collection table"*/}
-            {/*        classNames={classNames}*/}
-            {/*        selectionMode="none"*/}
-            {/*        onRowAction={() => undefined}*/}
-            {/*    >*/}
-            {/*        <TableHeader columns={columns}>*/}
-            {/*            {(column) => (*/}
-            {/*                <TableColumn key={column.key}>*/}
-            {/*                    {column.label}*/}
-            {/*                </TableColumn>*/}
-            {/*            )}*/}
-            {/*        </TableHeader>*/}
-            {/*        <TableBody emptyContent="No rows to display." items={data}>*/}
-            {/*            {(item) => (*/}
-            {/*                <TableRow key={item.reference_id}>*/}
-            {/*                    {columns.map((columnKey) => (*/}
-            {/*                        <TableCell*/}
-            {/*                            key={columnKey.key}*/}
-            {/*                        >*/}
-            {/*                            {renderCell(item, columnKey)}*/}
-            {/*                        </TableCell>*/}
-            {/*                    ))}*/}
-            {/*                </TableRow>*/}
-            {/*            )}*/}
-            {/*        </TableBody>*/}
-            {/*    </Table>*/}
-            {/*    {bottomContent}*/}
-            {/*</section>*/}
             <PaymentFormModal isOpen={isPaymentFormModalOpen} onClose={onPaymentFormModalClose}/>
         </React.Fragment>
     );

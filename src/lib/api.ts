@@ -12,6 +12,7 @@ interface ApiRequestParams {
     headers?: Record<string, string>; // Additional request headers
     cache?: boolean; // Enable caching
     pathToRevalidate?: string[];
+    isPublic?: boolean;
 }
 
 export interface ApiResponse<T = any> {
@@ -33,14 +34,15 @@ export async function makeApiRequest<T = any>(params: ApiRequestParams): Promise
         payload = null,
         headers = {},
         cache = false,
+        isPublic = false,
         pathToRevalidate,
     } = params;
 
     const session = await auth();
 
     const endpointPath = endpoint.startsWith('/') ? endpoint.slice(1) : endpoint;
-    const barongSession = await decryptToken(session.user?.access_token);
-    const csrfToken = await decryptToken(session.user?.csrf_token);
+    const barongSession = isPublic ? '' : await decryptToken(session.user?.access_token);
+    const csrfToken = isPublic ? '' : await decryptToken(session.user?.csrf_token);
 
     let url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/v2/${apiVersion}/${endpointPath}`;
 

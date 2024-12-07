@@ -145,7 +145,7 @@ export const BeneficiaryCryptoList: React.FC<OwnProps> = (props) => {
                         'bg-danger-300/40': statusColorMap[selectedBeneficiary.state] === 'danger',
                         'bg-warning-300/40': statusColorMap[selectedBeneficiary.state] === 'warning',
                     })}>
-                        <h2>Beneficiary Details <sup>#{selectedBeneficiary.id}</sup></h2>
+                        <h2>Account Details <sup>#{selectedBeneficiary.id}</sup></h2>
                         <Chip
                             className="capitalize"
                             color={statusColorMap[selectedBeneficiary.state]}

@@ -74,7 +74,6 @@ export default async function Page({ params }: { params: { id: string } }) {
         exchange_rate: `1 ${responseData.pay_currency} = ${(+responseData.exchange_rate).toFixed(2)} ${responseData.req_currency}`.toUpperCase(),
         customer_name: responseData.customer?.name,
         received_amount: responseData.deposits?.reduce((total, deposit) => total + parseFloat(deposit.amount), 0),
-
     };
 
     return (

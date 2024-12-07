@@ -2,7 +2,7 @@
 
 import React, { useCallback, useMemo, useState } from 'react';
 import { Button } from '@nextui-org/button';
-import { Chip, ChipProps } from '@nextui-org/chip';
+import { Chip } from '@nextui-org/chip';
 import { Input } from '@nextui-org/input';
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@nextui-org/modal';
 
@@ -12,18 +12,7 @@ import { TableColumnInterface, YukiTable } from '@/components/ui/YukiTable';
 import { localeDate } from '@/lib/localeDate';
 import { CryptoIcon } from '@/lib/misc/CryptoIcon';
 import { cn } from '@/lib/utils';
-import { BeneficiaryInterface, CurrencyResponseInterface } from '@/lib/zod';
-
-const statusColorMap: Record<string, ChipProps['color']> = {
-    active: 'success',
-    confirmed: 'success',
-    pending: 'warning',
-    vacation: 'warning',
-    paused: 'danger',
-    failed: 'danger',
-    inactive: 'danger',
-    aml_processing: 'warning',
-};
+import { BeneficiaryInterface, CurrencyResponseInterface, statusColorMap } from '@/lib/zod';
 
 const columns: TableColumnInterface[] = [
     { key: 'id', type: 'id', label: 'ID' },
@@ -137,7 +126,7 @@ export const BeneficiaryFiatList: React.FC<OwnProps> = (props) => {
                         'bg-danger-300/40': statusColorMap[selectedBeneficiary.state] === 'danger',
                         'bg-warning-300/40': statusColorMap[selectedBeneficiary.state] === 'warning',
                     })}>
-                        <h2>Beneficiary Details <sup>#{selectedBeneficiary.id}</sup></h2>
+                        <h2>Bank Details <sup>#{selectedBeneficiary.id}</sup></h2>
                         <Chip
                             className="capitalize"
                             color={statusColorMap[selectedBeneficiary.state]}
@@ -178,10 +167,6 @@ export const BeneficiaryFiatList: React.FC<OwnProps> = (props) => {
                                         <span className="text-xs text-default-400">Created At :</span>
                                         <span>{localeDate(selectedBeneficiary.created_at, 'fullDateWithZone')}</span>
                                     </p>
-                                    <p className="flex justify-between">
-                                        <span className="text-xs text-default-400">Description :</span>
-                                        {selectedBeneficiary.description}
-                                    </p>
                                 </div>
                             </div>
                         </section>
@@ -196,7 +181,7 @@ export const BeneficiaryFiatList: React.FC<OwnProps> = (props) => {
                                     <Icons.arrowRight/>
                                 </Button>
                             </div>}
-                        {['aml_processing'].includes(selectedBeneficiary.state) &&
+                        {['aml_processing', 'on_hold'].includes(selectedBeneficiary.state) &&
                             <div className="flex w-full items-center gap-2 text-sm">
                                 <Icons.info color="#F7931A" size={16}/>
                                 <p className="mr-auto">Beneficiary is under system review</p>

@@ -65,6 +65,7 @@ export async function getPaymentInfoPublic(payload: { id: string }): Promise<Api
         apiVersion: 'peatio',
         cache: false,
         method: 'GET',
+        isPublic: true,
     });
 }
 
@@ -96,6 +97,7 @@ export async function setPaymentMethod(payload: PaymentMethodFormInterface): Pro
     return await makeApiRequest<PaymentResponseInterface>({
         endpoint: `/public/payment_requests/${payload.payment_id}`,
         apiVersion: 'peatio',
+        isPublic: true,
         method: 'PUT',
         payload: payload_data,
         pathToRevalidate: ['/pay/[id]'],

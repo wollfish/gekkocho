@@ -7,7 +7,6 @@ import { AccountList } from '@/app/dashboard/account/utils';
 import { AccountOverviewCharts } from '@/app/dashboard/account/utils/AccountOverviewCharts';
 import { subtitle } from '@/components/primitives';
 import { PLATFORM_MAIN_CURRENCY, PLATFORM_USER_CURRENCY } from '@/config/site';
-import { fetchData } from '@/lib/api';
 import { DataPageTemplate } from '@/lib/misc/DataPageTemplate';
 import { convertAmount, convertAmountInMainCurrency } from '@/lib/utils';
 
@@ -21,15 +20,14 @@ let chartData = [
 ];
 
 export default async function Page() {
-    const { loading, data: accounts, error } = await fetchData(getAccountList);
-    const {
-        loading: currencyLoading,
-        data: currency_list = [],
-        error: currencyError,
-    } = await fetchData(getCurrencyList);
+    let { data: accounts, error: accountError } = await getAccountList();
+    let { data: currency_list, error: currencyError } = await getCurrencyList();
 
-    if (error || currencyError) {
-        return <DataPageTemplate error={error || currencyError} />;
+    accounts ||= [];
+    currency_list ||= [];
+
+    if (accountError || currencyError) {
+        return <DataPageTemplate error={accountError || currencyError}/>;
     }
 
     const findCurrency = (currencyId: string) => currency_list.find((currency) => currency.id === currencyId.toLowerCase());
@@ -87,7 +85,7 @@ export default async function Page() {
     });
 
     return (
-        <DataPageTemplate error={error} loading={loading}>
+        <DataPageTemplate error={accountError}>
             <section className="flex flex-1 flex-col overflow-hidden py-4">
                 <div className="relative mb-4 flex flex-wrap justify-between gap-4">
                     <div className="relative flex flex-col gap-3 pl-2">
