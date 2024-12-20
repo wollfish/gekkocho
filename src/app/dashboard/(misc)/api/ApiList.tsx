@@ -35,11 +35,11 @@ export const ApiList: React.FC<OwnProps> = (props) => {
         onClose: onCreateModalClose,
     } = useDisclosure();
 
-    const [action, setAction] = React.useState<'create' | 'update' | 'delete'>(null);
+    const [action, setAction] = React.useState<'generate' | 'update' | 'delete'>(null);
     const [kid, setKid] = React.useState<string>('');
 
     const onGenerateKey = useCallback(() => {
-        setAction('create');
+        setAction('generate');
         onCreateModalOpen();
     }, [onCreateModalOpen]);
 

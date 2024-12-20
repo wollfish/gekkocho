@@ -98,7 +98,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                         <span className="text-white">{data.state}</span>
                     </Chip>
                 </div>
-                <div className="isolate mt-2.5  flex flex-wrap justify-between gap-x-6 gap-y-4 text-medium">
+                <div className="isolate mt-2.5 flex flex-wrap justify-between gap-x-6 gap-y-4 text-medium">
                     <div className="flex items-center gap-8">
                         <div className="flex items-center">
                             <Icons.bankNote className="text-default-500"/>
@@ -107,7 +107,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                             </span>
                             <span className="text-sm uppercase text-default-500">{data.req_currency}</span>
                         </div>
-                        <div className="flex items-center">
+                        <div className="flex items-center font-semibold">
                             <Icons.calendar className="mr-2 text-default-500"/>
                             <YukiDateFormat date={data.initiated_at} format="fullDateWithZone"/>
                         </div>
@@ -118,51 +118,59 @@ export default async function Page({ params }: { params: { id: string } }) {
                     </div>
                 </div>
             </section>
-            <div className="mt-8">
-                <h2 className={subtitle()}>Summary</h2>
-                <Divider className="mt-4"/>
-                <YukiTable asDataTable={true} columns={summaryColumns} tableData={[data]}/>
-            </div>
-            <div className="mt-8">
-                <h2 className={subtitle()}>Payment Details</h2>
-                <Divider className="mt-4"/>
-                <YukiTable asDataTable={true} columns={paymentColumns} tableData={[data]}/>
-            </div>
-            <div className="mt-8">
-                <h2 className={subtitle()}>Deposit Details</h2>
-                <Divider className="mt-4"/>
-                <dl className="grid grid-cols-1 text-base/6 font-medium sm:grid-cols-6 sm:text-sm/6">
-                    <dt className="col-span-2 border-b border-default-200 py-2.5 text-default-500">Number of Deposit/s
-                    </dt>
-                    <dd className="col-span-4 border-b border-default-200 py-2.5">{data.deposits.length}</dd>
-                </dl>
-                {data.deposits.map((deposit, index) => {
-                    const depositColumns: TableColumnInterface[] = [
-                        {
-                            key: 'amount',
-                            type: 'number',
-                            label: `#${index + 1} Deposit Amount`,
-                            options: { withCurrency: true, linked_column: 'currency' },
-                        },
-                        {
-                            key: 'txid',
-                            type: 'address',
-                            label: `#${index + 1} Deposit Transaction ID`,
-                            options: { linked_column: 'explorer_transaction', searchValue: '#{txid}' },
-                        },
-                        { key: 'created_at', type: 'datetime', label: `#${index + 1} Deposit Initiated At` },
-                    ];
+            <section aria-label="data" className="overflow-y-auto">
+                <div className="mt-8">
+                    <h2 className={subtitle()}>Summary</h2>
+                    <Divider className="mt-4"/>
+                    <YukiTable asDataTable={true} columns={summaryColumns} tableData={[data]}/>
+                </div>
+                <div className="mt-8">
+                    <h2 className={subtitle()}>Payment Details</h2>
+                    <Divider className="mt-4"/>
+                    <YukiTable asDataTable={true} columns={paymentColumns} tableData={[data]}/>
+                </div>
+                <div className="mt-8">
+                    <h2 className={subtitle()}>Deposit Details</h2>
+                    <Divider className="mt-4"/>
+                    <dl className="grid grid-cols-1 text-base/6 font-medium sm:grid-cols-6 sm:text-sm/6">
+                        <dt className="col-span-2 border-b border-default-200 py-2.5 text-default-500">
+                            Number of Deposit/s
+                        </dt>
+                        <dd className="col-span-4 border-b border-default-200 py-2.5">{data.deposits.length}</dd>
+                    </dl>
+                    {data.deposits.map((deposit, index) => {
+                        const depositColumns: TableColumnInterface[] = [
+                            {
+                                key: 'amount',
+                                type: 'number',
+                                label: `#${index + 1} Deposit Amount`,
+                                options: { withCurrency: true, linked_column: 'currency' },
+                            },
+                            {
+                                key: 'txid',
+                                type: 'address',
+                                label: `#${index + 1} Deposit Transaction ID`,
+                                options: { linked_column: 'explorer_transaction', searchValue: '#{txid}' },
+                            },
+                            { key: 'created_at', type: 'datetime', label: `#${index + 1} Deposit Initiated At` },
+                        ];
 
-                    return (
-                        <YukiTable key={deposit.id} asDataTable={true} columns={depositColumns} tableData={[deposit]}/>
-                    );
-                })}
-            </div>
-            <div className="my-8">
-                <h2 className={subtitle()}>Customer Details</h2>
-                <Divider className="mt-4"/>
-                <YukiTable asDataTable={true} columns={customerColumns} tableData={[data.customer]}/>
-            </div>
+                        return (
+                            <YukiTable
+                                key={deposit.id}
+                                asDataTable={true}
+                                columns={depositColumns}
+                                tableData={[deposit]}
+                            />
+                        );
+                    })}
+                </div>
+                <div className="my-8">
+                    <h2 className={subtitle()}>Customer Details</h2>
+                    <Divider className="mt-4"/>
+                    <YukiTable asDataTable={true} columns={customerColumns} tableData={[data.customer]}/>
+                </div>
+            </section>
         </section>
     );
 }

@@ -47,8 +47,6 @@ export async function makeApiRequest<T = any>(params: ApiRequestParams): Promise
     const ip = headersList.get('x-forwarded-for') || 'IP Not Found';
     const user_agent = headersList.get('user-agent') || 'unknown';
 
-    console.log('USER DETAILS', JSON.stringify(user_agent + ip));
-
     const endpointPath = endpoint.startsWith('/') ? endpoint.slice(1) : endpoint;
     const barongSession = isPublic ? '' : await decryptToken(session.user?.access_token);
     const csrfToken = isPublic ? '' : await decryptToken(session.user?.csrf_token);
@@ -58,6 +56,8 @@ export async function makeApiRequest<T = any>(params: ApiRequestParams): Promise
     const defaultHeaders: Record<string, string> = {
         'Content-Type': 'application/json',
         'Cookie': `_barong_session=${barongSession}`,
+        // 'X-Forwarded-For': ip,
+        // 'User-Agent': user_agent,
     };
 
     if (method === 'GET' && payload) {

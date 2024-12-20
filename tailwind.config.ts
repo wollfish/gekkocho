@@ -15,7 +15,13 @@ module.exports = {
     theme: {
         extend: {
             keyframes: {
-                move: {
+                'ping': {
+                    '75%, 100%': {
+                        transform: 'scale(2)',
+                        opacity: 0,
+                    },
+                },
+                'move': {
                     '0%, 100%': {
                         transform: 'translate(0)',
                     },
@@ -76,7 +82,7 @@ module.exports = {
                         d: 'path("M 0,700 L 0,408 C 48.57824005891017,351.4930044182621 97.15648011782034,294.98600883652426 149,321 C 200.84351988217966,347.01399116347574 255.9523195876289,455.54896907216505 330,477 C 404.0476804123711,498.45103092783495 497.0342415316642,432.81811487481593 554,405 C 610.9657584683358,377.18188512518407 631.9107142857142,387.1785714285714 689,405 C 746.0892857142858,422.8214285714286 839.3229013254786,448.46759941089834 914,431 C 988.6770986745214,413.53240058910166 1044.7976804123712,352.9510309278351 1099,327 C 1153.2023195876288,301.0489690721649 1205.486377025037,309.7282768777614 1262,329 C 1318.513622974963,348.2717231222386 1379.2568114874816,378.1358615611193 1440,408 L 1440,700 L 0,700 Z")',
                     },
                 },
-                meteor: {
+                'meteor': {
                     '0%': { transform: 'rotate(215deg) translateX(0)', opacity: '1' },
                     '70%': { opacity: '1' },
                     '100%': {
@@ -123,11 +129,13 @@ module.exports = {
         },
         animation: {
             'infinite-scroll': 'infinite-scroll 30s linear infinite',
-            'move': 'move 5s ease-in-out infinite',
             'path-0': 'pathAnim-0 14s linear infinite',
             'path-1': 'pathAnim-1 8s linear infinite',
             'meteor-effect': 'meteor 5s linear infinite',
+            move: 'move 5s ease-in-out infinite',
+            none: 'none',
             hide: 'hide 150ms cubic-bezier(0.16, 1, 0.3, 1)',
+            ping: 'ping 1s cubic-bezier(0, 0, 0.2, 1) infinite',
             slideDownAndFade:
                 'slideDownAndFade 150ms cubic-bezier(0.16, 1, 0.3, 1)',
             slideLeftAndFade:

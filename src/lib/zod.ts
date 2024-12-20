@@ -148,12 +148,6 @@ export const twoFactorAuthResponseSchema = z.object({
     }),
 });
 
-// req_currency
-// req_amount
-// reference_id [-, 0-9, A-Z, a-z]
-// pay_currency?
-// pay_blockchain?
-// redirect_url?
 export const paymentFormSchema = z.object({
     product_name: z.string({ required_error: 'Product name is required' })
         .min(1, 'Product name is required')
@@ -180,34 +174,6 @@ export const paymentMethodFormSchema = z.object({
         .min(1, 'Network is required'),
     customer_name: z.string().optional(),
     customer_email: z.string().email({ message: 'Invalid email' }),
-});
-
-export const paymentResponseSchemaV1 = z.object({
-    uuid: z.string(),
-    order_id: z.string(),
-    amount: z.string(),
-    currency: z.string(),
-    currency_type: z.string(),
-    payer_amount: z.string().nullable(),
-    payer_amount_fiat: z.string().nullable(),
-    payer_currency: z.string().nullable(),
-    network: z.string().nullable(),
-    payment_amount: z.string().nullable(),
-    remains_amount: z.string().nullable(),
-    remains_amount_fiat: z.string().nullable(),
-    fee_amount: z.string().nullable(),
-    desc: z.string().nullable(),
-    address: z.string(),
-    from: z.string().nullable(),
-    txid: z.string().nullable(),
-    payment_status: z.string(),
-    expired_at: z.coerce.date(),
-    created_at: z.coerce.date(),
-    status: z.string(),
-    return_url: z.string().nullable(),
-    confirms: z.number(),
-    need_confirms: z.number(),
-    block: z.number(),
 });
 
 const paymentDepositSchema = z.object({

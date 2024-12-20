@@ -2,15 +2,21 @@ import * as React from 'react';
 
 import {
     LuArrowLeft,
-    LuArrowRight, LuArrowRightLeft, LuBanknote,
+    LuArrowRight,
+    LuArrowRightLeft,
+    LuBanknote,
     LuBarChart,
     LuBell,
-    LuBriefcase, LuCalendar,
+    LuBriefcase,
+    LuCalendar,
     LuCheck,
     LuCheckCircle,
     LuClipboardCopy,
-    LuCoins, LuCopy,
-    LuDices, LuExternalLink,
+    LuCoins,
+    LuCopy,
+    LuDices,
+    LuDot,
+    LuExternalLink,
     LuFlower,
     LuGamepad,
     LuGitMerge,
@@ -18,7 +24,8 @@ import {
     LuHeadphones,
     LuHome,
     LuInfinity,
-    LuInfo, LuLandmark,
+    LuInfo,
+    LuLandmark,
     LuLayoutDashboard,
     LuMail,
     LuMapPin,
@@ -34,7 +41,8 @@ import {
     LuSend,
     LuSettings,
     LuShoppingCart,
-    LuStore, LuTrash,
+    LuStore,
+    LuTrash,
     LuUndo2,
     LuUserCircle,
     LuWallet,
@@ -243,7 +251,8 @@ export const NextUILogo: React.FC<IconSvgProps> = (props) => {
 
 const BgWaveSvg: React.FC<IconSvgProps> = () => {
     return (
-        <svg className="scale-x-[200%]" height="100%" id="svg" viewBox="0 0 1440 690" width="100%" xmlns="http://www.w3.org/2000/svg">
+        <svg className="scale-x-[200%]" height="100%" id="svg" viewBox="0 0 1440 690" width="100%"
+            xmlns="http://www.w3.org/2000/svg">
             <defs>
                 <linearGradient id="gradient" x1="60%" x2="40%" y1="1%" y2="99%">
                     <stop offset="5%" stopColor="#ff8e5a"/>
@@ -309,6 +318,7 @@ export const Icons = {
     cart: LuShoppingCart,
     chart: LuBarChart,
     check: LuCheck,
+    dot: LuDot,
     circle: LuCheckCircle,
     clipboard: LuClipboardCopy,
     coins: LuCoins,

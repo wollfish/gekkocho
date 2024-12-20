@@ -21,7 +21,7 @@ import { ApiKeyFormInterface, apiKeyFormSchema, ApiKeyResponseInterface } from '
 interface OwnProps {
     isOpen: boolean,
     selectedApiKey?: ApiKeyResponseInterface,
-    action: 'create' | 'update' | 'delete'
+    action: 'generate' | 'update' | 'delete'
     onClose: () => void
 }
 
@@ -30,7 +30,7 @@ export const ApiKeyFormModal: React.FC<OwnProps> = (props) => {
 
     const [data, setData] = React.useState<ApiResponse<ApiKeyResponseInterface>>(null);
 
-    const { handleSubmit, formState, control , setValue } = useForm<ApiKeyFormInterface>({
+    const { handleSubmit, formState, control, setValue } = useForm<ApiKeyFormInterface>({
         resolver: zodResolver(apiKeyFormSchema),
         defaultValues: {
             totp_code: '',
@@ -49,7 +49,7 @@ export const ApiKeyFormModal: React.FC<OwnProps> = (props) => {
         let data: ApiResponse;
 
         switch (action) {
-            case 'create':
+            case 'generate':
                 data = await generateApiKey(payload);
                 break;
             case 'update':
@@ -62,7 +62,7 @@ export const ApiKeyFormModal: React.FC<OwnProps> = (props) => {
                 throw new Error(`Unsupported action: ${action}`);
         }
 
-        if (data.success && action === 'create') {
+        if (data.success && action === 'generate') {
             setData(data);
         } else if (data.success) {
             toast.success(`API key ${action}d successfully`);
@@ -75,7 +75,7 @@ export const ApiKeyFormModal: React.FC<OwnProps> = (props) => {
     const onCloseModal = useCallback(() => {
         setData(null);
         onClose();
-    },[onClose]);
+    }, [onClose]);
 
     const renderApiKeyCreateSuccessMsg = useCallback(() => {
         return (
@@ -130,19 +130,23 @@ export const ApiKeyFormModal: React.FC<OwnProps> = (props) => {
                     <h3 className="capitalize">{action} API Key</h3>
                 </ModalHeader>
                 <ModalBody>
-                    {data?.success && action === 'create'
-                        ? renderApiKeyCreateSuccessMsg()
-                        :
-                        <form autoComplete="off" className="grid gap-4" method="POST"
-                            onSubmit={handleSubmit(onSubmit)}>
+                    {data?.success && action === 'generate' ?
+                        renderApiKeyCreateSuccessMsg() :
+                        <form
+                            autoComplete="off"
+                            className="grid gap-4"
+                            method="POST"
+                            onSubmit={handleSubmit(onSubmit)}
+                        >
                             <Controller
                                 control={control}
                                 name="totp_code"
                                 render={({ field, formState }) => (
                                     <InputOtp
                                         color={!!formState.errors?.['totp_code']?.message ? 'danger' : 'default'}
+                                        description="Enter the code from your authenticator app. If you have not set up 2FA, please do so in the settings/security section."
                                         errorMessage={formState.errors?.['totp_code']?.message?.toString()}
-                                        label="Enter Verification Code"
+                                        label="Two Factor Authentication Code"
                                         otplength={6}
                                         radius="lg"
                                         variant="faded"

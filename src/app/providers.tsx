@@ -75,7 +75,12 @@ const ToastProvider = ({ children }: { children: React.ReactNode }) => {
 
     return (
         <React.Fragment>
-            <Toaster richColors position="top-right" theme={theme as 'light' | 'dark'}/>
+            <Toaster
+                closeButton={true}
+                position="top-right"
+                richColors={true}
+                theme={theme as 'light' | 'dark'}
+            />
             {children}
         </React.Fragment>
     );
