@@ -84,8 +84,13 @@ export const DashboardTopNav: React.FC = () => {
                             <DropdownItem key="help_and_feedback" textValue="help_and_feedback">
                                 Help & Feedback
                             </DropdownItem>
-                            <DropdownItem key="logout" className="text-danger" color="danger" textValue="team_settings"
-                                onClick={handleLogout}>
+                            <DropdownItem
+                                key="logout"
+                                className="text-danger"
+                                color="danger"
+                                textValue="team_settings"
+                                onClick={handleLogout}
+                            >
                                 Log Out
                             </DropdownItem>
                         </DropdownMenu>
