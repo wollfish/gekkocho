@@ -15,26 +15,28 @@ export const NetworkStatusIndicator: React.FC = React.memo(() => {
     }, [initialOnline]);
 
     useEffect(() => {
-        if (prevOnlineRef.current === false && online === true) {
-            const reloadTimeout = setTimeout(() => {
-                window.location.reload();
-            }, 3000);
+        if (typeof window !== 'undefined') {
+            if (prevOnlineRef.current === false && online === true) {
+                const reloadTimeout = setTimeout(() => {
+                    window.location.reload();
+                }, 3000);
 
-            return () => clearTimeout(reloadTimeout);
-        }
+                return () => clearTimeout(reloadTimeout);
+            }
 
-        prevOnlineRef.current = online;
+            prevOnlineRef.current = online;
 
-        if (!online && online !== null) {
-            toast.warning('You are offline.', {
-                dismissible: false,
-                closeButton: false,
-                position: 'bottom-right',
-                duration: 99999,
-                id: 'network-status-alert',
-            });
-        } else {
-            toast.dismiss('network-status-alert');
+            if (!online && online !== null) {
+                toast.warning('You are offline.', {
+                    dismissible: false,
+                    closeButton: false,
+                    position: 'bottom-right',
+                    duration: 99999,
+                    id: 'network-status-alert',
+                });
+            } else {
+                toast.dismiss('network-status-alert');
+            }
         }
     }, [online]);
 
