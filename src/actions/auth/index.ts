@@ -122,12 +122,12 @@ export async function doRegister(formData: SignUpSchema, callbackUrl = DEFAULT_L
     }
 }
 
-export async function doLogout() {
+export async function doLogout(path = '/') {
     try {
-        await signOut({ redirectTo: '/', redirect: true });
+        await signOut({ redirectTo: path, redirect: true });
     } catch (e: unknown) {
         if (isRedirectError(e)) throw e;
-        console.error(e);
+        console.error('Redirect error', e);
 
         return { success: false, error: { message: 'An unexpected error occurred.' } };
     }

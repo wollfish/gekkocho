@@ -33,7 +33,7 @@ const SECRET_KEY = ''; // default value <empty string>
 
 const LIVE_SERVER_HOST = 'https://gamma.coinfinacle.com'; // default value <https://gamma.coinfinacle.com>
 
-const FETCH_LIVE_DATA = false;          // default value <false>
+const FETCH_LIVE_DATA = false; // default value <false>
 const FETCH_AND_SAVE_LIVE_DATA = false; // default value <false>
 
 // =========================== Please do not alter the below configuration ===========================

@@ -1,5 +1,7 @@
 import { revalidatePath } from 'next/cache';
 
+import { headers as next_headers } from 'next/headers';
+
 import { auth } from '@/auth';
 import { decryptToken } from '@/lib/encryption';
 import { buildQueryString } from '@/lib/utils';
@@ -40,6 +42,11 @@ export async function makeApiRequest<T = any>(params: ApiRequestParams): Promise
 
     const session = await auth();
 
+    const headersList = next_headers();
+
+    const ip = headersList.get('x-forwarded-for') || 'IP Not Found';
+    const user_agent = headersList.get('user-agent') || 'unknown';
+
     const endpointPath = endpoint.startsWith('/') ? endpoint.slice(1) : endpoint;
     const barongSession = isPublic ? '' : await decryptToken(session.user?.access_token);
     const csrfToken = isPublic ? '' : await decryptToken(session.user?.csrf_token);
@@ -49,6 +56,8 @@ export async function makeApiRequest<T = any>(params: ApiRequestParams): Promise
     const defaultHeaders: Record<string, string> = {
         'Content-Type': 'application/json',
         'Cookie': `_barong_session=${barongSession}`,
+        // 'X-Forwarded-For': ip,
+        // 'User-Agent': user_agent,
     };
 
     if (method === 'GET' && payload) {

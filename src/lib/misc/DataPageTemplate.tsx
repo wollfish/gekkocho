@@ -1,6 +1,9 @@
+import 'server-only';
+
 import React from 'react';
 
 import { description, subtitle } from '@/components/primitives';
+import { ErrorLogout } from '@/lib/misc/ErrorLogout';
 
 interface DataPageTemplateProps {
     error: string | null;
@@ -8,7 +11,7 @@ interface DataPageTemplateProps {
     children?: React.ReactNode;
 }
 
-export const DataPageTemplate: React.FC<DataPageTemplateProps> = (props) => {
+export const DataPageTemplate: React.FC<DataPageTemplateProps> = async (props) => {
     const { error, loading, children } = props;
 
     if (loading) {
@@ -23,6 +26,7 @@ export const DataPageTemplate: React.FC<DataPageTemplateProps> = (props) => {
         return (
             <section className="flex flex-1 items-center justify-center py-4">
                 <div className="m-auto">
+                    <ErrorLogout error={error}/>
                     <h2 className={subtitle({ className: 'relative text-danger pl-1' })}>
                         <span>Error</span>
                         <span className="absolute left-0 top-1 h-4/6 w-0.5 bg-danger"/>

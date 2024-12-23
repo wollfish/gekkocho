@@ -55,7 +55,7 @@ export const PaymentList: React.FC<{ data: PaymentResponseInterface[] }> = (prop
     }, [filterValue, props.data]);
 
     const onTableRowClick = useCallback((key: PaymentResponseInterface['id']) => {
-        window.open(`${window.location.origin}/dashboard/payments/${key}`, '_self');
+        window.open(`${window.location.origin}/dashboard/payments/${key}`, '_blank');
     }, []);
 
     const topContent = React.useMemo(() => {

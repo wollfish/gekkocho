@@ -1,6 +1,7 @@
 import NextAuth, { NextAuthConfig } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 
+import { makeApiRequest } from '@/lib/api';
 import { encryptToken } from '@/lib/encryption';
 import { CommonAuthError, errorMap } from '@/lib/errors';
 import { getAccessTokenFromHeader } from '@/lib/server-utils';
@@ -97,6 +98,15 @@ export const authConfig: NextAuthConfig = {
             // console.log('===============End|auth.ts==================');
 
             return session;
+        },
+    },
+    events: {
+        signOut: async () => {
+            await makeApiRequest({
+                endpoint: '/identity/sessions',
+                apiVersion: 'barong',
+                method: 'DELETE',
+            });
         },
     },
     session: {

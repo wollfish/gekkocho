@@ -12,10 +12,11 @@ import { useSession } from 'next-auth/react';
 import { doLogout } from '@/actions/auth';
 import { SearchIcon } from '@/components/icons';
 import { ThemeSwitch } from '@/components/theme-switch';
+import { NetworkStatusIndicator } from '@/lib/misc/NetworkStatusAlerts';
 
 export const DashboardTopNav: React.FC = () => {
     const session = useSession();
-    
+
     const handleLogout = async () => {
         await doLogout();
     };
@@ -42,7 +43,8 @@ export const DashboardTopNav: React.FC = () => {
     );
 
     return (
-        <nav className="sticky top-0 z-10 flex h-16 min-h-16 w-full border-b border-divider bg-background px-6">
+        <nav
+            className="sticky top-0 z-10 flex h-16 min-h-16 w-full border-b border-divider bg-background px-6 print:hidden">
             <header className="flex grow items-center justify-between gap-4 text-default">
                 <div className="flex items-center gap-4">
                     {searchInput}
@@ -51,6 +53,7 @@ export const DashboardTopNav: React.FC = () => {
                     {/*<Badge isDot color="primary" content="" shape="circle" size="sm">*/}
                     {/*    <Icons.bell fill="currentColor" size={20}/>*/}
                     {/*</Badge>*/}
+                    <NetworkStatusIndicator/>
                     <ThemeSwitch/>
                     <Dropdown
                         classNames={{
@@ -81,7 +84,13 @@ export const DashboardTopNav: React.FC = () => {
                             <DropdownItem key="help_and_feedback" textValue="help_and_feedback">
                                 Help & Feedback
                             </DropdownItem>
-                            <DropdownItem key="logout" className="text-danger" color="danger" textValue="team_settings" onClick={handleLogout}>
+                            <DropdownItem
+                                key="logout"
+                                className="text-danger"
+                                color="danger"
+                                textValue="team_settings"
+                                onClick={handleLogout}
+                            >
                                 Log Out
                             </DropdownItem>
                         </DropdownMenu>

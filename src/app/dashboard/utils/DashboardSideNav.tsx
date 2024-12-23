@@ -17,8 +17,12 @@ export const DashboardSideNav: React.FC = React.memo(() => {
     const iconClasses = 'text-xl text-default-500 pointer-events-none flex-shrink-0';
     const itemClasses = 'flex cursor-pointer w-full items-center gap-2 rounded-small p-2 transition-background hover:bg-default-100/50 hover:backdrop-blur-sm';
 
+    const handleLogout = async () => {
+        await doLogout();
+    };
+
     return (
-        <aside className="sticky top-0 z-10 flex h-screen w-64 flex-col overflow-y-hidden border-r border-divider">
+        <aside className="sticky top-0 z-10 flex h-screen w-64 flex-col overflow-y-hidden border-r border-divider print:hidden">
             <div className="flex h-16 items-center border-b border-dashed border-divider">
                 <NextLink className="flex items-center gap-1 p-3" href="/">
                     <Logo size={32}/>
@@ -45,7 +49,7 @@ export const DashboardSideNav: React.FC = React.memo(() => {
                     })}
                 </ul>
                 <div className="mt-auto flex w-full flex-col gap-2 p-2 text-sm">
-                    <form action={doLogout} className="text-danger">
+                    <form action={handleLogout} className="text-danger">
                         <button className={itemClasses} type="submit">
                             {<Icons.flower className={cn(iconClasses, 'text-danger')}/>}
                             <span>Logout</span>

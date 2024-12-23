@@ -5,6 +5,8 @@ import { getProfile } from '@/actions/dashboard/settings';
 import { description, subtitle } from '@/components/primitives';
 import { DataPageTemplate } from '@/lib/misc/DataPageTemplate';
 
+export const dynamic = 'force-dynamic';
+
 export default async function GeneralPage() {
     const { success, data: user, error: useError } = await getProfile();
 
