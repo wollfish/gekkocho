@@ -1,5 +1,7 @@
 import { redirect, RedirectType } from 'next/navigation';
 
-export default function PayPage() {
+export const dynamic = 'force-dynamic';
+
+export default function Page() {
     redirect ('/dashboard/beneficiaries/fiat', RedirectType.replace );
 }

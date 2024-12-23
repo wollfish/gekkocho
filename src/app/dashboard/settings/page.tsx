@@ -1,5 +1,7 @@
 import { redirect, RedirectType } from 'next/navigation';
 
-export default function SettingsPage() {
+export const dynamic = 'force-dynamic';
+
+export default function Page() {
     redirect('/dashboard/settings/general', RedirectType.replace);
 }
