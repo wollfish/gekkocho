@@ -88,7 +88,7 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
     }, [payment]);
 
     function doRedirect() {
-        if (payment?.data?.redirect_url) {
+        if (['completed', 'rejected'].includes(payment?.data?.state) && payment?.data?.redirect_url) {
             router.push(payment.data.redirect_url + '?payment_id=' + id + '&reference_id=' + payment.data.reference_id);
         }
     }
