@@ -1,12 +1,12 @@
 'use client';
 
-import React, { Suspense, useEffect, useMemo } from 'react';
+import React, { Suspense, useMemo } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@nextui-org/button';
 import { Divider } from '@nextui-org/divider';
 import { Input } from '@nextui-org/input';
 import { Select, SelectItem } from '@nextui-org/select';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 
 import { toast } from 'sonner';
 
@@ -30,80 +30,64 @@ interface OwnProps {
 export const PaymentMethodForm: React.FC<OwnProps> = (props) => {
     const { uuid, payment, methods } = props;
 
-    const { handleSubmit, formState, control, setValue, watch } = useForm<PaymentMethodFormInterface>({
+    const defaultValues = useMemo(() => ({
+        payment_id: uuid,
+        pay_currency: payment.pay_currency || '',
+        pay_blockchain: payment.pay_blockchain || '',
+        customer_name: payment.customer?.name || '',
+        customer_email: payment.customer?.email || '',
+    }), [uuid, payment]);
+
+    const { handleSubmit, formState, control, setValue } = useForm<PaymentMethodFormInterface>({
         resolver: zodResolver(paymentMethodFormSchema),
-        defaultValues: {
-            payment_id: String(uuid),
-            pay_currency: '',
-            pay_blockchain: '',
-            customer_name: payment.customer?.name || '',
-            customer_email: payment.customer?.email || '',
-        },
+        defaultValues,
     });
 
-    const watchCurrency = watch('pay_currency');
+    const watchCurrency = useWatch({ control, name: 'pay_currency' });
 
-    useEffect(() => {
-        setValue('pay_blockchain', '');
-    },[setValue, watchCurrency]);
+    const selectedCurrency = useMemo(() => methods.find((m) => m.id === watchCurrency), [methods, watchCurrency]);
+
+    const convertedAmount = useMemo(() => {
+        return selectedCurrency
+            ? convertCurrency(methods, payment.req_amount, payment.req_currency, selectedCurrency.id)
+            : 0;
+    }, [selectedCurrency, methods, payment]);
 
     const onSubmit = async (values: PaymentMethodFormInterface) => {
-        const { error, success } = await setPaymentMethod(values) || {};
+        const { error, success } = await setPaymentMethod(values);
 
         if (success) {
             toast.success('Payment method set');
         } else {
-            toast.error(error);
+            toast.error(error || 'Something went wrong');
         }
     };
 
-    const selectedCurrencyId = watch('pay_currency');
-    const selectedCurrency = useMemo(() => methods.find((m) => m.id === selectedCurrencyId), [methods, selectedCurrencyId]);
-    const convertedAmount = useMemo(() => {
-        if (selectedCurrency) {
-            return convertCurrency(methods, payment.req_amount, payment.req_currency, selectedCurrency.id);
-        }
-    }, [selectedCurrency, methods, payment.req_amount, payment.req_currency]);
-
     return (
         <form autoComplete="off" className="grid w-full grid-cols-12 gap-4" onSubmit={handleSubmit(onSubmit)}>
-            <h3 className={subtitle({ className: 'col-span-12' })}>Your Information</h3>
-            <Controller
-                control={control}
-                name="customer_name"
-                render={({ field, formState }) => (
-                    <Input
-                        autoComplete="off"
-                        className="col-span-12"
-                        errorMessage={formState.errors?.['customer_name']?.message?.toString()}
-                        isInvalid={!!formState.errors?.['customer_name']?.message}
-                        label="Name"
-                        labelPlacement="outside"
-                        placeholder="Enter your name"
-                        value={field.value}
-                        onChange={field.onChange}
-                    />
-                )}
-            />
-            <Controller
-                control={control}
-                name="customer_email"
-                render={({ field, formState }) => (
-                    <Input
-                        autoComplete="off"
-                        className="col-span-12"
-                        errorMessage={formState.errors?.['customer_email']?.message?.toString()}
-                        isInvalid={!!formState.errors?.['customer_email']?.message}
-                        label="Email"
-                        labelPlacement="outside"
-                        placeholder="Enter your email"
-                        value={field.value}
-                        onChange={field.onChange}
-                    />
-                )}
-            />
+            <h3 className={subtitle({ className: 'col-span-12' })}>Fill your Information</h3>
+            {['customer_name', 'customer_email'].map((field_name) => (
+                <Controller
+                    key={field_name}
+                    control={control}
+                    name={field_name as keyof PaymentMethodFormInterface}
+                    render={({ field, formState }) => (
+                        <Input
+                            autoComplete="off"
+                            className="col-span-12 capitalize"
+                            errorMessage={formState.errors?.[field_name]?.message?.toString()}
+                            isDisabled={!!defaultValues[field_name]}
+                            isInvalid={!!formState.errors?.[field_name]?.message}
+                            label={field_name.split('_')[1]}
+                            labelPlacement="outside"
+                            placeholder={`Enter your ${field_name.split('_')[1]}`}
+                            {...field}
+                        />
+                    )}
+                />
+            ))}
             <Divider className="col-span-12 mt-4"/>
-            <h3 className={subtitle({ className: 'col-span-12' })}>Payment Method</h3>
+            <h3 className={subtitle({ className: 'col-span-12' })}>Choose a payment method</h3>
             <div className="col-span-12 grid grid-cols-12 items-start gap-4">
                 <Controller
                     control={control}
@@ -113,13 +97,17 @@ export const PaymentMethodForm: React.FC<OwnProps> = (props) => {
                             className="col-span-7"
                             disallowEmptySelection={true}
                             errorMessage={formState.errors?.['pay_currency']?.message?.toString()}
+                            isDisabled={!!defaultValues['pay_currency']}
                             isInvalid={!!formState.errors?.['pay_currency']?.message}
                             items={methods.filter((m) => m.currency_type === 'coin')}
                             label="Select Currency"
                             labelPlacement="outside"
                             placeholder="Pick a currency"
                             selectedKeys={[field.value]}
-                            onChange={field.onChange}
+                            onChange={(key) => {
+                                field.onChange(key);
+                                setValue('pay_blockchain', '');
+                            }}
                         >
                             {(method) => (
                                 <SelectItem
@@ -141,6 +129,7 @@ export const PaymentMethodForm: React.FC<OwnProps> = (props) => {
                             className="col-span-5"
                             disallowEmptySelection={true}
                             errorMessage={formState.errors?.['pay_blockchain']?.message?.toString()}
+                            isDisabled={!!defaultValues.pay_blockchain}
                             isInvalid={!!formState.errors?.['pay_blockchain']?.message}
                             items={selectedCurrency?.networks || []}
                             label="Select Network"
@@ -167,7 +156,7 @@ export const PaymentMethodForm: React.FC<OwnProps> = (props) => {
                     <p className="font-medium">
                         <span>Conversion Rate: &nbsp;</span>
                         {selectedCurrency?.id && <span className="font-semibold uppercase text-secondary">
-                            {`1 ${selectedCurrency?.id} = ${(convertedAmount?.[1])?.toFixed(2) || 0} ${payment?.req_currency}`}
+                            {`1 ${selectedCurrency?.id} = ${(convertedAmount?.[1])?.toFixed(2)} ${payment?.req_currency}`}
                         </span>}
                     </p>
                 }
@@ -175,7 +164,7 @@ export const PaymentMethodForm: React.FC<OwnProps> = (props) => {
                 label="Converted Amount"
                 labelPlacement="outside"
                 placeholder="Converted Amount..."
-                value={(convertedAmount?.[0] || '') as string}
+                value={`${convertedAmount?.[0] || ''} ${watchCurrency?.toUpperCase() || ''}`}
             />
             <div className="col-span-12 flex justify-end gap-4">
                 <Suspense>
