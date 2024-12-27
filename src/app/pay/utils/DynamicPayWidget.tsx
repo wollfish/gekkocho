@@ -1,12 +1,16 @@
 'use client';
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import { Button } from '@nextui-org/button';
 import { Divider } from '@nextui-org/divider';
 import { Snippet } from '@nextui-org/snippet';
 import { Spinner } from '@nextui-org/spinner';
 import { Tooltip } from '@nextui-org/tooltip';
 import { useQuery } from '@tanstack/react-query';
+
+import { useTimeout } from 'ahooks';
+
+import { useRouter } from 'next/navigation';
 
 import { getCurrencyList } from '@/actions/dashboard/account';
 
@@ -18,11 +22,45 @@ import { QRCodeGenerator } from '@/components/qrCodeGenerator';
 import { CountdownTimer } from '@/components/ui/CountdownTimer';
 import { cn, formatNumber } from '@/lib/utils';
 
+const Instruction: React.FC = React.memo(() => {
+    return (
+        <div>
+            <h3 className={subtitle({ size: 'sm', className: 'mb-2 text-danger-600' })}>
+                Important Note:
+            </h3>
+            <Divider className="text-default-500"/>
+            <ul className={description({
+                size: 'xs',
+                className: 'list-outside list-disc ml-3 flex flex-col gap-1',
+            })}>
+                <li>Always verify the recipient’s wallet address carefully; crypto transactions are
+                    irreversible.
+                </li>
+                <li>Ensure the recipient’s wallet supports the same blockchain network as the one you’re
+                    using (e.g., Bitcoin, Ethereum).
+                </li>
+                <li>Choosing the correct network and protocol is crucial to ensure your transaction is
+                    successful and your funds are not lost.
+                </li>
+                <li>Customer is solely responsible for verifying wallet addresses,
+                    network selection, and transaction details..
+                </li>
+                <li>
+                    <span className="font-semibold">No Recovery for Errors:</span>
+                    The company is not liable for funds lost due to incorrect
+                    details, misdirected payments, or unsupported networks.
+                </li>
+            </ul>
+        </div>
+    );
+});
+
 const WRAPPER_CLASS = 'w-full border border-dashed bg-white contain-content dark:border-default dark:bg-default-50 md:max-w-md min-w-[420px]';
 const NETWORK_CLASS = 'mx-auto mb-2 flex w-fit items-center gap-2 rounded border border-dashed px-2 py-1 text-sm dark:border-default';
 
 export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
     const [enablePaymentDataFetch, setEnablePaymentDataFetch] = React.useState(true);
+    const router = useRouter();
 
     const { data: payment, isLoading: paymentLoading } = useQuery({
         queryKey: ['payment_info', props.id],
@@ -43,54 +81,19 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
         queryFn: () => getCurrencyList(),
     });
 
+    useTimeout(doRedirect, 5000);
+
     useEffect(() => {
-        if (['completed', 'rejected'].includes(payment?.data?.state)) {
-            setEnablePaymentDataFetch(false);
-        }
+        setEnablePaymentDataFetch(!['completed', 'rejected'].includes(payment?.data?.state));
     }, [payment]);
 
-    const payCurrency = currencies?.data?.find((c) => c.id === payment?.data?.pay_currency);
-
-    const renderInstructions = useMemo(() => {
-        return (
-            <div>
-                <h3 className={subtitle({ size: 'sm', className: 'mb-2 text-danger-600' })}>
-                    Important Note:
-                </h3>
-                <Divider className="text-default-500"/>
-                <ul className={description({
-                    size: 'xs',
-                    className: 'list-outside list-disc ml-3 flex flex-col gap-1',
-                })}>
-                    <li>Always verify the recipient’s wallet address carefully; crypto transactions are
-                        irreversible.
-                    </li>
-                    <li>Ensure the recipient’s wallet supports the same blockchain network as the one you’re
-                        using (e.g., Bitcoin, Ethereum).
-                    </li>
-                    <li>Choosing the correct network and protocol is crucial to ensure your transaction is
-                        successful and your funds are not lost.
-                    </li>
-                    <li>Customer is solely responsible for verifying wallet addresses,
-                        network selection, and transaction details..
-                    </li>
-                    <li>
-                        <span className="font-semibold">No Recovery for Errors:</span>
-                        The company is not liable for funds lost due to incorrect
-                        details, misdirected payments, or unsupported networks.
-                    </li>
-                </ul>
-            </div>
-        );
-    }, []);
-
-    if (paymentLoading || paymentMethodsLoading) {
-        return (
-            <section className="m-auto flex items-center justify-center">
-                <Spinner/>
-            </section>
-        );
+    function doRedirect() {
+        if (payment?.data?.redirect_url) {
+            router.push(payment.data.redirect_url + '?payment_id=' + id + '&reference_id=' + payment.data.reference_id);
+        }
     }
+
+    const payCurrency = currencies?.data?.find((c) => c.id === payment?.data?.pay_currency);
 
     const {
         id,
@@ -111,6 +114,14 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
         redirect_url,
         reference_id,
     } = payment?.data || {};
+
+    if (paymentLoading || paymentMethodsLoading) {
+        return (
+            <section className="m-auto flex items-center justify-center">
+                <Spinner/>
+            </section>
+        );
+    }
 
     if (!payment?.data) {
         return (
@@ -153,6 +164,7 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
                     <p className="font-semibold">Payment Successful</p>
                     <p>For Order ID: <b>#{reference_id}</b></p>
                     <p>Received Amount: {pay_amount} {pay_currency?.toUpperCase()}</p>
+                    {redirect_url && <p>You will be redirected in <b>5sec</b></p>}
                 </div>
             );
         }
@@ -164,6 +176,7 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
                     <p>For Order ID: <b>#{reference_id}</b></p>
                     <p>Requested Amount: {pay_amount} {pay_currency?.toUpperCase()}</p>
                     <p>Received Amount: {0} {pay_currency?.toUpperCase()}</p>
+                    {redirect_url && <p>You will be redirected in <b>5sec</b></p>}
                 </div>
             );
         }
@@ -232,7 +245,7 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
         }
     };
 
-    console.log(payment);
+    console.info(payment);
 
     return (
         <section className="flex size-full border-y border-divider bg-default-100/50">
@@ -255,13 +268,13 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
                         </p>
                     </div>
                     <div className="mt-auto hidden sm:block">
-                        {renderInstructions}
+                        <Instruction/>
                     </div>
                 </section>
                 <section className="flex flex-col border-l border-dashed border-default px-8">
                     {renderData()}
                     <div className="sm:hidden">
-                        {renderInstructions}
+                        <Instruction/>
                     </div>
                 </section>
             </div>
