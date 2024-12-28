@@ -18,8 +18,7 @@ COPY --chown=node:node .yarn /home/node/.yarn
 COPY --chown=node:node .yarnrc.yml package.json yarn.lock /home/node/
 
 # Install Node.js dependencies based on package.json
-RUN corepack enable
-RUN yarn install
+RUN corepack enable && yarn install
 
 # Copy the entire application source code to the working directory
 COPY --chown=node:node . /home/node/
