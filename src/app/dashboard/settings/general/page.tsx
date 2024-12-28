@@ -14,7 +14,7 @@ export default async function GeneralPage() {
         { label: 'User Id', value: user?.uid },
         { label: 'User Name', value: user?.username || 'N/A' },
         { label: 'Email', value: user?.email },
-        { label: 'Full Name', value: user?.profiles?.[0]?.full_name || 'N/A' },
+        { label: 'Organization Name', value: user?.profiles?.[0]?.full_name || 'N/A' },
     ];
 
     return (
