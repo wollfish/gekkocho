@@ -8,7 +8,7 @@ import { DataPageTemplate } from '@/lib/misc/DataPageTemplate';
 export const dynamic = 'force-dynamic';
 
 export default async function GeneralPage() {
-    const { success, data: user, error: useError } = await getProfile();
+    const { data: user, error: useError } = await getProfile();
 
     const userInfo = [
         { label: 'User Id', value: user?.uid },

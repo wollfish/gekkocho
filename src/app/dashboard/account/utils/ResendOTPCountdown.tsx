@@ -30,7 +30,7 @@ export const ResendOTPCountdown: React.FC<ResendOTPCountdownProps> = (props) => 
         try {
             await onResend();
             setTimeLeft(initialCountdown);
-        } catch (err) {
+        } catch {
             setError('Failed to resend OTP. Please try again.');
         } finally {
             setIsLoading(false);

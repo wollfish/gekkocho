@@ -5,8 +5,7 @@ import { NextUIProvider } from '@nextui-org/system';
 import { isServer, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { useRouter } from 'next/navigation';
-import { ThemeProvider as NextThemesProvider, useTheme } from 'next-themes';
-import { ThemeProviderProps } from 'next-themes/dist/types';
+import { ThemeProvider as NextThemesProvider, ThemeProviderProps, useTheme } from 'next-themes';
 import { Toaster } from 'sonner';
 
 interface ProvidersProps {
