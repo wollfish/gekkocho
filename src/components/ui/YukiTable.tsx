@@ -264,6 +264,7 @@ export const YukiTable: React.FC<OwnProps> = (props) => {
                 </TableBody>
             </Table>
             {bottomContent}
+            {bottomComponent}
         </section>
     );
 };

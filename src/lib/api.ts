@@ -44,8 +44,8 @@ export async function makeApiRequest<T = any>(params: ApiRequestParams): Promise
 
     const headersList = next_headers();
 
-    const ip = headersList.get('x-forwarded-for') || 'IP Not Found';
-    const user_agent = headersList.get('user-agent') || 'unknown';
+    const _ip = headersList.get('x-forwarded-for') || 'IP Not Found';
+    const _user_agent = headersList.get('user-agent') || 'unknown';
 
     const endpointPath = endpoint.startsWith('/') ? endpoint.slice(1) : endpoint;
     const barongSession = isPublic ? '' : await decryptToken(session.user?.access_token);

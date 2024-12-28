@@ -8,13 +8,13 @@ import { DataPageTemplate } from '@/lib/misc/DataPageTemplate';
 export const dynamic = 'force-dynamic';
 
 export default async function GeneralPage() {
-    const { success, data: user, error: useError } = await getProfile();
+    const { data: user, error: useError } = await getProfile();
 
     const userInfo = [
         { label: 'User Id', value: user?.uid },
         { label: 'User Name', value: user?.username || 'N/A' },
         { label: 'Email', value: user?.email },
-        { label: 'Full Name', value: user?.profiles?.[0]?.full_name || 'N/A' },
+        { label: 'Organization Name', value: user?.profiles?.[0]?.full_name || 'N/A' },
     ];
 
     return (

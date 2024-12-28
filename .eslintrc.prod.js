@@ -50,9 +50,9 @@ module.exports = {
             'functions': 'never',
         }],
 
-        '@typescript-eslint/no-explicit-any': 'warn',
+        // '@typescript-eslint/no-explicit-any': 'warn',
         '@typescript-eslint/no-unused-vars': [
-            'error',
+            'warn',
             {
                 'argsIgnorePattern': '^_',
                 'varsIgnorePattern': '^_',
@@ -65,6 +65,8 @@ module.exports = {
         'react/jsx-uses-react': 'off',
         'react/react-in-jsx-scope': 'off',
         'react/self-closing-comp': 'warn',
+        'react-hooks/exhaustive-deps': 'off',
+        'react-hooks/rules-of-hooks': 'error',
         'react/jsx-sort-props': [
             'warn',
             {

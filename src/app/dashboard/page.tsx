@@ -45,7 +45,7 @@ const paymentColumns: TableColumnInterface[] = [
 export default async function DashboardPage() {
     const { data: payments, error: paymentError } = await fetchData(getPaymentList);
     const { data: withdrawals, error: withdrawalError } = await fetchData(getWithdrawalList);
-    const { data: analytics, error: analyticsError } = await fetchData(fetchAnalytics);
+    const { data: _analytics, error: analyticsError } = await fetchData(fetchAnalytics);
 
     if (paymentError || withdrawalError || analyticsError) {
         return <DataPageTemplate error={paymentError || withdrawalError || analyticsError} />;

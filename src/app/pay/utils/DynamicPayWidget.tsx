@@ -76,7 +76,7 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
         enabled: !paymentLoading && payment?.data?.state === 'pending',
     });
 
-    const { data: currencies, isLoading: currenciesLoading } = useQuery({
+    const { data: currencies, isLoading: _currenciesLoading } = useQuery({
         queryKey: ['currencies'],
         queryFn: () => getCurrencyList(),
     });
@@ -97,10 +97,8 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
 
     const {
         id,
-        initiated_at,
         address,
         description: product_name,
-        pay_blockchain,
         pay_amount,
         pay_protocol,
 
