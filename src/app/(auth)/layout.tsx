@@ -13,7 +13,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
                 <div className="z-10 flex items-center justify-between p-4">
                     <NextLink className="-ml-1 flex items-center gap-1" href="/">
                         <Logo size={32}/>
-                        <span className="font-bold">CoinDhan Pay</span>
+                        <span className="font-bold">Dome Pe</span>
                     </NextLink>
                     <ThemeSwitch/>
                 </div>

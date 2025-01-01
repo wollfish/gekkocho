@@ -246,7 +246,7 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
     console.info(payment);
 
     return (
-        <section className="flex size-full border-y border-divider bg-default-100/50">
+        <section className="flex size-full overflow-auto border-y border-divider bg-default-100/50">
             <div
                 className="m-auto grid w-[1020px] grid-cols-1 gap-y-4 rounded bg-white py-8 shadow dark:bg-default-50/60 sm:h-4/5 sm:grid-cols-2">
                 <section className="flex flex-col border-default px-8">
@@ -269,7 +269,7 @@ export const DynamicPayWidget: React.FC<{ id: string }> = (props) => {
                         <Instruction/>
                     </div>
                 </section>
-                <section className="flex flex-col border-l border-dashed border-default px-8">
+                <section className="flex flex-col gap-8 border-l border-dashed border-default px-8">
                     {renderData()}
                     <div className="sm:hidden">
                         <Instruction/>

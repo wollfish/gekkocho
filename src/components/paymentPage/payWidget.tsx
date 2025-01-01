@@ -18,7 +18,7 @@ export const PayWidget: React.FC = () => {
                 <div className="flex items-center justify-between">
                     <div className="-ml-1 flex items-center gap-1">
                         <Logo size={32}/>
-                        <p className="font-bold">CoinDhan Pay</p>
+                        <p className="font-bold">Dome Pe</p>
                     </div>
                     <div>Order Id: <span className="text-sm font-semibold">#8945</span></div>
                 </div>

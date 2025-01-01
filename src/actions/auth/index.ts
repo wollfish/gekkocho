@@ -69,13 +69,12 @@ export async function doRegister(formData: SignUpSchema, callbackUrl = DEFAULT_L
             };
         }
 
-        const { email, password, referral_code } = parsedCredentials.data;
+        const { email, password } = parsedCredentials.data;
 
         const payload = {
             email: email,
             password: password,
             data: JSON.stringify({ language: 'en' }),
-            ...(!!referral_code && { refid: referral_code }),
         };
 
         const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v2/barong/identity/users`, {

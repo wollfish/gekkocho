@@ -26,7 +26,7 @@ export const DashboardSideNav: React.FC = React.memo(() => {
             <div className="flex h-16 items-center border-b border-dashed border-divider">
                 <NextLink className="flex items-center gap-1 p-3" href="/">
                     <Logo size={32}/>
-                    <p className="font-bold">CoinDhan Admin</p>
+                    <p className="font-bold">Dome Pe Admin</p>
                 </NextLink>
             </div>
             <div className="no-scrollbar flex grow flex-col overflow-y-auto duration-300 ease-linear">

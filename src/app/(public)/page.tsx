@@ -39,7 +39,7 @@ export default function Home() {
                         </NextLink>
                         <div className="mx-auto flex flex-col items-start space-y-4 py-16">
                             <p className=" w-full text-sm lg:w-[500px]">
-                                &quot;CoinDhan Pay eliminated the hassle and complexity of payments. They&apos;re more
+                                &quot;Dome Pe eliminated the hassle and complexity of payments. They&apos;re more
                                 than a payment service; they’re an essential partner for our product&quot;
                             </p>
                             <div className="flex items-center space-x-3">
@@ -233,7 +233,7 @@ export default function Home() {
                                     Easy integration and setup
                                 </h2>
                                 <p className={description({ className: 'mb-4' })}>
-                                    CoinDhan crypto payment gateway integrates seamlessly with
+                                    Dome crypto payment gateway integrates seamlessly with
                                     WordPress, Magento, Opencart, Prestashop, Laravel, PHP and Node.js for consuming
                                     payment gateway services without leaving the website.
                                 </p>

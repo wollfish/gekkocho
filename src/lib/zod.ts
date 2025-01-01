@@ -40,7 +40,6 @@ export const signUpSchema = z.object({
 
         return val;
     }),
-    referral_code: z.string().optional(),
 }).refine((data) => data.password === data.confirm_password, {
     path: ['confirm_password'],
     message: 'Passwords do not match',

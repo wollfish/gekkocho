@@ -11,7 +11,7 @@ export default function LoginPage() {
             <div className="border-b border-dashed border-default p-6">
                 <NextLink className="-ml-1 mb-4 flex items-center gap-1" href="/">
                     <Logo size={32}/>
-                    <span className="font-bold">CoinDhan Pay</span>
+                    <span className="font-bold">Dome Pe</span>
                 </NextLink>
                 <h2 className={subtitle()}>
                     Sign in to your account

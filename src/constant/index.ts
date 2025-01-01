@@ -165,7 +165,7 @@ const landingPageCryptoSteps = {
         key: 'step-1',
         icon: Icons.cursor,
         title: '1: Choosing a Method',
-        desc: 'The customer chooses to pay with crypto using our CoinDhan Pay payment method.',
+        desc: 'The customer chooses to pay with crypto using our Dome Pe payment method.',
     },
     'step-2': {
         key: 'step-2',
@@ -183,7 +183,7 @@ const landingPageCryptoSteps = {
         key: 'step-4',
         icon: Icons.flower,
         title: '4: Requesting Withdrawal',
-        desc: 'CoinDhan Pay processes the your withdrawal request and sends the payment in the preferred cryptocurrency.',
+        desc: 'Dome Pe processes the your withdrawal request and sends the payment in the preferred cryptocurrency.',
     },
 };
 

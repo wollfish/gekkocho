@@ -17,7 +17,7 @@ export const PayCTA: React.FC = () => {
                 <span className="flex items-center gap-2"><Icons.circle/>Pay Using</span>
                 <div className="flex items-center">
                     <Logo size={32}/>
-                    <p className="font-bold">CoinDhan Pay</p>
+                    <p className="font-bold">Dome Pe</p>
                 </div>
             </Button>
         </div>

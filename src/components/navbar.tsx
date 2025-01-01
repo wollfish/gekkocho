@@ -30,7 +30,7 @@ export const Navbar: React.FC = async () => {
                 <NavbarBrand as="li" className="max-w-fit gap-3">
                     <NextLink className="flex items-center justify-start gap-1" href="/">
                         <Logo/>
-                        <p className="font-bold text-inherit">CoinDhan Pay</p>
+                        <p className="font-bold text-inherit">Dome Pe</p>
                     </NextLink>
                 </NavbarBrand>
             </NavbarContent>
