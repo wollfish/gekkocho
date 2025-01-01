@@ -18,7 +18,7 @@ export default function Layout({ children }: { children: ReactNode }) {
             <footer className="flex min-h-12 justify-center">
                 <NextLink className="flex items-center justify-start gap-1" href="/">
                     <Logo/>
-                    <span className="font-bold text-inherit">Powered by CoinDhan Pay</span>
+                    <span className="font-bold text-inherit">Powered by Dome Pe</span>
                 </NextLink>
             </footer>
         </section>

@@ -6,8 +6,8 @@ export const PLATFORM_USER_CURRENCY = 'AED';
 export const PLATFORM_MAIN_CURRENCY = 'USDT';
 
 export const siteConfig = {
-    name: 'CoinDhan Pay',
-    description: 'Coindhan Pay: A simple and secure crypto payment gateway for your business.',
+    name: 'Dome Pe',
+    description: 'Dome Pe: A simple and secure crypto payment gateway for your business.',
     navItems: [
         {
             label: 'Home',

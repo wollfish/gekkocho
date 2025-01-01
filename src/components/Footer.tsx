@@ -82,9 +82,9 @@ export const Footer: React.FC = async () => {
                 <div className="flex flex-wrap items-center justify-between gap-4">
                     <NextLink className="flex items-center justify-start gap-1" href="/">
                         <Logo/>
-                        <p className="font-bold text-inherit">CoinDhan Pay</p>
+                        <p className="font-bold text-inherit">Dome Pe</p>
                     </NextLink>
-                    <p className="text-xs">© 2024 CoinDhan Pay. All rights reserved.</p>
+                    <p className="text-xs">© 2025 Dome Pe. All rights reserved.</p>
                     <div className="flex items-center gap-4">
                         <ThemeSwitch/>
                     </div>

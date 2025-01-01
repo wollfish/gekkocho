@@ -23,7 +23,6 @@ export const SignUpForm: React.FC = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     const callbackUrl = searchParams.get('callbackUrl') || DEFAULT_LOGIN_REDIRECT;
-    const referralCode = searchParams.get('referral_code') || '';
 
     const { handleSubmit, formState, control, getValues } = useForm<SignUpSchema>({
         resolver: zodResolver(signUpSchema),
@@ -31,7 +30,6 @@ export const SignUpForm: React.FC = () => {
             email: '',
             password: '',
             confirm_password: '',
-            referral_code: referralCode,
             terms: false,
         },
     });
@@ -96,23 +94,6 @@ export const SignUpForm: React.FC = () => {
                             errorMessage={formState.errors?.['confirm_password']?.message?.toString()}
                             isInvalid={!!formState.errors?.['confirm_password']?.message}
                             label="Confirm Password"
-                            labelPlacement="outside"
-                            placeholder=" "
-                            value={field.value}
-                            onChange={field.onChange}
-                        />
-                    )}
-                />
-                <Controller
-                    control={control}
-                    name="referral_code"
-                    render={({ field, formState }) => (
-                        <Input
-                            autoComplete="off"
-                            errorMessage={formState.errors?.['referral_code']?.message?.toString()}
-                            isInvalid={!!formState.errors?.['referral_code']?.message}
-                            isRequired={false}
-                            label="Referral Code (optional)"
                             labelPlacement="outside"
                             placeholder=" "
                             value={field.value}
