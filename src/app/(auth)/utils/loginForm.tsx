@@ -6,14 +6,13 @@ import { Button } from '@nextui-org/button';
 import { Checkbox } from '@nextui-org/checkbox';
 import { Input } from '@nextui-org/input';
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@nextui-org/modal';
-import NextLink from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
 import { doLogin } from '@/actions/auth';
 import { EmailVerificationModal } from '@/app/(auth)/utils/EmailVerificationModal';
-import { link } from '@/components/primitives';
+import { ForgetPasswordModal } from '@/app/(auth)/utils/ForgetPasswordModal';
 import { ERROR_CODE_ACCOUNT_VERIFICATION_PENDING, ERROR_CODE_OTP_REQUIRED } from '@/lib/errors';
 import { InputOtp } from '@/lib/otpInput';
 import { InputPassword } from '@/lib/passwordInput';
@@ -31,6 +30,12 @@ export const LoginForm: React.FC = () => {
         isOpen: isVerificationModalOpen,
         onOpen: onVerificationModalOpen,
         onClose: onVerificationModalClose,
+    } = useDisclosure();
+
+    const {
+        isOpen: isForgetPasswordModalOpen,
+        onOpen: onForgetPasswordModalOpen,
+        onClose: onForgetPasswordModalClose,
     } = useDisclosure();
 
     const searchParams = useSearchParams();
@@ -110,9 +115,14 @@ export const LoginForm: React.FC = () => {
                             </Checkbox>
                         )}
                     />
-                    <NextLink className={link().base({ size: 'xs' })} href={'/'} prefetch={true}>
+                    <Button
+                        color="primary"
+                        size="sm"
+                        variant="light"
+                        onPress={onForgetPasswordModalOpen}
+                    >
                         Forget Password?
-                    </NextLink>
+                    </Button>
                 </div>
                 <Suspense>
                     <Button
@@ -153,7 +163,7 @@ export const LoginForm: React.FC = () => {
                                 isDisabled={watch('otp')?.length !== 6}
                                 isLoading={formState.isSubmitting}
                                 type="submit"
-                                onClick={() => handleSubmit(onSubmit)()}
+                                onPress={() => handleSubmit(onSubmit)()}
                             >
                                 Submit
                             </Button>
@@ -165,6 +175,11 @@ export const LoginForm: React.FC = () => {
                 email={getValues().email}
                 isOpen={isVerificationModalOpen}
                 onClose={onVerificationModalClose}
+            />
+            <ForgetPasswordModal
+                email={getValues().email}
+                isOpen={isForgetPasswordModalOpen}
+                onClose={onForgetPasswordModalClose}
             />
         </React.Fragment>
     );

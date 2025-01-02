@@ -1,10 +1,8 @@
-import { Button } from '@nextui-org/button';
 import { Divider } from '@nextui-org/divider';
-
-import { Input } from '@nextui-org/input';
 
 import { getProfile } from '@/actions/dashboard/settings';
 import { TwoFactorAuthFormModal } from '@/app/dashboard/settings/security/TwoFactorAuthFormModal';
+import { UpdatePasswordForm } from '@/app/dashboard/settings/security/UpdatePasswordForm';
 import { description, subtitle } from '@/components/primitives';
 import { DataPageTemplate } from '@/lib/misc/DataPageTemplate';
 
@@ -35,19 +33,7 @@ export default async function SecurityPage() {
                             Account compromised? Change your password.
                         </p>
                     </div>
-                    <form className="col-span-4 grid grid-cols-2 gap-x-8 gap-y-4 text-sm">
-                        <div className="flex flex-col gap-2">
-                            <Input label="Current Password" size="sm" type="password"/>
-                        </div>
-                        <div className="flex flex-col gap-2">
-                            <Input label="New Password" size="sm" type="password"/>
-                        </div>
-                        <div/>
-                        <div className="flex justify-end gap-2">
-                            <Button className="" type="reset" variant="flat">Clear</Button>
-                            <Button className="" color="primary" type="submit">Update Password</Button>
-                        </div>
-                    </form>
+                    <UpdatePasswordForm/>
                 </div>
                 <Divider/>
                 <div className="mt-4 grid grid-cols-7">

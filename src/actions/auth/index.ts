@@ -15,7 +15,14 @@ import {
     OtpRequiredError,
     ServerError,
 } from '@/lib/errors';
-import { SignInSchema, signInSchema, signUpSchema, SignUpSchema, UserInterface } from '@/lib/zod';
+import {
+    PasswordUpdateFormInterface,
+    SignInSchema,
+    signInSchema,
+    signUpSchema,
+    SignUpSchema,
+    UserInterface,
+} from '@/lib/zod';
 import { DEFAULT_LOGIN_REDIRECT } from '@/routes';
 
 export async function doLogin(formData: SignInSchema, callbackUrl = DEFAULT_LOGIN_REDIRECT) {
@@ -139,5 +146,35 @@ export async function verifyEmailToken(payload: { token: string }): Promise<ApiR
         method: 'POST',
         payload,
         pathToRevalidate: ['/account/confirmation'],
+    });
+}
+
+export async function resendEmailToken(payload: { email: string }): Promise<ApiResponse> {
+    return await makeApiRequest({
+        endpoint: '/identity/users/email/generate_code',
+        apiVersion: 'barong',
+        method: 'POST',
+        isPublic: true,
+        payload,
+    });
+}
+
+export async function updatePassword(payload: PasswordUpdateFormInterface): Promise<ApiResponse> {
+    return await makeApiRequest({
+        endpoint: '/resource/users/password',
+        apiVersion: 'barong',
+        method: 'PUT',
+        payload,
+        pathToRevalidate: ['/account/settings'],
+    });
+}
+
+export async function forgetPassword(payload: { email: string }): Promise<ApiResponse> {
+    return await makeApiRequest({
+        endpoint: '/identity/users/password/generate_code',
+        apiVersion: 'barong',
+        method: 'POST',
+        isPublic: true,
+        payload,
     });
 }
