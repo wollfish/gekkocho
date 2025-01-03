@@ -74,7 +74,7 @@ export const PaymentLinkList: React.FC<{ data: PaymentResponseInterface[] }> = (
                         className="bg-foreground text-background"
                         endContent={<Icons.plus/>}
                         size="sm"
-                        onClick={onPaymentFormModalOpen}
+                        onPress={onPaymentFormModalOpen}
                     >
                         Create New Payment Link
                     </Button>

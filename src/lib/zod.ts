@@ -401,6 +401,53 @@ export const apiKeyResponseSchema = z.object({
     updated_at: z.coerce.date(),
 });
 
+export const otcQuoteFormSchema = z.object({
+    market: z.string({ required_error: 'Market is required' })
+        .min(1, 'Market is required'),
+    req_amount: z.coerce
+        .number({ required_error: 'Request amount is required' })
+        .gt(0, 'Request amount must be greater than 0'),
+    side: z.string({ required_error: 'Side is required' })
+        .min(1, 'Side is required'),
+});
+
+export const otcOrderFormSchema = z.object({
+    market: z.string({ required_error: 'Market is required' })
+        .min(1, 'Market is required'),
+    amount: z.coerce
+        .number({ required_error: 'Request amount is required' })
+        .gt(0, 'Request amount must be greater than 0'),
+    side: z.string({ required_error: 'Side is required' })
+        .min(1, 'Side is required'),
+});
+
+export const otcOrderSchema = z.object({
+    order_id: z.number(),
+    market: z.string(),
+    amount: z.string(),
+    price: z.string(),
+    fee: z.string(),
+    fee_currency: z.string(),
+    tax: z.string(),
+    tax_currency: z.string(),
+    side: z.string(),
+    order_status: z.string(),
+    created_at: z.coerce.date(),
+});
+
+export const otcQuoteSchema = z.object({
+    quote_id: z.number(),
+    market: z.string(),
+    req_amount: z.string(),
+    allotted_amount: z.string(),
+    avg_price: z.string(),
+    side: z.string(),
+    quote_status: z.string(),
+    otc_orders: z.array(otcOrderSchema),
+    created_at: z.coerce.date(),
+    expired_at: z.coerce.date(),
+});
+
 export type PaymentFormInterface = z.infer<typeof paymentFormSchema>;
 export type PaymentMethodFormInterface = z.infer<typeof paymentMethodFormSchema>;
 export type BeneficiaryFormCryptoInterface = z.infer<typeof beneficiaryCryptoFormSchema>;
@@ -427,13 +474,18 @@ export type ContactUsSchema = z.infer<typeof contactUsSchema>;
 
 export type TwoFactorAuthFormInterface = z.infer<typeof twoFactorAuthFormSchema>;
 export type TwoFactorAuthResponseInterface = z.infer<typeof twoFactorAuthResponseSchema>;
+export type PasswordUpdateFormInterface = z.infer<typeof passwordUpdateFormSchema>;
 
 export type ApiKeyFormInterface = z.infer<typeof apiKeyFormSchema>;
 export type ApiKeyResponseInterface = z.infer<typeof apiKeyResponseSchema>;
 
-export type PasswordUpdateFormInterface = z.infer<typeof passwordUpdateFormSchema>;
+export type OtcQuoteFormInterface = z.infer<typeof otcQuoteFormSchema>;
+export type OtcQuoteInterface = z.infer<typeof otcQuoteSchema>;
+export type OtcOrderFormInterface = z.infer<typeof otcOrderFormSchema>;
+export type OtcOrderInterface = z.infer<typeof otcOrderSchema>;
 
 export const statusColorMap: Record<string, any> = {
+    buy: 'success',
     active: 'success',
     confirmed: 'success',
     accepted: 'success',
@@ -442,6 +494,7 @@ export const statusColorMap: Record<string, any> = {
     processing: 'warning',
     aml_processing: 'warning',
     on_hold: 'warning',
+    sell: 'danger',
     paused: 'danger',
     failed: 'danger',
     rejected: 'danger',

@@ -90,11 +90,24 @@ export const siteConfig = {
             href: '/dashboard/payments/list',
             parent: '/dashboard/payments/list',
             icon: Icons.arrowRightLeft,
-        }, {
+        },
+        {
             label: 'Active Payments',
             href: '/dashboard/payments/links',
             parent: '/dashboard/payments/links',
             icon: Icons.qrCode,
+        },
+        {
+            label: 'OTC Quotes',
+            href: '/dashboard/otc/quote',
+            parent: '/dashboard/otc/quote',
+            icon: Icons.tag,
+        },
+        {
+            label: 'OTC Orders',
+            href: '/dashboard/otc/order',
+            parent: '/dashboard/otc/order',
+            icon: Icons.scroll,
         },
         {
             label: 'Settings',
