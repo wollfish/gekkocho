@@ -31,7 +31,7 @@ export const PaymentMethodForm: React.FC<OwnProps> = (props) => {
     const { uuid, payment, methods } = props;
 
     const defaultValues = useMemo(() => ({
-        payment_id: uuid,
+        payment_id: String(uuid),
         pay_currency: payment.pay_currency || '',
         pay_blockchain: payment.pay_blockchain || '',
         customer_name: payment.customer?.name || '',
