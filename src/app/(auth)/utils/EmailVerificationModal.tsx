@@ -5,6 +5,10 @@ import { Button } from '@nextui-org/button';
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@nextui-org/modal';
 import NextLink from 'next/link';
 
+import { toast } from 'sonner';
+
+import { resendEmailToken } from '@/actions/auth';
+
 interface OwnProps {
     email: string,
     isOpen: boolean,
@@ -13,6 +17,16 @@ interface OwnProps {
 
 export const EmailVerificationModal: React.FC<OwnProps> = (props) => {
     const { isOpen, email, onClose } = props;
+
+    const onResend = async () => {
+        const { error, success } = await resendEmailToken({ email });
+
+        if (success) {
+            toast.success('Verification link sent successfully, please check your email');
+        } else {
+            toast.error(error || 'Something went wrong');
+        }
+    };
 
     return (
         <Modal backdrop="blur" isDismissable={false} isOpen={isOpen} onClose={onClose}>
@@ -25,8 +39,8 @@ export const EmailVerificationModal: React.FC<OwnProps> = (props) => {
                     after a few minutes, please check your spam folder or request a new one.
                 </ModalBody>
                 <ModalFooter>
-                    <Button as={NextLink} href="/login" variant="bordered" onClick={onClose}>Already Verified</Button>
-                    <Button>Resend</Button>
+                    <Button as={NextLink} href="/login" variant="bordered" onPress={onClose}>Already Verified</Button>
+                    <Button onPress={onResend}>Resend</Button>
                 </ModalFooter>
             </ModalContent>
         </Modal>

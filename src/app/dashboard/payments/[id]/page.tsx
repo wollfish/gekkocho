@@ -9,7 +9,6 @@ import { getPaymentInfoPrivate } from '@/actions/dashboard/payment';
 import { Icons } from '@/components/icons';
 import { subtitle } from '@/components/primitives';
 import { TableColumnInterface, YukiTable } from '@/components/ui/YukiTable';
-import { fetchData } from '@/lib/api';
 import { YukiCopyButton } from '@/lib/misc/CopyButton';
 import { DataPageTemplate } from '@/lib/misc/DataPageTemplate';
 import { YukiDateFormat } from '@/lib/misc/DateFormat';
@@ -61,7 +60,7 @@ const customerColumns: TableColumnInterface[] = [
 ];
 
 export default async function Page({ params }: { params: { id: string } }) {
-    let { data: responseData, error } = await fetchData(() => getPaymentInfoPrivate({ id: params.id }));
+    let { data: responseData, error } = await getPaymentInfoPrivate({ id: params.id });
 
     if (!responseData) {
         return (

@@ -147,6 +147,18 @@ export const twoFactorAuthResponseSchema = z.object({
     }),
 });
 
+export const passwordUpdateFormSchema = z.object({
+    old_password: z.string({ required_error: 'Current password is required' })
+        .min(1, 'Current password is required'),
+    new_password: z.string({ required_error: 'New password is required' })
+        .min(1, 'New password is required'),
+    confirm_password: z.string({ required_error: 'Confirm password is required' })
+        .min(1, 'Confirm password is required'),
+}).refine((data) => data.new_password === data.confirm_password, {
+    path: ['confirm_password'],
+    message: 'Passwords do not match',
+});
+
 export const paymentFormSchema = z.object({
     product_name: z.string({ required_error: 'Product name is required' })
         .min(1, 'Product name is required')
@@ -418,6 +430,8 @@ export type TwoFactorAuthResponseInterface = z.infer<typeof twoFactorAuthRespons
 
 export type ApiKeyFormInterface = z.infer<typeof apiKeyFormSchema>;
 export type ApiKeyResponseInterface = z.infer<typeof apiKeyResponseSchema>;
+
+export type PasswordUpdateFormInterface = z.infer<typeof passwordUpdateFormSchema>;
 
 export const statusColorMap: Record<string, any> = {
     active: 'success',
