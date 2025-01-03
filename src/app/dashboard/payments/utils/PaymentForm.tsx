@@ -186,7 +186,7 @@ export const PaymentForm: React.FC<OwnProps> = (props) => {
                 <Suspense>
                     <Button
                         variant="bordered"
-                        onClick={() => reset()}
+                        onPress={() => reset()}
                     >
                         Clear All
                     </Button>

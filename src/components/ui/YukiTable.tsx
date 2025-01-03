@@ -11,10 +11,10 @@ import { SlotsToClasses, TableSlots } from '@nextui-org/theme';
 import { Icons } from '@/components/icons';
 import { localeDate } from '@/lib/localeDate';
 import { CryptoIcon } from '@/lib/misc/CryptoIcon';
-import { truncateText } from '@/lib/utils';
+import { cn, truncateText } from '@/lib/utils';
 import { statusColorMap } from '@/lib/zod';
 
-export const TableColumnTypeInterface = ['index', 'action', 'currency', 'date', 'datetime', 'email', 'address', 'id', 'link', 'number', 'status', 'text', 'cta'] as const;
+export const TableColumnTypeInterface = ['index', 'action', 'currency', 'date', 'datetime', 'email', 'address', 'id', 'link', 'number', 'side', 'status', 'text', 'cta'] as const;
 
 export type TableColumnInterface = {
     key: string;
@@ -24,6 +24,7 @@ export type TableColumnInterface = {
         withCurrency?: boolean;
         linked_column?: string;
         capitalize?: boolean;
+        uppercase?: boolean;
         searchValue?: string;
         truncate?: { length: number, direction: 'end' | 'middle' }
     };
@@ -80,11 +81,14 @@ export const YukiTable: React.FC<OwnProps> = (props) => {
         base: 'overflow-auto',
         thead: 'backdrop-blur-md [&>tr]:!shadow-none',
         th: ['bg-transparent', 'text-default-500', 'border-b', 'border-divider'],
+        tr: ['hover:bg-default-100', 'transition-colors'],
     }), []);
 
     const renderCell = useCallback((data: any, column: TableColumnInterface) => {
         const cellValue = data[column.key];
         const truncateOptions = column?.options?.truncate;
+        const uppercase = column?.options?.uppercase;
+        const capitalize = column?.options?.capitalize;
         const linkedColumn = column?.options?.linked_column;
         const searchValue = column?.options?.searchValue;
         const truncatedText = truncateOptions ? truncateText(cellValue, truncateOptions.length, truncateOptions.direction) : cellValue;
@@ -109,9 +113,25 @@ export const YukiTable: React.FC<OwnProps> = (props) => {
                         <CryptoIcon code={cellValue as string} size={20}/> {cellValue}
                     </span>
                 );
+            case 'side':
+                return (
+                    <Chip
+                        className="capitalize"
+                        color={statusColorMap[cellValue]}
+                        size="sm"
+                        variant="light"
+                    >
+                        <span className="font-semibold">{cellValue}</span>
+                    </Chip>
+                );
             case 'status':
                 return (
-                    <Chip className="capitalize" color={statusColorMap[data.state]} size="sm" variant="flat">
+                    <Chip
+                        className="capitalize"
+                        color={statusColorMap[cellValue]}
+                        size="sm"
+                        variant="flat"
+                    >
                         {cellValue}
                     </Chip>
                 );
@@ -121,7 +141,9 @@ export const YukiTable: React.FC<OwnProps> = (props) => {
                 );
             case 'text':
                 return (
-                    <span title={cellValue}>{truncatedText}</span>
+                    <span className={cn({ 'capitalize': capitalize, 'uppercase': uppercase })} title={cellValue}>
+                        {truncatedText}
+                    </span>
                 );
             case 'address':
                 if (!linkedColumn || !data[linkedColumn]) return cellValue;
@@ -253,7 +275,7 @@ export const YukiTable: React.FC<OwnProps> = (props) => {
                 </TableHeader>
                 <TableBody emptyContent="No rows to display." items={tableData}>
                     {(item) => (
-                        <TableRow key={item[mainKey]}>
+                        <TableRow key={item[mainKey]} className={cn({ 'cursor-pointer': !!onTableRowClick })}>
                             {columns.map((columnKey) => (
                                 <TableCell key={columnKey.key}>
                                     {!!columnKey.key && [null, undefined, ''].includes(item[columnKey.key]) ? '-' : renderCell(item, columnKey)}

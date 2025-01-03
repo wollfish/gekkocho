@@ -18,7 +18,7 @@ export const getTimezone = () => {
 
 export const localeDate = (date: string | number | any, format: keyof typeof DATE_FORMAT, zone: string = getTimezone()) => {
     const dateTime = typeof date === 'number'
-        ? luxon.fromMillis(date, { zone })
+        ? luxon.fromMillis(date.toString().length === 10 ? date * 1000 : date, { zone })
         : luxon.fromISO(date, { zone });
 
     return dateTime.toFormat(DATE_FORMAT[format]);

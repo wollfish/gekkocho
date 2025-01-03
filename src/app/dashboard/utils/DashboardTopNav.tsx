@@ -7,12 +7,14 @@ import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@nextui-o
 import { Input } from '@nextui-org/input';
 import { Kbd } from '@nextui-org/kbd';
 
+import dynamic from 'next/dynamic';
 import { useSession } from 'next-auth/react';
 
 import { doLogout } from '@/actions/auth';
 import { SearchIcon } from '@/components/icons';
 import { ThemeSwitch } from '@/components/theme-switch';
-import { NetworkStatusIndicator } from '@/lib/misc/NetworkStatusAlerts';
+
+const NetworkStatusIndicator = dynamic(() => import('@/lib/misc/NetworkStatusAlerts').then((mod) => mod.NetworkStatusIndicator), { ssr: false });
 
 export const DashboardTopNav: React.FC = () => {
     const session = useSession();
@@ -50,10 +52,6 @@ export const DashboardTopNav: React.FC = () => {
                     {searchInput}
                 </div>
                 <div className="flex items-center gap-4">
-                    {/*<Badge isDot color="primary" content="" shape="circle" size="sm">*/}
-                    {/*    <Icons.bell fill="currentColor" size={20}/>*/}
-                    {/*</Badge>*/}
-                    <NetworkStatusIndicator/>
                     <ThemeSwitch/>
                     <Dropdown
                         classNames={{
@@ -62,14 +60,19 @@ export const DashboardTopNav: React.FC = () => {
                         placement="bottom-end"
                     >
                         <DropdownTrigger>
-                            <Avatar
-                                isBordered
-                                as="button"
-                                className="transition-transform"
-                                color="primary"
-                                name="R"
-                                size="sm"
-                            />
+                            <div className="relative">
+                                <Avatar
+                                    isBordered
+                                    as="button"
+                                    className="transition-transform"
+                                    color="primary"
+                                    name="R"
+                                    size="sm"
+                                />
+                                <div className="absolute bottom-0 right-[-4px] rounded-full border-2 border-default-50">
+                                    <NetworkStatusIndicator/>
+                                </div>
+                            </div>
                         </DropdownTrigger>
                         <DropdownMenu aria-label="Profile Actions" variant="flat">
                             <DropdownItem key="profile" className="h-14 gap-2" textValue="profile">
